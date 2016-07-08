@@ -1,0 +1,24 @@
+<apex:component >
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/jquery-ui.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'frmwks/bootstrap331/css/bootstrap.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'fonts/font-awesome/css/font-awesome.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/custom.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/custom2.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/custom3.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroduceCustom)}" />
+    
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'frmwks/angular134/angular.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'frmwks/angular134/dirPagination.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'frmwks/angular134/angular-sanitize.min.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/jquery-ui.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/bootstrap.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/s_code.js')}"></script>
+    <script src="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/custom.js')}"></script>
+    <!-- For E Signature -->           
+    <script type="text/javascript" onload="loaded=1" src="{!URLFOR($Resource.jSignature, 'jSignature/jSignature.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.jSignature, 'jSignature/flashcanvas.js')}"></script>
+    <script type="text/javascript" src="{!URLFOR($Resource.jSignature, 'jSignature/flashcanvas.swf')}"></script>
+    
+</apex:component>

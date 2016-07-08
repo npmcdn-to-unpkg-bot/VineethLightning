@@ -1,0 +1,94 @@
+<!--
+* @author  IP Dev Team
+* @date  November 2014
+* @description  This page provides options to manage audiences
+-->
+<apex:page standardController="Audience__c" extensions="MM_AudienceRulesController">
+    <apex:pageMessages />
+    <apex:form >
+        <apex:pageBlock title="Manage Audiences">
+            <apex:pageBlockSection columns="1" title="Audience">
+                <apex:pageBlockSectionItem rendered="{!editMode}" >
+                    <apex:outputLabel value="{!$ObjectType.Audience__c.fields.Name.label}"></apex:outputLabel>
+                    <apex:inputText value="{!Audience__c.name}"  style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!NOT(editMode)}">
+                    <apex:outputLabel value="{!$ObjectType.Audience__c.fields.Name.label}"></apex:outputLabel>
+                    <apex:outputText value="{!Audience__c.name}"  style="width:350px;" rendered="{!NOT(editmode)}"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem rendered="{!editMode}">
+                    <apex:outputLabel value="{!$ObjectType.Audience__c.fields.Description__c.label}"></apex:outputLabel>
+                    <apex:inputTextarea value="{!Audience__c.Description__c}"  style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!NOT(editMode)}">
+                    <apex:outputLabel value="{!$ObjectType.Audience__c.fields.Description__c.label}"></apex:outputLabel>
+                    <apex:outputText value="{!Audience__c.Description__c}"  style="width:350px;"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>    
+            <apex:pageBlockSection title="Rules" columns="1">
+                <apex:repeat var="myRules" value="{!Rules}">
+                    <apex:pageBlockSectionItem >
+                        <apex:panelGroup >
+                            <table width="80%" align ="Center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="width:30px;"> <apex:inputCheckbox value="{!myRules.selected}" rendered="{!NOT(ISNULL(myRules.Rule.name)) &&  editMode}"/>
+                                    </td>
+                                    <td>
+                                        <apex:selectList value="{!myRules.Rule.UserField__c}" size="1" disabled="{!NOT(editMode)}">
+                                            <apex:selectOptions value="{!UserFields}"></apex:selectOptions>
+                                        </apex:selectList>
+                                        <apex:selectList value="{!myRules.Rule.Operator__c}" size="1" disabled="{!NOT(editMode)}">
+                                            <apex:selectOptions value="{!Operators}"></apex:selectOptions>
+                                        </apex:selectList>
+                                        <apex:inputText value="{!myRules.Rule.Value__c}" disabled="{!NOT(editMode)}"/>
+                                        <apex:commandButton value="+" title="Add a row" action="{!addRow}" rendered="{!ISNULL(myRules.Rule.name) && editMode}"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </apex:panelGroup>
+                        
+                    </apex:pageBlockSectionItem>
+                </apex:repeat>
+                
+            </apex:pageBlockSection>
+            
+            <apex:pageBlocksection >
+                <center><apex:commandButton action="{!deleteSelected}" value="Delete Selected Rows" rendered="{!editMode}"/></center>
+            </apex:pageBlocksection>
+            
+            
+            <apex:pageBlockSection title="Content Available For Broker" rendered="{!showBrokers}" columns="1">
+                <apex:pageBlockTable value="{!contentBrokers}" var="contentBroker">
+                    <apex:column value="{!contentBroker.Account.Name}" headerValue="Company Name"/>
+                    <apex:column value="{!contentBroker.FirstName}" headerValue="First Name"/>
+                    <apex:column value="{!contentBroker.Lastname}" headerValue="Last Name"/>
+                    <apex:column value="{!contentBroker.Broker_Ref__c}" headerValue="Broker Reference"/>
+                </apex:pageBlockTable>
+                
+                <apex:panelGrid id="theGrid" columns="5">
+                    <apex:commandLink action="{!dofirst}" rendered="{!hasPrevious}" value="First" />
+                    <apex:commandLink action="{!doPrevious}" rendered="{!hasPrevious}" value="Previous" />
+                    <apex:outputLabel rendered="{!NOT(hasPrevious)}" value="Previous" />
+                    <apex:outputLabel value=" (page {!pageNumber} of {!totalPages}) " />
+                    <apex:commandLink action="{!doNext}" rendered="{!hasNext}" value="Next" />
+                    <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" />
+                    <apex:commandLink action="{!doLast}" rendered="{!hasNext}" value="Last" />
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockButtons >
+                <apex:panelGroup rendered="{!editMode}">
+                    <apex:commandButton action="{!SaveAll}" value="Save"/>
+                    <apex:commandButton action="{!cancel}" value="Cancel"/>
+                </apex:panelGroup>
+                <apex:panelGroup rendered="{!NOT(editMode)}">
+                    <apex:commandButton action="{!enterEditMode}" value="Edit"/>
+                </apex:panelGroup>
+                
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,259 @@
+<apex:page showHeader="false" sidebar="false" title="Mortgage Calculator" docType="html-5.0" standardStylesheets="false" controller="CC_MortgageCalculator" >
+
+	<link rel="stylesheet" href="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.css' ) }" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.uiSlider,'css/slider.css' ) }"/>
+
+	<style type="text/css">
+		.calc-body {
+			margin-bottom: 15px;
+			margin-top: 20px;
+		}
+		.calculator {
+			margin: 15px 15px 0 15px;
+		}
+		.inner-control {
+			padding-right: 0px !important;
+			padding-left: 0px !important;
+		}
+		.calc-type-tab {
+			cursor: pointer !important;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+		}
+		.slider {
+			height: 10px;
+			display: inline-block;
+			vertical-align: middle;
+			margin: 10px 0px 10px 0px;
+			padding-right: 15px !important;
+		}
+
+		@media (max-width: 435px) {
+			.nav-tabs>li {
+				width: 100%;
+			}
+			.nav-tabs>li>a {
+				border-radius: 0px !important;
+				margin-right: 0px !important;
+			}
+		}
+
+		.animation {
+			-webkit-transition: 0.5s;
+		}
+
+		.animation.ng-leave { opacity: 0.5; }
+		.animation.ng-leave.ng-leave-active { opacity: 0; }
+
+		.animation.ng-enter { opacity: 0; }
+		.animation.ng-enter.ng-enter-active { opacity: 0.5; }
+	</style>
+
+	<apex:composition template="CC_CommunityTemplate">
+
+		<apex:define name="header">
+		    <c:CC_HSBCHeader selectedTab="home" />
+		</apex:define>
+
+		<apex:define name="body">
+			<div class="page--home calc-body" ng-app="ngMortgageCalcApp" ng-controller="ngMortgageCalcController" >
+				<div >
+					<div class="headerTab">
+						<ul class="nav nav-tabs">
+							<li ng-class="{ 'active' : currentCalcType === calcType.key }" ng-repeat="calcType in calcTypes" >
+								<a href="" class="calc-type-tab" ng-click="changeCalcType( calcType.key )" attr="calcType.key" ng-bind="( $index + 1 ) + '. ' + calcType.label"></a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-6" id="input" >
+						<form class="form-horizontal calculator" name="mortgageCalculatorForm" >
+							<div ng-if="currentCalcType != 'MortgageAmount'" class="form-group animation">
+								<label for="mortgageAmount" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Mortgage_Amount }
+								</label>
+								<div class="col-md-8" >
+									<div class="col-xs-8 inner-control slider" >
+										<div ui-slider="slider.options"	min="1" max="999999" ng-model="mortgageData.mortgageAmount" ></div>
+									</div>
+									<div class="col-xs-4 inner-control" >
+										<input type="number" min="1" max="999999" class="form-control" id="mortgageAmount" ng-model="mortgageData.mortgageAmount" ng-change="mortgageRecalculate()" />
+									</div>
+								</div>
+							</div>
+							<div ng-if="currentCalcType != 'Amortization'" class="form-group animation">
+								<label for="amortization" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Amortization }
+								</label>
+								<div class="col-md-8" >
+									<div class="col-xs-8 slider inner-control" >
+										<div ui-slider="slider.options"	min="1" max="50" ng-model="mortgageData.amortization" ></div>
+									</div>
+									<div class="col-xs-4 inner-control" >
+										<input type="number" min="1" max="50" class="form-control" id="amortization" ng-model="mortgageData.amortization" ng-change="mortgageRecalculate()" />
+									</div>
+								</div>
+							</div>
+							<div ng-if="currentCalcType != 'Payment'" class="form-group animation">
+								<label for="payment" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Payment }
+								</label>
+								<div class="col-md-8" >
+									<input type="text" class="form-control" id="payment" ng-model="mortgageData.payment" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="paymentFrequency" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Payment_Frequency }
+								</label>
+								<div class="col-md-8" >
+									<input type="text" class="form-control" id="paymentFrequency"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="product" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Product }
+								</label>
+								<div class="col-md-8" >
+									<input type="text" class="form-control" id="product"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="interestRate" class="col-md-4 control-label">
+									{! $Label.Mortgage_Calculator_Interest_Rate }
+								</label>
+								<div class="col-md-8" >
+									<div class="col-xs-8 slider inner-control" >
+										<div ui-slider="slider.options"	min="1" max="99" ng-model="mortgageData.interestRate" ></div>
+									</div>
+									<div class="col-xs-4 inner-control" >
+										<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="mortgageData.interestRate" />
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="col-md-6" id="result" >
+						<br />
+						<canvas id="bar" class="chart chart-bar" />
+					</div>
+				</div>
+			</div>
+		</apex:define>
+
+	</apex:composition>
+
+	<apex:includeScript value="{! URLFOR( $Resource.chart_js_master, 'Chart.js-master/Chart.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.d3, 'd3.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.uiSlider, 'js/slider.js' ) }" />
+
+	<script type="text/javascript">
+		var ctx = document.getElementById( 'bar' ).getContext( '2d' );
+		var myBarChart;
+
+		var app = angular.module( 'ngMortgageCalcApp', [ 'chart.js', 'ui.slider', 'ngAnimate' ] );
+
+
+
+		app.controller(
+			'ngMortgageCalcController',
+			[ '$scope', 'MortgageCalcService', function( $scope, mortgageCalcService ) {
+
+			$scope.calcTypes = [
+				{ key: 'Payment', label: 'Payment' },
+				{ key: 'MortgageAmount', label: 'Mortgage Amount' },
+				{ key: 'Amortization', label: 'Amortization' }
+			];
+			$scope.currentCalcType = 'Payment';
+
+			$scope.slider = {
+				options: {
+					start: function ( event, ui ) {
+						console.log( 'Slider start' );
+					},
+					stop: function ( event, ui ) {
+						$scope.mortgageRecalculate()
+						$scope.$apply();
+						console.log( 'Slider stop' );
+					}
+				}
+			};
+
+			$scope.chart = {
+				options: {
+					scaleShowGridLines : false
+				}
+			};
+
+			$scope.mortgageData = {
+				chart: {
+					labels: [],
+					datasets: [
+						{
+							fillColor: '#5cabc9',
+							highlightFill: '#00728f',
+							strokeColor: '#5cabc9',
+							highlightStroke: '#00728f',
+							data: []
+						}
+					]
+				},
+				mortgageAmount: 100000,
+				amortization: 10,
+				payment: 0,
+				interestRate: 5
+			};
+
+			//--------------------------------------
+			mortgageCalcService.mortgageRecalculate( $scope.mortgageData, function( result ) {
+				$scope.mortgageData = result;
+				myBarChart = new Chart( ctx ).Bar( $scope.mortgageData.chart, $scope.chart.options );
+			} );
+			//--------------------------------------
+
+			$scope.mortgageRecalculate = function() {
+				mortgageCalcService.mortgageRecalculate( $scope.mortgageData, function( result ) {
+					$scope.mortgageData = result;
+					myBarChart.destroy();
+					myBarChart = new Chart( ctx ).Bar( $scope.mortgageData.chart, $scope.chart.options );
+				} );
+			};
+
+			$scope.changeCalcType = function( newCalcType ) {
+				$scope.currentCalcType = newCalcType;
+			};
+
+		} ] );
+
+
+
+		app.service( 'MortgageCalcService', [ function() {
+			function round( value, precision ) {
+				return Math.round( value * ( 10 * precision ) )  / ( 10 * precision );
+			};
+
+			function mortgageRecalculate( mortgageData, callback ) {
+				var payment = mortgageData.mortgageAmount / mortgageData.amortization;
+				mortgageData.payment =  round( payment, 2 );
+
+				mortgageData.chart.labels = [];
+				mortgageData.chart.datasets[ 0 ].data = [];
+				
+				var mortgageAmountBalance = mortgageData.mortgageAmount;
+				for ( var year = 0; year <= mortgageData.amortization; year++ ) {
+					mortgageData.chart.labels.push( year );
+					mortgageAmountBalance = mortgageData.mortgageAmount - ( mortgageData.payment * year );
+					mortgageData.chart.datasets[ 0 ].data.push( mortgageAmountBalance );
+				}
+
+				callback( mortgageData );
+			};
+
+			return {
+				mortgageRecalculate: mortgageRecalculate
+			};
+		} ] );
+	</script>
+	
+</apex:page>

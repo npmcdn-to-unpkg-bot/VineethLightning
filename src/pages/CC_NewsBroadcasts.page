@@ -1,0 +1,196 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" controller="CC_NewsBroadcastsCtrl">
+   
+   <apex:composition template="CC_CommunityTemplate">
+
+        <apex:define name="header">   
+            <c:CC_HSBCHeader selectedTab="myhsbc" />
+        </apex:define>
+
+        <apex:define name="body">
+        <script type="text/javascript">
+            var IPAppModule = angular.module('IPApp',  ['angularUtils.directives.dirPagination']);
+            IPAppModule.controller('MyNewsCtrl', function($scope) {
+            
+                $scope.SortType = 'Latest';
+                $scope.ManageContentList = [];
+                $scope.filterConfig = 'DESC';
+                
+                $scope.RowOffset = 0;
+                $scope.RowLimit = 5;
+                $scope.TotalRecordCount = 0;
+                
+                $scope.dateFrom = '';
+                $scope.dateTo = '';
+                $scope.searchString = '';
+
+                $scope.pageSize = 10;
+                
+                
+                $scope.BackToHome = function() {
+                    window.location = '{!$Site.BaseUrl}/apex/CC_Home';
+                };
+                
+                $scope.ViewNewsDetails = function(manageContentId) {
+                    window.location = '{!$Site.BaseUrl}/apex/CC_NewsDetail?newsId='+ manageContentId + '&returnURL={!$Site.BaseUrl}/apex/CC_NewsBroadcasts&IsNewsViewed=false';
+                };
+                
+                $scope.GetNewsAndProductUpdate = function() {
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CC_NewsBroadcastsCtrl.getNewsAndProductUpdate}', $scope.filterConfig, $scope.RowOffset, $scope.RowLimit, $scope.dateTo, $scope.dateFrom, $scope.searchString, function(result, event) {
+                    	console.log("RESULT ++ ", result);
+                        $scope.IsProcessing = false;
+                        if (event.type === 'exception') {
+                            $scope.$apply();
+                            return;
+                        }
+                        
+                        if (result.Success) {
+                            $scope.ManageContentList = result.Data.ManageContentList;
+                            $scope.TotalRecordCount = result.Data['TotalRecordCount'];
+                        }
+                        $scope.$apply();
+                    });
+                };
+                
+                $scope.GetNewsAndProductUpdate();
+                 
+                $scope.OnSortTypeClick = function(strSortType, strFilterType) {
+                    $scope.SortType = strSortType;
+                    $scope.filterConfig = strFilterType;
+                    $scope.GetNewsAndProductUpdate();
+                };
+                
+                $scope.updateNewsList = function(){
+                    $scope.IsProcessing = 'true';
+                    $scope.dateFrom = $('#datepicker-dateFrom').datepicker({ dateFormat: 'dd/mm/yy' }).val();
+                    $scope.dateTo = $('#datepicker-dateTo').datepicker({ dateFormat: 'dd/mm/yy' }).val();
+                    console.log('FROM = ', $scope.dateFrom , ' TO ++ ' , $scope.dateTo );
+                    $scope.searchString = $('#searchStringText').val();
+                    $scope.GetNewsAndProductUpdate();
+                };
+            });
+        
+        $(function() {
+        	$('#datepicker-dateFrom').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('#datepicker-dateTo').datepicker({ dateFormat: 'dd/mm/yy' });
+            $('.ip-navbar li').removeClass('active');
+            $('.my-news').addClass('active');
+        });
+        
+        
+        </script>
+        <!-- <div xmlns:ng="http://angularjs.org" id="ng-app" ng-app="IPApp" ng-controller="MyNewsCtrl" ng-cloak="ngCloak"> -->
+        <div id="ng-app" ng-app="IPApp" ng-controller="MyNewsCtrl" ng-cloak="ngCloak" class="page--news-broadcasts page--container">
+         <div class="row">
+            <div class="col-xs-12">
+<!--                 <br/>
+                <ol class="breadcrumb" >
+                    <li><a href="{!$Page.CC_HOME}">{! $Label.CC_HOME }</a></li>
+                    <li class="active">{! $Label.CC_My_News }</li>
+                </ol> -->
+                
+<!--                 <div class="myNewsHeader">
+	                <div class="row">
+	                    <div class="col-md-12 ">
+	                        <h1 class="panel-title fontstyle">
+	                            <i class="fa fa-newspaper-o fa-icon fa-lg"></i>
+	                            <span>{! $Label.CC_My_News }</span>
+	                            <span class="infoIcon"><label>{{TotalRecordCount}}</label></span>
+	                        </h1>
+	                        <c:MM_MyNewsSearchFilter ></c:MM_MyNewsSearchFilter> 
+	                    </div>
+	                </div>
+            	</div> -->
+            	
+                <br />
+            	<div class="row" ng-show="TotalRecordCount == 0">
+                    <div class="col-xs-10 col-md-10">
+                       	<div class="panel-title">
+                        	<span class="servicerequest">{! $Label.CC_No_news_for_you }</span>
+                        </div>
+                    </div>
+                </div>
+
+	            <div class="rowSearchKnowledge content_details myNewsSearchResult" ng-hide="TotalRecordCount == 0">
+                    <div class="row">
+    	                <div class="col-md-12 panel-body">  
+    	                	<!--Search Input-->
+    	                    <!-- Row for Search Input Starts Here!-->
+    	                    <div class="row">
+    	                        <div class="col-xs-12 col-md-12">
+                                    <!-- Selectbox -->
+    	                            <div class="selectbox">
+    	                                <div class="selectbox-label">{! $Label.CC_Sort_By }</div>
+                                        <div class="selectbox-select">
+                                            <apex:outputpanel layout="none">
+                                                <apex:form >
+                                                    <select class="select">
+                                                        <option ng-click="OnSortTypeClick('Latest','DESC')">{! $Label.CC_Latest }</option>
+                                                        <option ng-click="OnSortTypeClick('Oldest','ASC')">{! $Label.CC_Oldest }</option>
+                                                    </select>
+                                                </apex:form>
+                                            </apex:outputpanel>
+                                        </div>
+                                        <script type="text/javascript">
+                                            $(function(){
+                                                $(".select").selectBoxIt({
+                                                    autoWidth: false,
+                                                    downArrowIcon: "i-selectboxit-arrow",
+                                                });
+                                            })
+                                        </script>
+    <!-- 	                                <div class="btn-group paddleft10">
+    	                                    <button type="button" class="btn btn-default dropdown-toggle lightGreyFont" data-toggle="dropdown" aria-expanded="false">{{SortType}}&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+    	                                    <ul class="dropdown-menu margLeft10" role="menu">
+    	                                        <li><a href="#" ng-click="OnSortTypeClick('Latest','DESC')">{! $Label.CC_Latest }</a></li>
+    	                                        <li><a href="#" ng-click="OnSortTypeClick('Oldest','ASC')">{! $Label.CC_Oldest }</a></li>
+    	                                    </ul>
+    	                                </div> -->
+    	                            </div>
+                                    <!-- End :: Selectbox -->
+    	                        </div>
+    	                    </div>
+    	                    <!-- Row for Search Input ENDS Here!-->
+    	                    <div class="row">
+    	                        <div ng-if="pageSize < TotalRecordCount" class="col-xs-12 margtop10">
+    	                            <dir-pagination-controls class="pull-right" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }" max-size="pageSize" boundary-links="true" on-page-change="RowOffset=(newPageNumber-1)*RowLimit; GetNewsAndProductUpdate();"></dir-pagination-controls>
+    	                        </div>
+    	                    </div>
+    	                    <!--Results-->
+    	                    <div class="row">
+    	                        <div class="divResults">
+    	                            <div class="">
+    	                                <div class="col-md-12" dir-paginate="objManageContentWrapper in ManageContentList | itemsPerPage: RowLimit" total-items="TotalRecordCount">
+    	                                    <div class="row posts">
+    	                                        <div class="resultDescripton col-md-12 post">
+    	                                            <h3> <a href="{!$Site.BaseUrl}/apex/CC_NewsDetail?newsId={{objManageContentWrapper.manageContent.Id}}&returnURL={!$Site.BaseUrl}/apex/CC_NewsBroadcasts" ng-bind="objManageContentWrapper.manageContent.Title__c"></a><br /></h3>
+    	                                            <span ng-hide="{{objManageContentWrapper.isRead}}" class="glyphicon glyphicon-eye-open headingfontcolor margRight10" data-toggle="tooltip" data-placement="right" title="Mark as read"></span>
+    	                                            <span class="margLeft10">{! $Label.CC_Published } {{objManageContentWrapper.manageContent.Publish_Start__c | date: 'dd/MM/yyyy'}}</span><br />
+    	                                            <span ng-bind="objManageContentWrapper.manageContent.Summary__c | limitTo: 170">
+    	                                           </span>
+    	                                           <a href="" ng-click="ViewNewsDetails(objManageContentWrapper.manageContent.Id)"> {! $Label.CC_View_More } </a>
+    	                                        </div>
+    	                                    </div>
+    	                                    <br />
+    	                                </div>
+    	                            </div>
+    	                            
+    	                            <div ng-if="pageSize < TotalRecordCount" class="col-xs-12">
+    	                                <dir-pagination-controls class="pull-right" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }" max-size="pageSize" boundary-links="true" on-page-change="RowOffset=(newPageNumber-1)*RowLimit; GetNewsAndProductUpdate();"></dir-pagination-controls>
+    	                            </div>
+
+    <!-- 	                            <div class="">
+    	                                <div class="col-xs-12 col-md-2 col-sm-2">
+    	                                    <button class="btn btn-default buttonstyle" type="button" ng-click="BackToHome()">{! $Label.BackHomeBTN }</button>
+    	                                </div>
+    	                            </div> -->
+    	                        </div>
+    	                    </div>
+    	                </div>
+                    </div>
+	    	    </div>
+		    </div>
+            </div>
+	    </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

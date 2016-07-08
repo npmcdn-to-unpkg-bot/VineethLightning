@@ -1,0 +1,72 @@
+<!--
+* @author: Sachin Chavan
+* @date: November 2014
+* @description: This component used in IP_CommunityHome page
+-->
+<apex:component >
+ <style type="text/css">
+     .noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    }
+    
+ </style>     
+    <div class="titlebarContainer noselect" ng-controller="NotificationCenterCtrl" ng-show="HasRecords" >
+        <div class="container" >
+            <div class="row">                  
+                <div class="col-md-11 col-sm-12 col-xs-12 paddzero">
+                    <div class="row">
+                        <div class="col-xs-1 col-sm-1 col-md-1">
+                            <a href="#" ng-model="collapsed" ng-click="collapsed=!collapsed" ng-init="collapsed=true" ng-show="collapsed">
+                                <i class="hover-action indicator glyphicon glyphicon-plus"></i>
+                            </a>   
+                            <a href="#" ng-model="collapsed" ng-click="collapsed=!collapsed"  ng-show="!collapsed">
+                                <i class="hover-action indicator glyphicon glyphicon-minus"></i>
+                            </a>                
+                        </div>      
+                        <div class="col-xs-4 col-sm-7 col-md-9 paddRight0">
+                            <h2 class="home-title noselect">
+                                 {{notificationArray[iSlideIndex].Title__c}}
+                             </h2>
+                            
+                        </div>
+                        <div class="col-xs-6 col-sm-3 col-md-2 paddRight0">
+                            <div class="upPagination pull-right">
+                                <a href=""><span class="glyphicon glyphicon-chevron-left arrowFontSize" style="cursor: pointer;" ng-click="PreviousNotification()"></span></a>
+                                <span class="pagingDiv">
+                                    <label class="firstPage">{{iSlideIndex + 1}}</label>
+                                    <label class="">/</label>
+                                    <label class="lastPage">{{notificationArray.length}}</label>
+                                </span>
+                                <a href=""><span class="glyphicon glyphicon-chevron-right arrowFontSize" style="cursor: pointer;" ng-click="NextNotification()"></span></a>
+                            </div> 
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div ng-show="collapsed">
+
+                                    <div class="col-md-12 col-sm-11 paddLeftContent">
+                                        <p class="breakText">{{notificationArray[iSlideIndex].Summary__c|limitTo: 105}}...</p>
+                                        <p class="breakText">{{notificationArray[iSlideIndex].Publish_Start__c | date:'dd/MM/yyyy'}}</p>
+                                    </div>
+    
+                           </div> 
+                           <div ng-show="!collapsed">
+                                
+                                    <div class="col-md-12 col-sm-11 paddLeftContent">
+                                        <p class="breakText">{{notificationArray[iSlideIndex].Summary__c}}</p>
+                                        <p class="text-left">{{relationshipManagerName}}</p>
+                                        <p class="breakText">{{notificationArray[iSlideIndex].Publish_Start__c | date:'dd/MM/yyyy'}}</p>
+                                    </div>
+                                
+                           </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+</apex:component>

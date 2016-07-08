@@ -1,0 +1,284 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="BTT_CaseUpdateController" title="New Application">
+   
+    <apex:composition template="CC_CommunityTemplate">
+        <apex:define name="header">   
+      
+            <c:CC_HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            
+            <style>
+                .red {
+                    color:red;
+                }
+               
+                .form-group label{
+                    font-size:12px !important;
+                }
+            </style>
+            <script>
+
+                
+                var app = angular.module('CommunityApp', ['toastr', 'ngAnimate']);
+                 app.config(function(toastrConfig) {
+                    
+                    angular.extend(toastrConfig, {
+                        "positionClass": "toast-top-center",
+                         closeButton: true  
+                    });
+                });
+     
+       $(document).ready(function(){
+                    $('.datepicker').datepicker({
+                        dateFormat: 'yy-mm-dd'
+                    })
+                });
+                app.controller('newCaseController', function($scope, $rootScope, toastr) {
+                    $scope.contact = {Salutation: '', FirstName: '{!JSENCODE($User.FirstName)}', LastName: '{!JSENCODE($User.LastName)}', Gender__c: '',
+                                      Phone : '', MobilePhone: '{!JSENCODE($User.MobilePhone)}', Email: '{!JSENCODE($User.Email)}',
+                                      MailingCountry: '{!JSENCODE(c.MailingCountry)}', MailingPostalCode: '  {! JSENCODE( c.MailingPostalCode ) } ', Birthdate: '{!JSENCODE($Label.DOB)}' ,checkbox__c : '' ,textarea__c :''};
+                    $scope.CurrentForm = 'MortgageDetails';
+                    $scope.forms = [{key: 'MortgageDetails', label: 'Mortgage Details'}, {key: 'PropertyDetails', label: 'Property Details'}];     
+                    if (config.status) {
+                        $scope.forms.unshift({key: 'WhosApplying', label: 'Who\'s Applying?'});
+                        $scope.CurrentForm = 'WhosApplying';
+                    }                 
+                                      
+                    $scope.formSubmitted = false;
+                    $scope.secondFormSubmitted = false;
+                    $scope.opportunity = {To_Do__c: '', Council_Tax_Band__c: '', 
+                                          Mortgage_For__c: '', Mortgage_Term__c: '', Type: '', Prefer_to_Pay__c: '',
+                                          Building_Name__c: '', City__c: '', County__c: '', Country__c: '', 
+                                          Postcode__c: '', Type_of_Property__c: ''};
+                                      
+                    
+
+                    
+                        
+                        $scope.submit = function(ev, isValid) {
+                         if (!isValid) {
+                            return;
+                        }
+                            var btn = ev.currentTarget;
+                            $(btn).button('loading');
+                            Visualforce.remoting.Manager.invokeAction(
+                                config.remoteActions.createOpportunity, 
+                                JSON.stringify( $scope.contact),    
+                                config.status,
+                                function(result) {
+                                    if (result) {
+                                        if (result.isSuccess) {
+                                            $('#message').html(config.labels.applicationCreated);
+                                            $('#msgModal').attr('result', 'success');
+                                            $('#msgModal').modal();
+                                        } else {
+                                            //alert(response.message);
+                                            $('#message').html(result.message);
+                                            $('#msgModal').attr('result', 'failed');
+                                            formSubmitted = false;
+                                            $('#msgModal').modal();
+                                        }
+                                    } else {
+                                        toastr.error(config.labels.requiredFields, 'Error');
+                                    }
+                                    
+                                $(btn).button('reset');
+                            },{escape: true}); 
+                        };
+                        
+                        $scope.closeModal = function() {
+                            if ($('#msgModal').attr('result') == 'success') {
+                                window.location.href = '{!$Page.CC_HOME}';
+                            }
+                            $('#msgModal').modal("hide");
+                        };
+
+                        $scope.prevForm = function(formName) {
+                            $scope.CurrentForm = formName;
+                        };
+
+                        $scope.submitMortgageDetails = function(isValid) {
+                            if (!isValid) {
+                                return;
+                            }
+                            $scope.Continue('PropertyDetails');
+                        };
+                        
+                        $scope.Continue = function(form) {
+                            $scope.CurrentForm = form;
+                        }
+                  
+                });
+            </script>
+            <apex:variable var="CC_App" value="{!URLFOR($Resource.app)}"/>
+            <script type="text/javascript" src="{! CC_App }/directives/date-select/CC_NewApp/date-select.js"></script>
+            <script type="text/javascript" src="{! CC_App }/directives/date-select/CC_NewApp/DateSelectController.js"></script>
+
+
+            <div style="padding-bottom:5px;background: url(https://www.hsbc.co.uk/1/PA_esf-ca-app-content/content/pws/content/personal/mortgages/first-time-buyers/images/mortgages-banner4.jpg)">
+                <c:CC_CommunityTabs selectedTab="mycases"/>
+                <br/>
+            </div>
+            
+            <div class="col-xs-12" ng-app="CommunityApp" ng-controller="newCaseController">
+
+             
+
+                <script type="text/ng-template" id="countries.html">
+                    <select class="form-control" required="true" ng-model="contact.MailingCountry" disabled="true"  id="sa" >
+                        <option disabled="true" selected="true" hidden="true" value="">Please select</option>
+                        <option value="UK">UK</option>
+                        <option value="USA">USA</option>
+                        <option value="India">India</option>
+                    </select>
+                </script>
+
+
+                
+
+                <br/>
+                <ol class="breadcrumb">
+                    <li><a href="{!$Page.CC_Home}">Home</a></li>
+                    <li class="active">Submit a new Application</li>
+                </ol>
+                 
+                <div ng-switch="CurrentForm">
+                    <div class="headerTab">
+                        <ul class="nav nav-tabs">
+                            <!--<li ng-class="{ 'active' : CurrentForm === form.key }" ng-repeat="form in forms"><a href="#" attr="form.key" ng-bind="($index + 1) + '. ' + form.label"></a></li>-->
+                        </ul>
+                    </div>
+                   
+                    
+                        <form name="newCaseForm" class="form-horizontal">
+                            <h3/>
+                           
+                            <div class="form-group">
+                                <label for="fName" class="col-sm-4 control-label">{! $Label.ContactFirstName }:*</label>
+                                <div class="col-sm-4 ">
+                                    <input ng-model="contact.FirstName" id="fName" class="form-control" required="true" ng-class="{red: newCaseForm.fName.$invalid && newCaseForm.$submitted}" disabled="true"/>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lName" class="col-sm-4 control-label">{! $Label.ContactLastName }:*</label>
+                                <div class="col-sm-4 ">
+                                    <input type="text" ng-model="contact.LastName" id="lName" class="form-control" required="true" ng-class="{red: newCaseForm.lName.$invalid && newCaseForm.$submitted}" disabled="true"/>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="db" class="col-sm-4 col-md-4 control-label">{! $Label.ContactBirthdate }:*</label>
+                                
+                                    <div class="col-sm-2 ">
+                                     <input id="db" ng-model="contact.Birthdate" class="form-control datepicker" required="true" ng-class="{red: newCaseForm.db.$invalid && newCaseForm.$submitted}" disabled="true"/>
+                                    
+                                </div>
+                            </div>                            
+                            
+                            <div class="form-group">
+                                <label for="mphone" class="col-sm-4 control-label">{! $Label.ContactMobilePhone }:*</label>
+                                <div class="col-sm-4 ">
+                                    <input type="text" ng-model="contact.MobilePhone" class="form-control" id="mphone" disabled="true"  />
+                                </div>
+                            </div>  
+                            <div class="form-group">
+                                <label for="email" class="col-sm-4 control-label">{! $Label.ContactEmail }:*</label>
+                                <div class="col-sm-4 ">
+                                    <input type="email" ng-model="contact.Email" class="form-control" id="email" required="true" ng-class="{red: newCaseForm.email.$invalid && newCaseForm.$submitted}" disabled="true"/>
+                                </div>
+                                <div ng-show="form.$submitted || form.uName.$touched">
+                                  <div ng-show="newCaseForm.email.$error">{! $Label.Tell_us_your_name }</div>
+                                </div>
+                            </div>  
+                            <div class="form-group">
+                                <label for="sa" class="col-sm-4 control-label">{! $Label.ContactCountry }:*</label>
+                                <div class="col-sm-4 " ng-include="'countries.html'"></div>
+                            </div>  
+                            <div class="form-group">
+                                <label for="code" class="col-sm-4 control-label">{! $Label.ContactPostalCode }:*</label>
+                                <div class="col-sm-4 ">
+                                    <input type="text" ng-model="contact.MailingPostalCode" class="form-control" id="code" required="true" ng-class="{red: newCaseForm.code.$invalid && newCaseForm.$submitted}" disabled="true"/>
+                                </div>
+                            </div>  
+                            
+                            <div class="form-group">
+                           <label for="code" class="col-sm-4 control-label">Accepting proposal:*</label>
+                           <div class="col-sm-4 " >
+                           <input type="checkbox" ng-model="contact.checkbox__c"  id="checkbox" required="true" ng-class="{red: newCaseForm.code.$invalid && newCaseForm.$submitted} "/> 
+                           </div>
+                           </div>
+                           <div class="form-group">
+                            <label for="code" class="col-sm-4 control-label">Comments:</label>
+                            <div class="col-sm-4 ">
+                           <textarea class="form-control" ng-model="contact.textarea__c"  id="textarea"  rows="3"></textarea>
+                            </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <div class="pull-right">
+                                        <a  class="btn btn-default backBtn" href="{!$Page.CC_Home}">{! $Label.BackBTN }</a>
+                                         <button ng-click="submit($event, newCaseForm.$valid)"  data-loading-text="Processing..."  class="btn btn-default continueBtn" >Submit</button>
+                                    </div>
+                                </div>
+                            </div>                    
+                            <img id="liveagent_button_online_5734E000000001Y" style="display: none; border: 0px none; cursor: pointer" onclick="liveagent.startChat('5734E000000001Y')" src="" />
+                    <img id="liveagent_button_offline_5734E000000001Y" style="display: none; border: 0px none; " onclick="liveagent.startChat('5734E000000001Y')" src="" />
+
+                  
+                            
+                        </form>
+                    
+                    
+                  
+                
+                   
+                </div>
+                <c:CC_MessageModal />
+            </div>
+            
+             <script type="text/javascript">
+            
+            	window.onload = function() {
+                 var myVar;
+                    myVar = setTimeout(alertFunc, 3000);
+                 }
+                 function alertFunc()
+                  {
+                      liveagent.startChat('5734E000000001Y');
+                  }
+
+</script>
+            
+       <script type="text/javascript">
+                var config = {
+                    remoteActions: {
+                        createOpportunity: '{!$RemoteAction.BTT_CaseUpdateController.createOpportunity}',
+                        
+                    },
+                    labels: {
+                        duplicateEmailWarning: '{!JSENCODE($Label.User_with_this_email_has_been_created_already)}',
+                        requiredFields: '{!JSENCODE($Label.Please_check_if_all_required_fields_are_filled_out)}',
+                        applicationCreated: '{!JSENCODE($Label.Re_Mortgage_Offer)}'
+                    },
+                    status: {! ISPICKVAL($User.UserType, 'Guest')}
+                };
+            </script>
+              <script type='text/javascript' src='https://c.la1-c2cs-frf.salesforceliveagent.com/content/g/js/36.0/deployment.js'></script>
+            <script type='text/javascript'>
+                liveagent.setName('{! $User.FirstName } {! $User.LastName } ');
+                liveagent.init('https://d.la1-c2cs-frf.salesforceliveagent.com/chat', '5724E000000001Y', '00D4E000000Cupz');
+            </script>
+            <img style=" display: none; border: 0px none; cursor: pointer" src="https://dev1-ctsdemoportal-developer-edition.cs83.force.com/customerportal/resource/1457542700000/OnlineAgent_Button" />
+            <img style="display: none; border: 0px none; " src="https://dev1-ctsdemoportal-developer-edition.cs83.force.com/customerportal/resource/1457542700000/OfflineAgent_Button" />
+            <script type="text/javascript">
+                if (!window._laq) { window._laq = []; }
+                window._laq.push(function(){liveagent.showWhenOnline('5734E000000001Y', document.getElementById('liveagent_button_online_5734E000000001Y'));
+                liveagent.showWhenOffline('5734E000000001Y', document.getElementById('liveagent_button_offline_5734E000000001Y'));
+                });
+            </script>
+        </apex:define>
+    </apex:composition>
+   
+
+</apex:page>

@@ -1,0 +1,384 @@
+<apex:component controller="CB_CaseDetailController" allowDML="true" >
+
+	<link rel="stylesheet" href="{! URLFOR( $Resource.CB_Detail, 'detail.css' ) }" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.bootstrapsf1, 'css/bootstrap-namespaced.min.css' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CB_Detail, 'detail.js' ) }" loadOnReady="true" />
+
+	<apex:attribute name="currentCase" type="Case" description="Case details" required="true" />
+
+	<style>
+		.form-group label {
+			font-size: 14px !important;
+			padding-top: 0 !important;
+		}
+		.form-control {
+			height: 19px !important;
+			width: 90% !important;
+		}
+	</style>
+
+	<div class="panel-group bootstrap-sf1 container" id="accordion">
+		<div class="panel panel-default" id="chatter">
+			<div class="panel-heading">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" href="#collapseChatter">
+						{! $Label.Chatter }
+					</a>
+					<i class="indicator glyphicon pull-right collapsed glyphicon-chevron-up"></i>
+				</h4>
+			</div>
+			<div id="collapseChatter" class="panel-collapse collapse in">
+				<div class="panel-body" id="chatterBody">
+					<chatter:feed entityId="{! curCase.Id }" /> 
+				</div>
+			</div>
+		</div>
+
+		<div> 
+			<apex:form html-class="form-horizontal" > 
+				<div class="panel panel-default" id="caseDetails">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" href="#collapseCaseDetails">
+								{! $Label.Case_Details }
+							</a>
+							<i class="indicator glyphicon glyphicon-chevron-down pull-right"></i>
+						</h4>
+					</div>
+					<div id="collapseCaseDetails" class="panel-collapse collapse">
+						<apex:outputPanel id="caseDetailsPanel">
+							<apex:detail subject="{! currentCase.Id }" relatedList="false" title="false" inlineEdit="true" />
+							<!--div class="panel-body">
+								<div class="form-group">
+									<label for="caseNumber" class="col-sm-6 control-label">{! $Label.Case_Number }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.CaseNumber }" id="caseNumber" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="caseApplicationNumber" class="col-sm-6 control-label">{! $Label.Application_Number }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application_Number__c }" id="caseApplicationNumber" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="casePriority" class="col-sm-6 control-label">{! $Label.Priority }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Priority }" id="casePriority" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="caseCreatedDate" class="col-sm-6 control-label">{! $Label.Created_Date }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.CreatedDate }" id="caseCreatedDate" />
+									</div>
+								</div>
+							</div-->
+						</apex:outputPanel>
+					</div>
+				</div>
+
+				<div class="panel panel-default" id="mortgageDetails">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" href="#collapseMortgageDetails">
+								{! $Label.Mortgage_Details }
+							</a>
+							<i class="indicator glyphicon glyphicon-chevron-down  pull-right"></i>
+						</h4>
+					</div>
+					<div id="collapseMortgageDetails" class="panel-collapse collapse">
+						<apex:outputPanel id="mortgageDetailsPanel">
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="appToDo" class="col-sm-6 control-label">{! $Label.What_is_this_mortgage_regarding }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.To_Do__c }" id="appToDo" />
+										<apex:selectList html-class="form-control" id="newAppToDo" value="{! newAppToDo }" size="1" required="true" style="display: none;" >
+											<apex:selectOptions value="{! appToDo }"/>
+										</apex:selectList>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appAmount" class="col-sm-6 control-label">{! $Label.What_s_the_property_estimated_value }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Amount }" id="appAmount" />
+										<apex:input html-class="form-control" value="{! newAppAmount }" id="newAppAmount" type="number" style="display: none;" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appDeposit" class="col-sm-6 control-label">{! $Label.How_much_will_be_the_deposit }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Deposit__c }" id="appDeposit" />
+										<apex:input html-class="form-control" value="{! newAppDeposit }" id="newAppDeposit" type="number" style="display: none;" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appType" class="col-sm-6 control-label">{! $Label.What_type_of_mortgage_is_required }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Type }" id="appType" />
+										<apex:selectList html-class="form-control" id="newAppType" value="{! newAppType }" size="1" required="true" style="display: none;" >
+											<apex:selectOptions value="{! appType }" />
+										</apex:selectList>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appPreferToPay" class="col-sm-6 control-label">{! $Label.What_would_the_applicant_prefer_to_pay }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Prefer_to_Pay__c }" id="appPreferToPay" />
+										<apex:selectList html-class="form-control" id="newAppPreferToPay" value="{! newAppPreferToPay }" size="1" required="true" style="display: none;" >
+											<apex:selectOptions value="{! appPreferToPay }" />
+										</apex:selectList>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appMortgageTerm" class="col-sm-6 control-label">{! $Label.How_long_does_the_applicant_want_to_pay_the_mortgage_over }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Mortgage_Term__c }" id="appMortgageTerm" />
+										<!--apex:input html-class="form-control" value="{! newAppMortgageTerm }" id="newAppMortgageTerm" type="number" style="display: none;" /-->
+										<apex:selectList html-class="form-control" id="newAppMortgageTerm" value="{! newAppMortgageTerm }" size="1" required="true" style="display: none;" >
+                                            <apex:selectOption itemValue="5" itemLabel="5"/>
+                                            <apex:selectOption itemValue="10" itemLabel="10"/>
+                                            <apex:selectOption itemValue="15" itemLabel="15"/>
+                                            <apex:selectOption itemValue="20" itemLabel="20"/>
+                                        </apex:selectList> {! $Label.Years }
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-6">
+										<div class="pull-right">
+											<span class="input-group ">
+												<a class="btn continueBtn editMortgageDetails" >
+													{! JSENCODE( $Label.Edit ) } 
+												</a>
+											</span>
+											<span class="input-group" style="display: none;">
+												<a class="btn btn-success saveMortgageDetails" >
+													{! JSENCODE( $Label.Save ) } 
+												</a>
+												<a class="btn backBtn cancelMortgageDetails" >
+													{! JSENCODE( $Label.Cancel ) } 
+												</a>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</apex:outputPanel> 
+					</div>
+				</div>
+
+				<div class="panel panel-default" id="propertyDetails">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" href="#collapsePropertyDetails">
+								{! $Label.Property_Details }
+							</a>
+							<i class="indicator glyphicon glyphicon-chevron-down  pull-right"></i>
+						</h4>
+					</div>
+					<div id="collapsePropertyDetails" class="panel-collapse collapse">
+						<apex:outputPanel id="propertyDetailsPanel">
+							<div class="panel-body">
+								<div class="form-group">
+									<label for="appBuildingName" class="col-sm-6 control-label">{! $Label.Building_Name_Number }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Building_Name__c }" id="appBuildingName"/>
+										<apex:input html-class="form-control" value="{! newAppBuildingName }" type="text" id="newAppBuildingName" style="display: none;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appCity" class="col-sm-6 control-label">{! $Label.Town_City }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.City__c }" id="appCity"/>
+										<apex:input html-class="form-control" value="{! newAppCity }" type="text" id="newAppCity" style="display: none;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appCounty" class="col-sm-6 control-label">{! $Label.County }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.County__c }" id="appCounty"/>
+										<apex:input html-class="form-control" value="{! newAppCounty }" type="text" id="newAppCounty" style="display: none;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appPostcode" class="col-sm-6 control-label">{! $Label.Postcode }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Postcode__c }" id="appPostcode"/>
+										<apex:input html-class="form-control" value="{! newAppPostcode }" type="text" id="newAppPostcode" style="display: none;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appCountry" class="col-sm-6 control-label">{! $Label.Country }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Country__c }" id="appCountry"/>
+										<apex:input html-class="form-control" value="{! newAppCountry }" type="text" id="newAppCountry" style="display: none;"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appTypeOfProperty" class="col-sm-6 control-label">{! $Label.Type_of_Property }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Type_of_Property__c }" id="appTypeOfProperty"/>
+										<apex:selectList html-class="form-control" id="newAppTypeOfProperty" value="{! newAppTypeOfProperty }" size="1" required="true" style="display: none;" >
+											<apex:selectOptions value="{! appTypeOfProperty }"/>
+										</apex:selectList>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="appCouncilTaxBand" class="col-sm-6 control-label">{! $Label.Which_Council_Tax_band_is_your_property_in }</label>
+									<div class="col-sm-3">
+										<apex:outputfield value="{! curCase.Application__r.Council_Tax_Band__c }" id="appCouncilTaxBand"/>
+										<apex:selectList html-class="form-control" id="newAppCouncilTaxBand" value="{! newAppCouncilTaxBand }" size="1" required="true" style="display: none;" >
+											<apex:selectOptions value="{! appCouncilTaxBand }"/>
+										</apex:selectList>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-6">
+										<div class="pull-right">
+											<span class="input-group ">
+												<a class="btn continueBtn editPropertyDetails" >
+													{! JSENCODE( $Label.Edit ) } 
+												</a>
+											</span>
+											<span class="input-group" style="display: none;">
+												<a class="btn btn-success savePropertyDetails" >
+													{! JSENCODE( $Label.Save ) } 
+												</a>
+												<a class="btn backBtn cancelPropertyDetails" >
+													{! JSENCODE( $Label.Cancel ) } 
+												</a>
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</apex:outputPanel> 
+					</div>
+				</div>
+
+				<div class="panel panel-default" id="eventsDetails">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" href="#collapseEventsDetails">
+								{! $Label.Events }
+							</a>
+							<i class="indicator glyphicon glyphicon-chevron-down pull-right"></i>
+						</h4>
+					</div>
+					<div id="collapseEventsDetails" class="panel-collapse collapse">
+						<apex:outputPanel id="eventsDetailsPanel">
+							<div class="panel-body">
+								<table class="table ">
+									<thead>
+										<tr>
+											<th class="col-xs-4"><b>{! $Label.TableHeaderSubject }</b></th>
+											<th class="col-xs-4"><b>{! $Label.TableHeaderName }</b></th>
+											<th class="col-xs-4"><b>{! $Label.TableHeaderStart }</b></th>
+										</tr>
+									</thead>
+									<tbody>
+										<apex:repeat value="{! currentCaseEventList }" var="event" >
+											<tr>
+												<td class="col-xs-4">{! event.Subject }</td>
+												<td class="col-xs-4">{! event.Who.Name }</td>
+												<td class="col-xs-4">{! event.StartDateTime }</td>
+											</tr>
+										</apex:repeat>
+									</tbody>
+								</table>
+							</div>
+						</apex:outputPanel>
+					</div>
+				</div>
+
+				<apex:actionFunction name="editMortgageDetails" reRender="mortgageDetailsPanel" action="{! updateMortgageDetails }" oncomplete="mortgageInit();return false;">
+				</apex:actionFunction>
+
+				<apex:actionFunction name="editPropertyDetails" reRender="propertyDetailsPanel" action="{! updatePropertyDetails }" oncomplete="propertyInit();return false;">
+				</apex:actionFunction>
+
+			</apex:form>    
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		document.getElementsByName('edit')[0].style.display = 'none';
+
+		var editAction = function ( el, showId, hideId ) {
+			$( '[id$="' + showId + '"]' ).show();
+			$( '[id$="' + hideId + '"]' ).hide();
+			$( el ).parent().next().show();
+			$( el ).parent().hide();
+		};
+
+		var cancelAction = function ( el, showId, hideId ) {
+			$( '[id$="' + hideId + '"]' ).hide();
+			$( '[id$="' + showId + '"]' ).show();
+			$( el ).parent().prev().show();
+			$( el ).parent().hide();
+		};
+
+		function mortgageInit() {
+			$( '.editMortgageDetails' ).click( function() {
+				editAction( this, 'newAppToDo', 'appToDo' );
+				editAction( this, 'newAppAmount', 'appAmount' );
+				editAction( this, 'newAppDeposit', 'appDeposit' );
+				editAction( this, 'newAppType', 'appType' );
+				editAction( this, 'newAppPreferToPay', 'appPreferToPay' );
+				editAction( this, 'newAppMortgageTerm', 'appMortgageTerm' );
+				return false;
+			});
+
+			$('.cancelMortgageDetails').click( function() {
+				cancelAction( this,'appToDo' , 'newAppToDo' );
+				cancelAction( this,'appAmount' , 'newAppAmount' );
+				cancelAction( this,'appDeposit' , 'newAppDeposit' );
+				cancelAction( this,'appType' , 'newAppType' );
+				cancelAction( this,'appPreferToPay' , 'newAppPreferToPay' );
+				cancelAction( this,'appMortgageTerm' , 'newAppMortgageTerm' );
+				return false;
+			});
+
+			$( '.saveMortgageDetails' ).click( function() {
+				editMortgageDetails();
+				return false;
+			});
+		};
+
+		function propertyInit() {
+			$( '.editPropertyDetails' ).click( function() {
+				editAction( this, 'newAppBuildingName', 'appBuildingName' );
+				editAction( this, 'newAppCity', 'appCity' );
+				editAction( this, 'newAppCounty', 'appCounty' );
+				editAction( this, 'newAppPostcode', 'appPostcode' );
+				editAction( this, 'newAppCountry', 'appCountry' );
+				editAction( this, 'newAppTypeOfProperty', 'appTypeOfProperty' );
+				editAction( this, 'newAppCouncilTaxBand', 'appCouncilTaxBand' );
+				return false;
+			});
+
+			$( '.cancelPropertyDetails' ).click( function() {
+				cancelAction( this, 'appBuildingName' , 'newAppBuildingName' );
+				cancelAction( this, 'appCity' , 'newAppCity' );
+				cancelAction( this, 'appCounty' , 'newAppCounty' );
+				cancelAction( this, 'appPostcode' , 'newAppPostcode' );
+				cancelAction( this, 'appCountry' , 'newAppCountry' );
+				cancelAction( this, 'appTypeOfProperty' , 'newAppTypeOfProperty' );
+				cancelAction( this, 'appCouncilTaxBand' , 'newAppCouncilTaxBand' );
+				return false;
+			});
+
+			$( '.savePropertyDetails' ).click( function() {
+				editPropertyDetails();
+				return false;
+			});
+		};
+		
+		$( document ).ready( function() {
+			mortgageInit();
+			propertyInit();
+		});
+	</script>
+
+</apex:component>

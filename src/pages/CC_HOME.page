@@ -1,0 +1,262 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" title="Home" controller="CC_HomeController" docType="html-5.0" >
+
+    <apex:composition template="CC_CommunityTemplate">
+
+        <apex:define name="header">
+            <c:CC_HSBCHeader selectedTab="home" />
+        </apex:define>
+
+        <apex:define name="body">
+            <script>
+                var app = angular.module( 'CommunityApp', [ 'toastr', 'ngAnimate' ] );
+                app.controller( 'newCaseController', function( $scope, $location, toastr ) {
+                    $scope.opportunity = {
+                        To_Do__c: '',
+                        Type: '',
+                        Amount: 0
+                    };
+                    $scope.continue = function( isValid ) {
+                        if ( !isValid ) {
+                            return;
+                        }
+                        window.location.href = '{! $Page.CC_NewApplicationPage }?To_Do__c=' + $scope.opportunity.To_Do__c +
+                            '&Type=' + $scope.opportunity.Type +
+                            '&Amount=' + $scope.opportunity.Amount;
+                    };
+                } );
+            </script>
+
+            <!-- Page Home -->
+            <div class="page--home">
+                <!-- Banner -->
+                <div class="page-banner">
+                    <h1 class="page-banner-heading">
+                        {! $Label.CC_Welcome }
+                        <br />
+                        {! $Label.CC_Welcome2 }
+                    </h1>
+                    <apex:outputPanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" layout="none">
+<!--                       <a href="{! $Page.CC_NewApplicationPage }" class="banner-submit-link">{! $label.Submit_Application }</a> -->
+                    </apex:outputPanel>
+                </div>
+                <!-- End :: Banner -->
+                
+                <apex:outputPanel rendered="{! mostRecentApp != null }">
+                    <div class="row">
+                        <div class="col-xs-12 col-without-height">
+                            <c:BTT_DisplayBannery />
+                        </div>
+
+                        <div class="col-xs-12">
+                            <c:CC_ApplicationDetail opp="{! mostRecentApp }" />
+                        </div>
+                    </div>
+                </apex:outputPanel>
+
+                <div ng-app="CommunityApp" ng-controller="newCaseController" >
+
+                    <script type="text/ng-template" id="todo.html">
+                        <select class="form-control" required="true" id="wanttodo" ng-model="opportunity.To_Do__c" ng-class="{red: mortgageDetailsForm.wanttodo.$invalid}">
+                            <option disabled="true" selected="true" hidden="true" value="">Please select</option>
+                            <option value="Buying a first property">Buying a first property</option>
+                            <option value="Move house/Buy another property">Move house/Buy another property</option>
+                            <option value="Re-mortgage">Re-mortgage</option>
+                            <option value="Borrow more (existing customer)">Borrow more (existing customer)</option>
+                            <option value="Borrow funds (has no mortgage)">Borrow funds (has no mortgage)</option>
+                            <option value="An additional property">An additional property</option>
+                            <option value="A Buy-to-Let (funded by rental income)">A Buy-to-Let (funded by rental income)</option>
+                            <option value="A Buy-to-Let (funded by my income)">A Buy-to-Let (funded by my income)</option>
+                        </select>
+                    </script>
+                    <script type="text/ng-template" id="types.html">
+                        <select class="form-control" required="true" id="typeMortage" ng-model="opportunity.Type" ng-class="{red: mortgageDetailsForm.typeMortage.$invalid}">
+                            <option disabled="true" selected="true" hidden="true" value="">Please select</option>
+                            <option value="All mortgages">All mortgages </option>
+                            <option value="Fixed rates">Fixed rates</option>
+                            <option value="Discount rates">Discount rates</option>
+                            <option value="Tracker rates">Tracker rates</option>
+                        </select>
+                    </script>
+
+                    <div>
+                        <apex:outputPanel rendered="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" layout="none">
+                            <!-- Tiles :: 4 in a row -->
+                            <div class="tiles tiles-4-in-a-row">
+                                <div class="tiles-inner">
+                                    <!-- Tile -->
+                                    <a href="{! $Page.CC_NewApplicationPage }" class="tile">
+                                        <div class="tile-heading">{! $label.Submit_Application }</div>
+                                        <div class="tile-icon submit"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_Submit_application_button }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" class="tile">
+                                        <div class="tile-heading">{! $Label.Mortgage_Calculator }</div>
+                                        <div class="tile-icon mortgage"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_Mortgage_Calculator }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" class="tile">
+                                        <div class="tile-heading">{! $Label.Affordability_Calculator }</div>
+                                        <div class="tile-icon affordability"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_Affordability_Calculator }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+
+                                    <!-- Tile -->
+                                    <a href="#" id="liveagent_button_offline_5734E000000001Y" style="display:none;" onclick="liveagent.startChat('5734E000000001Y')" class="tile">
+                                        <div class="tile-heading">{! $Label.CC_Chat }</div>
+                                        <div class="tile-icon chat"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_contact_an_agent }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" id="liveagent_button_online_5734E000000001Y" style="display:none;" onclick="liveagent.startChat('5734E000000001Y')" class="tile">
+                                        <div class="tile-heading">{! $Label.CC_Chat }</div>
+                                        <div class="tile-icon chat"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_contact_an_agent }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                </div>
+                            </div>
+                            <!-- End: : Tiles -->
+
+
+                        </apex:outputPanel>
+
+                        <apex:outputPanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" layout="none" >
+                            <form name="mortgageDetailsForm" class="form-horizontal questionnaire">
+                                <div>
+                                    <div class="col-sm-8">
+                                        <div class="form-group">
+                                            <label for="wanttodo" class="col-sm-6 control-label">{! $Label.What_do_you_want_to_do }*</label>
+                                            <div class="col-sm-6" ng-include="'todo.html'" ></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="typeMortage" class="col-sm-6 control-label">{! $Label.What_kind_of_mortgage_are_you_looking_for }*</label>
+                                            <div class="col-sm-6" ng-include="'types.html'" ></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="estimateVal" class="col-sm-6 control-label">{! $Label.What_s_the_property_estimated_value }*</label>
+                                            <div class="col-sm-6">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon" id="basic-addon1">£</span>  
+                                                    <input type="number" min="1" required="true" ng-model="opportunity.Amount" id="estimateVal" class="form-control" ng-class="{red: mortgageDetailsForm.estimateVal.$invalid && mortgageDetailsForm.$submitted}"/>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <p class="font-size-18">{! $Label.CC_Enter_the_type_of_mortgage }</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button ng-click="continue( mortgageDetailsForm.$valid )" class="btn-rounded btn-centered" >{! $Label.ContinueBTN }</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- Tiles -->
+                            <div class="tiles">
+                                <div class="tiles-inner">
+                                    <!-- Tile -->
+                                    <a href="#" class="tile">
+                                        <div class="tile-heading">{! $Label.Mortgage_Calculator }</div>
+                                        <div class="tile-icon mortgage"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_Mortgage_Calculator }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" class="tile">
+                                        <div class="tile-heading">{! $Label.Affordability_Calculator }</div>
+                                        <div class="tile-icon affordability"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_Affordability_Calculator }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" id="liveagent_button_offline_5734E000000001Y" style="display:none;" onclick="liveagent.startChat('5734E000000001Y')" class="tile">
+                                        <div class="tile-heading">{! $Label.CC_Chat }</div>
+                                        <div class="tile-icon chat"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_contact_an_agent }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                    <!-- Tile -->
+                                    <a href="#" id="liveagent_button_online_5734E000000001Y" style="display:none;" onclick="liveagent.startChat('5734E000000001Y')" class="tile">
+                                        <div class="tile-heading">{! $Label.CC_Chat }</div>
+                                        <div class="tile-icon chat"></div>
+                                        <div class="tile-desc">
+                                            <p>{! $Label.CC_contact_an_agent }</p>
+                                        </div>
+                                    </a>
+                                    <!-- End :: Tile -->
+                                </div>
+                            </div>
+                            <!-- End :: Tiles -->
+                        </apex:outputPanel>
+                    </div>
+                </div>
+                <!-- Slider Wrapper -->
+                <div class="slider-wrapper">
+                    <div class="slider-wrapper-inner">
+                        <div class="owl-carousel owl-theme" id="js-market-slider">
+                            <div>
+                                <c:CC_MarketDetail title="UK Market" imageUrl="http://www.ciwm-journal.co.uk/wordpress/wp-content/uploads/2014/06/24-06-141pic1.png" description="The economy of Manchester is amongst the largest in England. Manchester is a city and metropolitan borough of Greater Manchester, Europe's 22nd largest metropolitan area." moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about UK market" />
+                            </div>
+                            <div>
+                                <c:CC_MarketDetail title="London Market" imageUrl="http://www.timetravel-britain.com/articles/1photos/london/market3.jpg" description="Homebuyer can save as much as 185,000. If they buy a property just one hour away from London by train. <br/> BTT research shows" moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about London market." />
+                            </div>
+                            <div>
+                                <c:CC_MarketDetail title="UK Market" imageUrl="http://www.ciwm-journal.co.uk/wordpress/wp-content/uploads/2014/06/24-06-141pic1.png" description="The economy of Manchester is amongst the largest in England. Manchester is a city and metropolitan borough of Greater Manchester, Europe's 22nd largest metropolitan area." moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about UK market" />
+                            </div>
+                            <div>
+                                <c:CC_MarketDetail title="London Market" imageUrl="http://www.timetravel-britain.com/articles/1photos/london/market3.jpg" description="Homebuyer can save as much as 185,000. If they buy a property just one hour away from London by train. <br/> BTT research shows" moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about London market." />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End :: Slider Wrapper -->
+            </div>
+            <!-- End :: Page Home -->
+
+            <script type='text/javascript' src='https://c.la1-c2cs-frf.salesforceliveagent.com/content/g/js/36.0/deployment.js'></script>
+            <script type='text/javascript'>
+                liveagent.setName('{! $User.FirstName } {! $User.LastName } ');
+                liveagent.init('https://d.la1-c2cs-frf.salesforceliveagent.com/chat', '5724E000000001Y', '00D4E000000Cupz');
+            </script>
+            <img style=" display: none; border: 0px none; cursor: pointer" src="https://dev1-ctsdemoportal-developer-edition.cs83.force.com/customerportal/resource/1457542700000/OnlineAgent_Button" />
+            <img style="display: none; border: 0px none; " src="https://dev1-ctsdemoportal-developer-edition.cs83.force.com/customerportal/resource/1457542700000/OfflineAgent_Button" />
+            <script type="text/javascript">
+                if (!window._laq) { window._laq = []; }
+                window._laq.push(function(){liveagent.showWhenOnline('5734E000000001Y', document.getElementById('liveagent_button_online_5734E000000001Y'));
+                liveagent.showWhenOffline('5734E000000001Y', document.getElementById('liveagent_button_offline_5734E000000001Y'));
+                });
+            </script>
+            <script type="text/javascript">
+                // Owl Carousel Initialize
+                $('#js-market-slider').owlCarousel({
+                    items: 1
+                });
+            </script>
+        </apex:define>
+    </apex:composition>
+</apex:page>

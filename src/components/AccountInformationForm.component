@@ -1,0 +1,111 @@
+<apex:component >
+    <div class="headerTab">
+
+        <ol class="breadcrumb">
+            <li><a href="#" ng-click="Continue('ContactInfoForm')">1. Your Details</a></li>
+            <li class="active"><a href="#">2. Company Information</a></li>
+            <li><a href="#" ng-click="Continue('VerifyInfoForm')">3. Verify Information</a></li>
+        </ol>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>Company Information</h2></div>
+        <div class="panel-body">
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Company Name: </p>
+                    <i class="fa fa-question hidden-md hidden-lg infoReg infoRegIcon" ng-click="Help.ShowNameHelpText=!Help.ShowNameHelpText"></i>         
+                    <div class="col-md-8 col-sm-12 col-xs-12 padding0 infoRegRole infoRegIconDiv" ng-if="Help.ShowNameHelpText">                          
+                        <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12">Please enter your company name </p>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12 infoRegBlankDiv" ng-if="Help.ShowNameHelpText"></div> 
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="NameTextField" name="NameTextField" ng-model="Form.Name" placeholder="Introducer Firm Name" type="text"/>
+                    <i class="fa fa-question hidden-sm hidden-xs infoReg infoRegIcon" ng-click="Help.ShowNameHelpText=!Help.ShowNameHelpText"></i>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Company Address: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="TradingAddressTextField" name="TradingAddressTextField" ng-model="Form.Introducer_Firm_Main_Trading_Address__c" placeholder="Introducer Firm Main Trading Address" type="text"/>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Main phone no.: </p>
+                    <i class="fa fa-question hidden-md hidden-lg infoReg infoRegIcon" ng-click="Help.ShowFirmNoHelpText=!Help.ShowFirmNoHelpText"></i>         
+                    <div class="col-md-8 col-sm-12 col-xs-12 padding0 infoRegRole infoRegIconDiv" ng-if="Help.ShowFirmNoHelpText">                          
+                        <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12">Please do not enter Personal Mobile Number </p>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12 infoRegBlankDiv" ng-if="Help.ShowFirmNoHelpText"></div> 
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="PhoneTextField" name="PhoneTextField" ng-model="Form.Phone" placeholder="Main phone no. of firm" type="text"/>
+                    <i class="fa fa-question hidden-sm hidden-xs infoReg infoRegIcon" ng-click="Help.ShowFirmNoHelpText=!Help.ShowFirmNoHelpText"></i>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Email address for payment advices: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="EmailTextField" name="EmailTextField" ng-model="Form.Email_address_for_payment_advices__c" placeholder="Email address for payment advices" type="text"/>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Email address for general correspondence: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="EmailGeneralAddressTextField" name="EmailGeneralAddressTextField" ng-model="Form.Email_address_for_general_correspondence__c" placeholder="Email address for general correspondence" type="text"/>
+                </div>
+            </div>
+            <div class="row marginTop20 mulCompTabDiv">
+                <div class="col-md-3 col-sm-12 col-xs-12 paddleft0 mulCompPadRight0">
+                    <p class="inputHdr col-md-12 col-sm-12 col-xs-12">FCA registration: </p>
+                </div>
+                <div class="rdMultiCoDiv col-md-8 col-sm-12 col-xs-12 paddleft0 rdMultiCo">
+                    <div class="radio col-md-3 col-sm-12 col-xs-12 rdMultiCoYes">
+                        <input type="radio" id="MultipleCompanyYesRadio" name="MultipleCompanyRadio" ng-model="Form.Introducer_Firm_FCA_registration__c" value="Authorised" />
+                        <label for="MultipleCompanyYesRadio" class="">Authorised</label>                                    
+                    </div>   
+                    <div class="radio col-md-5 col-sm-12 col-xs-12 rdMultiCoNo">
+                        <input type="radio" id="MultipleCompanyNoRadio" name="MultipleCompanyRadio" ng-model="Form.Introducer_Firm_FCA_registration__c" value="Appointed Representative" />
+                        <label for="MultipleCompanyNoRadio" class="">Appointed Representative</label>                                    
+                    </div>   
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Sort Code: </p>
+                    <i class="fa fa-question hidden-md hidden-lg infoReg infoRegIcon" ng-click="Help.ShowSortCodeHelpText=!Help.ShowSortCodeHelpText"></i>         
+                    <div class="col-md-8 col-sm-12 col-xs-12 padding0 infoRegRole infoRegIconDiv" ng-if="Help.ShowSortCodeHelpText">                          
+                        <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12">Please enter </p>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12 infoRegBlankDiv" ng-if="Help.ShowSortCodeHelpText"></div>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="ShowSortCodeHelpText" name="SortCodeTextField" ng-model="Form.Sort_Code__c" placeholder="Sort Code" type="text"/>
+                    <i class="fa fa-question hidden-sm hidden-xs infoReg infoRegIcon" ng-click="Help.ShowSortCodeHelpText=!Help.ShowSortCodeHelpText"></i>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Account Number: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="AccountNumberTextField" name="AccountNumberTextField" ng-model="Form.AccountNumber" placeholder="Account Number" type="text"/>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+             <!--Container for title, input box and information question starts here-->
+                  <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv firmReferenceDiv">
+                    
+                      <p class="inputHdr col-md-3 col-sm-11 col-xs-10 inputHdrPadLft">Firm Reference No. / 6 digit type of address *</p>
+                    
+                    <div class="col-md-1 col-sm-1 col-xs-1 infoRegIconMarg hidden-md hidden-lg"> <i class="fa fa-question infoReg infoRegIcon"></i> </div>
+                    <div class="col-md-8 col-sm-12 col-xs-12 infoRegRole infoRegIconDiv hide">
+                      <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12"> It is important that you manage the trading names for your company in order to produce accurate documentation. </p>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 infoRegBlankDiv hidden"> </div>
+                    <input type="text" placeholder="" class="col-md-8 col-sm-12 col-xs-12 roleSelect" ng-model="Form.FRN"/>
+                    <div class="col-md-1 col-sm-1 col-xs-1 infoRegIconMarg hidden-xs hidden-sm"> <i class="fa fa-question infoReg infoRegIcon"></i> </div>
+                  </div>
+            </div>      
+        </div>
+        <br /><br />
+    </div>
+    
+    <div class="btnDiv">
+        <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange" ng-click="Continue('ContactInfoForm')">Back</button>
+        <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange" ng-click="Continue('VerifyInfoForm')">Continue</button>
+    </div>
+</apex:component>

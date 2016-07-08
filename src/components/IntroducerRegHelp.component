@@ -1,0 +1,27 @@
+<apex:component >
+    <div class="helpDiv">
+        <div class="col-md-12 col-sm-12 col-xs-12 padding0">
+            <h3 class="helpHeader">Help</h3>                    
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <label>Call us on</label>                    
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 callNumberDiv">
+            <label>0845</label>          
+            <label>601</label>
+            <label>8430</label>          
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 callTimeDiv">
+            <p>Monday to Friday 8am-6pm,</p>          
+            <p>Saturday 9am-5pm</p>
+        </div>
+        <div class="col-md-12 col-sm-12 col-xs-12 callChargesDiv">
+            <a href="#" class="margRight20">Call charges info</a>
+            <label class="callChargesIcon">
+                <label></label>
+                <label></label>
+            </label>
+            <!--<img src="images/callCharges.png" class="margLeft10"   />-->
+        </div>
+    </div>
+</apex:component>

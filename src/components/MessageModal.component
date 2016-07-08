@@ -1,0 +1,24 @@
+<apex:component >
+    <!-- Modal -->
+    <div id="msgModal" class="modal fade" role="dialog" backdrop="static">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        <img src="{!URLFOR($Resource.CM_Resources, 'CM_Resources/btt_new.png')}" style="width: 32%; margin-top: -13px; margin-left: -13px;" />
+                        <!--<img src="{!URLFOR($Resource.blackHorseStaticResources, 'images/LloydBankHorseLogo1.png')}" style="width: 9%; margin-top: -9px; margin-left: -11px;" />-->
+                        <!--<span style="margin-left:20px;">Message</span>-->
+                     </h4>
+                </div>
+                <div class="modal-body">
+                    <p id="message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" ng-click="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:component>

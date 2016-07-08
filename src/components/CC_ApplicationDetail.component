@@ -1,0 +1,470 @@
+<apex:component controller="CC_ApplicationDetailCtrl" allowDML="true" layout="none">
+
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_Detail, 'css/detail.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.bootstrapsf1, 'css/bootstrap-namespaced.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'js/detail.js')}" loadOnReady="true"/>
+
+    <apex:attribute name="opp" type="Opportunity" description="Application details" required="true" assignTo="{! opportunity }"/>
+
+    <style>
+        .form-group label {
+            font-size: 14px !important;
+            padding-top: 0 !important;
+        }
+        .form-control {
+            height: 19px !important;
+            width: 90% !important;
+        }
+        .required {
+            border-color: red !important;
+        }
+    </style>
+
+    <div class="status-progress-section">
+        <c:CC_StatusProgressComponent steps="{! steps }" activeStepIndex="{! activeStageIndex }"/>  
+    </div>
+
+    <div class="bootstrap-sf1 application-details-section">
+        <div class="panel panel-default" id="applicationDetails">
+            <div class="panel">
+                <apex:form html-class="form-horizontal" >
+                    <div class="panel-body">
+                        <div class="panel-heading--custom"><a href="{! $Page.CC_ApplicationDetailPage }?id={! opp.Id }">{! $Label.Application_Details }</a></div>
+                        <div class="form-group">
+                            <label for="oppCaseNumber" class="col-sm-5 control-label">{! $Label.Application_Number }</label>
+                            <div class="col-sm-3">
+                                <apex:outputLink value="{! $Page.CC_ApplicationDetailPage }?id={! opp.Id }" id="oppCaseNumber" >{! opp.Case_Number__c }</apex:outputLink> 
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppStageName" class="col-sm-5 control-label">{! $Label.Stage }</label>
+                            <div class="col-sm-3">
+                                <apex:outputfield value="{! opp.StageName }" id="oppStageName" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppAmount" class="col-sm-5 control-label">{! $Label.Amount }</label>
+                            <div class="col-sm-3">
+                                <apex:outputfield value="{! opp.Amount }" id="oppAmount" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppDeposit" class="col-sm-5 control-label">{! $Label.Deposit }</label>
+                            <div class="col-sm-3">
+                                <apex:outputfield value="{! opp.Deposit__c }" id="oppDeposit" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppMortgageTerm" class="col-sm-5 control-label">{! $Label.Mortgage_Term_In_Years }</label>
+                            <div class="col-sm-3">
+                                <apex:outputfield value="{! opp.Mortgage_Term__c }" id="oppMortgageTerm" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="oppCreatedDate" class="col-sm-5 control-label">{! $Label.Created_Date }</label>
+                            <div class="col-sm-3">
+                                <apex:outputfield value="{! opp.CreatedDate }" id="oppCreatedDate" />
+                            </div>
+                        </div>
+                    </div>
+                </apex:form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="panel-group bootstrap-sf1" id="accordion">
+        <div class="panel panel-default" id="chatter">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse"  href="#collapseChatter">
+                        {! $Label.Chatter }
+                    </a><i class="indicator glyphicon pull-right collapsed glyphicon-chevron-up"></i>
+                </h4>
+            </div>
+            <div id="collapseChatter" class="panel-collapse collapse in">
+                <div class="panel-body" id="chatterBody">
+                    <chatter:feed entityId="{!opp.Id}"/> 
+                </div>
+            </div>
+        </div>
+        
+        <div>   
+            <div class="panel panel-default" id="panel2">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapseTwo">
+                           {! $Label.Mortgage_Details }
+                        </a><i class="indicator glyphicon glyphicon-chevron-down  pull-right"></i>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <apex:outputPanel id="mortgagePanel">
+                        <apex:form html-class="form-horizontal" id="mortgageForm" >
+                            <div class="panel-body">
+                                <div id="mortgageDataPanel">
+                                    <div class="form-group">
+                                        <label for="outOppToDo" class="col-sm-5 control-label">{! $Label.What_is_this_mortgage_regarding }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.To_Do__c }" id="outOppToDo" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppAmount" class="col-sm-5 control-label">{! $Label.What_s_the_property_estimated_value }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Amount }" id="outOppAmount" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppDeposit" class="col-sm-5 control-label">{! $Label.How_much_will_be_the_deposit }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Deposit__c }" id="outOppDeposit" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppType" class="col-sm-5 control-label">{! $Label.What_type_of_mortgage_is_required }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Type }" id="outOppType" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppPreferToPay" class="col-sm-5 control-label">{! $Label.What_would_the_applicant_prefer_to_pay }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Prefer_to_Pay__c }" id="outOppPreferToPay" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppMortgageTerm" class="col-sm-5 control-label">{! $Label.How_long_does_the_applicant_want_to_pay_the_mortgage_over }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Mortgage_Term__c }" id="outOppMortgageTerm" /> {! $Label.Years }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="mortgageEditPanel" style="display: none;" >
+                                    <div class="form-group">
+                                        <label for="inpOppToDo" class="col-sm-5 control-label">{! $Label.What_is_this_mortgage_regarding }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.To_Do__c }" html-class="form-control" id="inpOppToDo" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppAmount" class="col-sm-5 control-label">{! $Label.What_s_the_property_estimated_value }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Amount }" html-class="form-control currencyInput" id="inpOppAmount" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppDeposit" class="col-sm-5 control-label">{! $Label.How_much_will_be_the_deposit }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Deposit__c }" html-class="form-control currencyInput" required="true" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppType" class="col-sm-5 control-label">{! $Label.What_type_of_mortgage_is_required }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Type }" html-class="form-control" id="inpOppType" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppPreferToPay" class="col-sm-5 control-label">{! $Label.What_would_the_applicant_prefer_to_pay }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Prefer_to_Pay__c }" html-class="form-control" id="inpOppPreferToPay" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppMortgageTerm" class="col-sm-5 control-label">{! $Label.How_long_does_the_applicant_want_to_pay_the_mortgage_over }</label>
+                                        <div class="col-sm-3">
+                                            <!-- <apex:inputfield value="{! opp.Mortgage_Term__c }" html-class="form-control" id="inpOppMortgageTerm" /> {! $Label.Years }
+                                        	 -->
+			                                <apex:selectList html-class="form-control" id="inpOppCouncilTaxBand" value="{! opp.Mortgage_Term__c }" size="1" required="true" >
+                                                <apex:selectOption itemValue="5" itemLabel="5"/>
+									            <apex:selectOption itemValue="10" itemLabel="10"/>
+									            <apex:selectOption itemValue="15" itemLabel="15"/>
+									            <apex:selectOption itemValue="20" itemLabel="20"/>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--
+                                <div class="form-group">
+                                     <div class="col-sm-6">
+                                        <div class="pull-right">
+                                            <span class="input-group ">
+                                                <a class="btn-rounded continueBtn editMortgage" >
+                                                    {! JSENCODE( $Label.Edit ) } 
+                                                </a>
+                                            </span>
+                                            <span class="input-group" style="display:none">
+                                                <a class="btn-rounded btn-success saveMortgage" >
+                                                    {! JSENCODE( $Label.Save ) } 
+                                                </a>
+                                                <a class="btn-rounded backBtn cancelMortgage" >
+                                                    {! JSENCODE( $Label.Cancel ) } 
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div> 
+                                </div>
+                                -->
+                                <div class="text-center">
+                                    <a class="btn-rounded btn-xs-size editMortgage" >
+                                        {! JSENCODE( $Label.Edit ) } 
+                                    </a>
+                                </div>
+                                <div style="display:none" class="text-center controls--spaced">
+                                    <a class="btn-rounded btn-xs-size btn-success saveMortgage" >
+                                        {! JSENCODE( $Label.Save ) } 
+                                    </a>
+                                    <a class="btn-rounded btn-xs-size cancelMortgage" >
+                                        {! JSENCODE( $Label.Cancel ) } 
+                                    </a>
+                                </div>
+                            </div>
+
+                            <apex:actionFunction name="editMortgage" reRender="mortgagePanel" action="{!updateApplicationDetail}" oncomplete="morgageInit();return false;">
+                            </apex:actionFunction>
+                        </apex:form>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+            
+            <div class="panel panel-default" id="panel3">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse"  href="#collapseThree">
+                            {! $Label.Property_Details }
+                        </a><i class="indicator glyphicon glyphicon-chevron-down  pull-right"></i>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse">
+                    <apex:outputPanel id="propertyPanel">
+                        <apex:form html-class="form-horizontal" >
+                            <div class="panel-body">
+                                <div id="propertyDataPanel" >
+                                    <div class="form-group">
+                                        <label for="outOppBuildingName" class="col-sm-5 control-label">{! $Label.Building_Name_Number }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Building_Name__c }" id="outOppBuildingName" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppCity" class="col-sm-5 control-label">{! $Label.Town_City }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.City__c }" id="outOppCity" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppCounty" class="col-sm-5 control-label">{! $Label.County }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.County__c }" id="outOppCounty" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppPostcode" class="col-sm-5 control-label">{! $Label.Postcode }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Postcode__c }" id="outOppPostcode" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppCountry" class="col-sm-5 control-label">{! $Label.Country }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Country__c }" id="outOppCountry" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppTypeOfProperty" class="col-sm-5 control-label">{! $Label.Type_of_Property }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Type_of_Property__c }" id="outOppTypeOfProperty" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="outOppCouncilTaxBand" class="col-sm-5 control-label">{! $Label.Which_Council_Tax_band_is_your_property_in }</label>
+                                        <div class="col-sm-3">
+                                            <apex:outputfield value="{! opp.Council_Tax_Band__c }" id="outOppCouncilTaxBand" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="propertyEditPanel" style="display: none;" >
+                                    <div class="form-group">
+                                        <label for="inpOppBuildingName" class="col-sm-5 control-label">{! $Label.Building_Name_Number }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Building_Name__c }" html-class="form-control" id="inpOppBuildingName" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppCity" class="col-sm-5 control-label">{! $Label.Town_City }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.City__c }" html-class="form-control" id="inpOppCity" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppCounty" class="col-sm-5 control-label">{! $Label.County }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.County__c }" html-class="form-control" id="inpOppCounty" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppPostcode" class="col-sm-5 control-label">{! $Label.Postcode }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Postcode__c }" html-class="form-control" id="inpOppPostcode" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppCountry" class="col-sm-5 control-label">{! $Label.Country }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Country__c }" html-class="form-control" id="inpOppCountry" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppTypeOfProperty" class="col-sm-5 control-label">{! $Label.Type_of_Property }</label>
+                                        <div class="col-sm-3">
+                                            <apex:inputfield value="{! opp.Type_of_Property__c }" html-class="form-control" id="inpOppTypeOfProperty" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inpOppCouncilTaxBand" class="col-sm-5 control-label">{! $Label.Which_Council_Tax_band_is_your_property_in }</label>
+                                        <div class="col-sm-3">
+                                            <!--apex:inputfield value="{! opp.Council_Tax_Band__c }" html-class="form-control" id="inpOppCouncilTaxBand" /-->
+                                            <apex:selectList html-class="form-control" id="inpOppCouncilTaxBand" value="{! newAppCouncilTaxBand }" size="1" required="true" >
+                                                <apex:selectOptions value="{! appCouncilTaxBand }"/>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <a class="btn-rounded btn-xs-size editPersonal" >
+                                        {! JSENCODE( $Label.Edit ) } 
+                                    </a>
+                                </div>
+                                <div style="display:none" class="text-center controls--spaced">
+                                    <a class="btn-rounded btn-xs-size btn-success savePersonal" >
+                                        {! JSENCODE( $Label.Save ) }
+                                    </a>
+                                    <a class="btn-rounded btn-xs-size cancelPersonal" >
+                                        {! JSENCODE( $Label.Cancel ) }
+                                    </a>
+                                </div>
+                            </div>
+
+                            <apex:actionFunction name="setCurrentCouncilTaxBand" rerender="inpOppCouncilTaxBand" action="{! setCurrentCouncilTaxBand }" >
+                            </apex:actionFunction>
+
+                            <apex:actionFunction name="editProperty" reRender="propertyPanel" action="{! updateApplicationDetail }" oncomplete="personalInit();return false;">
+                            </apex:actionFunction>
+                        </apex:form>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        document.addEventListener( "DOMContentLoaded", function() {
+            setCurrentCouncilTaxBand();
+        } );
+        
+    	(function($) {
+          $.isBlank = function(obj){
+            return(!obj || $.trim(obj) === "");
+          };
+        })(jQuery);
+
+        var editAction = function (el, showId, hideId) {
+            $('[id$="' + showId + '"]').show();
+            $('[id$="' + hideId + '"]').hide();
+            $(el).parent().next().show();
+            $(el).parent().hide();
+        };
+
+        var cancelAction = function (el, showId, hideId) {
+            $('[id$="' + hideId + '"]').hide();
+            $('[id$="' + showId + '"]').show();
+            $(el).parent().prev().show();
+            $(el).parent().hide();
+        };
+
+        function morgageInit() {
+            $('.editMortgage').click(function() {
+                editAction(this, 'mortgageEditPanel', 'mortgageDataPanel');
+                return false;
+            });
+
+            $('.cancelMortgage').click(function() {
+                cancelAction(this,'mortgageDataPanel' , 'mortgageEditPanel');
+                return false;
+            });
+
+            $('.saveMortgage').click(function() {
+                var inputArr = $(this).parents('form').find('.currencyInput');
+                if ( validate(inputArr)) {
+                	editMortgage();
+                };
+                return false;
+            });
+        };
+
+        function personalInit() {
+            $('.editPersonal').click(function() {
+                editAction(this, 'propertyEditPanel', 'propertyDataPanel');
+                return false;
+            });
+
+            $('.cancelPersonal').click(function() {
+                cancelAction(this, 'propertyDataPanel' , 'propertyEditPanel');
+                return false;
+            });
+
+            $('.savePersonal').click(function() {
+                editProperty();
+                return false;
+            });
+        };
+        
+        $(document).ready(function() {
+            morgageInit();
+            personalInit();
+            
+        });
+
+        function checkPopulate(inputArr) {
+        	var allNotEmpty = true;
+        	jQuery.each( inputArr, function( i, value) {
+				if ($.isBlank($(value).val())) {
+	                allNotEmpty = false;
+	                $(value).addClass('required'); 
+	            } else {
+	                $(value).removeClass('required');
+	            }
+			});
+        	return allNotEmpty;
+        }
+
+        function validate(inputArr) {
+        	var valid = true;        	
+        	if (checkPopulate(inputArr)) {
+        		
+	        	jQuery.each( inputArr, function( i, val ) {
+	        		var thisValid = validateCurrencyInput(val);
+					valid = (! valid) ? valid : thisValid;
+				});
+				return valid;
+        	} else {
+        		return false;
+        	}
+        }
+        
+        function isCurrency(value) {
+        	return new RegExp( "^([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$" ).test(value);
+        }
+
+        function validateCurrencyInput(input) {
+        	if (!isCurrency(input.value)) {
+        		$(input).next('.error').remove();
+        		$(input).after('<span class="error">{! $Label.Please_specify_a_valid_currency}</span>');
+        		return false;
+        	} else {
+        		$(input).next('.error').remove();
+        	}
+        	return true;
+        }
+    </script>
+</apex:component>

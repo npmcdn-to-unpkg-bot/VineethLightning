@@ -1,0 +1,282 @@
+<apex:page controller="IntroducerRegistrationController" standardStylesheets="false" showHeader="false" docType="html-5.0">
+    <head>
+        <title> Registration Form </title>
+        <c:StaticResources ></c:StaticResources>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('.msgLogoHdr').attr('src', '{!URLFOR($Resource.CM_Resources, 'CM_Resources/btt_new.png')}');
+                //$('.msgLogoHdr').attr('src', '{!URLFOR($Resource.blackHorseStaticResources, 'images/LloydBankHorseLogo1.png')}');
+                $('.msgLogoHdr').attr('width','90%');
+                $('.datepicker').datepicker({
+                    format: 'mm/dd/yyyy'
+                })
+            });
+            angular.module('MyApp', [])
+            .controller('MyCtrl', function($scope){
+                $scope.CurrentForm = 'ContactInfoForm';
+                $scope.AccountCollapse = false;
+                $scope.ContactCollapse = false;
+                $scope.Help = {};
+                $scope.Form = { Name: 'Bank of Tomorrow.. Today', 
+                               Introducer_Firm_Main_Trading_Address__c: '4077 Fifth Avenue San Diego, CA 92103', 
+                               Phone: '(619) 294-8111', Email_address_for_payment_advices__c: 'winston.hunter@cognizant.com',
+                               Role: 'Broker',
+                               Email_address_for_general_correspondence__c: 'winston.hunter@cognizant.com', 
+                               Introducer_Firm_FCA_registration__c: 'Authorised' ,
+                               Sort_Code__c: '3434',
+                               AccountNumber: '00234324',
+                               Gender: 'Male',
+                               ContactFirstName: 'Winston',
+                               ContactLastName: 'Hunter',
+                               Email: 'winston.hunter@cognizant.com',
+                               DOB : '08/07/1978',
+                               Segment: 'A'
+                              };
+                
+                $scope.Continue = function(formName){
+                    if( formName === 'VerifyInfoForm'){
+                        setTimeout(function(){
+                            $("#signature1").jSignature({border: "1px dotted black",height:200,lineWidth:2, color:"#444" });
+                        });
+                    }
+                    $scope.CurrentForm = formName;
+                     $('.datepicker').datepicker({
+                            format: 'mm/dd/yyyy',
+                            value: $('.datepicker').val()
+                        })
+                };
+                
+                $scope.Submit = function(){
+                    /*var account = {
+                        Name: $scope.Form.Name,
+                        Introducer_Firm_Main_Trading_Address__c: $scope.Form.Introducer_Firm_Main_Trading_Address__c,
+                        Phone: $scope.Form.Phone,
+                        Email_address_for_payment_advices__c: $scope.Form.Email_address_for_payment_advices__c,
+                        Email_address_for_general_correspondence__c: $scope.Form.Email_address_for_general_correspondence__c,
+                        Introducer_Firm_FCA_registration__c: $scope.Introducer_Firm_FCA_registration__c,
+                        Sort_Code__c: $scope.Form.Sort_Code__c,
+                        AccountNumber: $scope.Form.AccountNumber,
+                        FRN_Number__c : $scope.Form.FRN
+                        
+                    };
+                    
+                    var contact = {
+                        FirstName: $scope.Form.ContactFirstName,
+                        LastName: $scope.Form.ContactLastName,
+                        Email: $scope.Form.Email
+                    };
+                    
+                    var signData = $("#signature1").jSignature('getData');               
+                    
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.IntroducerRegistrationController.registerUser}', account, contact, null, function(result, event){
+                        $scope.Message = result;
+
+                        $('#MessageDialog').modal('show');
+                        $('#MessageDialog').on('hidden.bs.modal', function (e) {
+                          //window.open('http://www.barclays.co.uk/BusinessBanking/P1242557952664','_self');
+                          window.location.href = '{!$Page.CM_Registration}';
+                        })
+                        //alert(result);
+                        $scope.$apply();
+                        
+                    });*/
+                    
+                    var lead = {Company: $scope.Form.Name,
+                        Main_Trading_Address__c: $scope.Form.Introducer_Firm_Main_Trading_Address__c,
+                        Phone: $scope.Form.Phone,
+                        Email_address_for_payment_advices__c: $scope.Form.Email_address_for_payment_advices__c,
+                        Email_address_for_general_correspondence__c: $scope.Form.Email_address_for_general_correspondence__c,
+                        FCA_registration__c: $scope.Introducer_Firm_FCA_registration__c,
+                        Sort_Code__c: $scope.Form.Sort_Code__c,
+                        Company_Number__c: $scope.Form.AccountNumber,
+                        FRN_Number__c : $scope.Form.FRN,
+                        FirstName: $scope.Form.ContactFirstName,
+                        LastName: $scope.Form.ContactLastName,
+                        Email: $scope.Form.Email,
+                        Gender__c : $scope.Form.Gender,
+                        //Contact_Date_of_Birth__c: $scope.Form.DOB,
+                        Broker_Segment__c : $scope.Form.Segment};
+                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.IntroducerRegistrationController.createLead}', lead, function(result, event){
+                         if(event.status == false){
+                             $scope.Message = event.message;
+                             $('#MessageDialog').modal('show');
+                         }
+                         else{
+                            $scope.Message = result;
+    
+                            $('#MessageDialog').modal('show');
+                            $('#MessageDialog').on('hidden.bs.modal', function (e) {
+                              //window.open('http://www.barclays.co.uk/BusinessBanking/P1242557952664','_self');
+                              //window.location.href = '{!$Page.CM_Registration}';
+                              $scope.CurrentForm = 'SuccessInfoForm';
+                              $scope.$apply();
+                            })
+                        }
+                        //alert(result);
+                        $scope.$apply();
+                        
+                    });
+                    
+                };
+            });
+        </script>
+        <style>
+            #signature1{  
+                float: right;
+                width: 735px;
+                margin-top: 23px;
+            }
+            #signature1 canvas.jSignature{
+                width: 740px !important;
+                border: 1px solid !important;
+            }
+            .floatLeft{ 
+               float:left;
+            }
+            .acc-input{
+               width: 92% !important;
+            }
+            .acc-input-fa{
+               margin-top:-41px;
+               float: right;
+            }
+            li, .btnSubmit {
+                background-color: rgba(75, 168, 190, 0.99) !important;
+            }
+            .btnSubmit:hover {
+               color: #aaa !important;
+            }
+            #RequestChange h1, h2 {
+                font-size: 24px;
+                color: #8c8c8c !important;
+            }
+            .helpDiv label {
+                color: #8c8c8c !important;
+                font-size: inherit !important;
+            }
+            .regContainer input[type=text] {
+                color: inherit !important;
+            }
+            .infoReg , .callChargesDiv .callChargesIcon label+label,.callChargesDiv .callChargesIcon label{
+                color: #8c8c8c !important;
+                border: 3px solid #8c8c8c !important;
+            }
+            .helpLink, .closeLink .secureLabel, .helpDiv .callChargesDiv a:hover,.helpDiv .callChargesDiv a, .helpDiv .helpHeader, .radioOptions{
+                color: #8c8c8c !important;
+            }
+            .helpDiv {
+                min-height: inherit !important;
+                border: none !important;
+                border-top: 1px solid #D3D3D3; 
+            }
+            .regHeader {
+                box-shadow: none !important; 
+            }
+            .helpLink{
+                display:none !important;
+            }
+            body{    
+                //background: rgba(226,226,226,1);
+                /*background: -moz-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 35%, rgba(219,219,219,1) 37%, rgba(209,209,209,1) 51%, rgba(219,219,219,1) 63%, rgba(251,251,251,1) 97%, rgba(254,254,254,1) 100%);
+                background: -webkit-gradient(left top, right top, color-stop(0%, rgba(226,226,226,1)), color-stop(35%, rgba(219,219,219,1)), color-stop(37%, rgba(219,219,219,1)), color-stop(51%, rgba(209,209,209,1)), color-stop(63%, rgba(219,219,219,1)), color-stop(97%, rgba(251,251,251,1)), color-stop(100%, rgba(254,254,254,1)));
+                background: -webkit-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 35%, rgba(219,219,219,1) 37%, rgba(209,209,209,1) 51%, rgba(219,219,219,1) 63%, rgba(251,251,251,1) 97%, rgba(254,254,254,1) 100%);
+                background: -o-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 35%, rgba(219,219,219,1) 37%, rgba(209,209,209,1) 51%, rgba(219,219,219,1) 63%, rgba(251,251,251,1) 97%, rgba(254,254,254,1) 100%);
+                background: -ms-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 35%, rgba(219,219,219,1) 37%, rgba(209,209,209,1) 51%, rgba(219,219,219,1) 63%, rgba(251,251,251,1) 97%, rgba(254,254,254,1) 100%);
+                background: linear-gradient(to right, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 35%, rgba(219,219,219,1) 37%, rgba(209,209,209,1) 51%, rgba(219,219,219,1) 63%, rgba(251,251,251,1) 97%, rgba(254,254,254,1) 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#fefefe', GradientType=1 );*/
+            }
+            .mainBody{
+                -webkit-box-shadow: 6px 7px 24px -8px rgba(0,0,0,0.75);
+                -moz-box-shadow: 6px 7px 24px -8px rgba(0,0,0,0.75);
+                box-shadow: 6px 7px 24px -8px rgba(0,0,0,0.75);
+            }
+            @media only screen and (min-width:0px) and (max-width: 767px) {
+                #signature1{  
+                    float: right;
+                    width: 200px !important;
+                    margin-top: 23px;
+                }
+                #signature1 canvas.jSignature{
+                    width: 167px !important;
+                    border: 1px solid !important;
+                }
+                .inputHdrDiv i {
+                    margin: -36px 0px 0px 25px;
+                    float: right;
+                }
+            }   
+            .headerTab{
+                padding-bottom:5px;
+                //background: url(https://www.hsbc.co.uk/1/PA_esf-ca-app-content/content/pws/content/personal/mortgages/first-time-buyers/images/mortgages-banner4.jpg);
+            }
+            .headerTab .breadcrumb{
+                //background-color:transparent !important;
+            }
+            .btn, li.active{
+              background-color: #00728f !important;
+            }
+            @media only screen and (min-width:768px) and (max-width: 1024px) and (orientation: landscape) {
+                .inputHdrDiv i {
+                    margin: -53px 0px 0px 25px;
+                    float: right;
+                }
+            }
+        </style>
+    </head>
+    
+    <body ng-app="MyApp" ng-controller="MyCtrl" ng-switch="CurrentForm">
+    <div class="container-fluid" style="padding:0px !important">
+        <div class="row header-logo mobile-header regHeader" style="background:white;">
+        <div class="col-md-12 col-xs-12 col-sm-12 regContainerDiv">
+            <div class="container regContainer">
+                <div class="col-md-8 col-xs-8 col-sm-8 brand-logo hideSearchClick regBrandLogoDiv">
+                    <img alt="BTT" src="{!URLFOR($Resource.CM_Resources, 'CM_Resources/btt_new.png')}" style="width: 21%; margin-top: 6px; margin-left: -35px;" />
+                    <!--<img alt="Black Horse" src="{!URLFOR($Resource.blackHorseStaticResources, 'images/LloydBankHorseLogo1.png')}" style="width: 7%; margin-top: 6px; margin-left: -39px;" />-->
+                </div>
+                <div class="col-md-4 col-sm-3 col-xs-2 closeLink">
+                    <a class="pull-right helpLink secureLock" href="#">
+                        <span class="glyphicon glyphicon-lock "></span>
+                        <label class="hidden-xs secureLabel">Secure</label>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-1 col-xs-2 helpHeaderLink">
+                    <div class="pull-right">
+                        <span class="hidden-md hidden-lg">|</span>
+                        <a class="hidden-md hidden-lg secureLabel" href="#" data-toggle="modal" data-target="#myModal">Help</a>
+                    </div>
+                </div>
+            </div>
+        </div>  
+       </div>
+        <c:IntroducerModalDialog ></c:IntroducerModalDialog>
+        <img class="mainBody" src="https://www.hsbc.co.uk/1/PA_esf-ca-app-content/content/pws/content/personal/mortgages/first-time-buyers/images/mortgages-banner4.jpg" style="width:100%;height:100px"/>
+        <div class="regContainer container margTop20">
+            <div class="col-md-12 col-xs-12 col-sm-12 fourPaneDiv" ng-switch="CurrentForm">
+                <span ng-switch-when="ContactInfoForm">
+                    <c:ContactInformationForm />    
+                </span>
+                <span ng-switch-when="AccountInfoForm">
+                    <c:AccountInformationForm />  
+                </span>
+                <span ng-switch-when="VerifyInfoForm">
+                    <c:VerifyInformationForm />
+                </span>      
+                <span ng-switch-when="SuccessInfoForm">
+                    <h2 style="border-bottom: 1px solid #dcdcdc">THANK YOU</h2>
+                    <br/> 
+                   We have received your request for access to our Broker Portal. You can track the status of your request here.<br/><br/>
+                   An BTT Business Manager will contact you in case any further information is required.
+                </span>  
+            </div>  
+            <br/>
+            <div class="col-md-12 col-xs-12 col-sm-4 hidden-xs hidden-sm onePaneDiv paddRight0">
+                <br/>
+                <br/>
+                <c:IntroducerRegHelp ></c:IntroducerRegHelp>                
+            </div>
+        </div>
+        <c:RegistrationFooter />  
+      </div>
+    </body>
+      
+</apex:page>

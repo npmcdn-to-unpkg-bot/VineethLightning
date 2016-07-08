@@ -1,0 +1,286 @@
+<apex:page showHeader="true" sidebar="false" title="Home" docType="html-5.0" controller="CB_HOMEController">
+
+    <link rel="Stylesheet" href="{! $Resource.bootstrapsf1 }/css/bootstrap-namespaced.css" />
+    <link rel="stylesheet" href="{! URLFOR( $Resource.IntroducerStaticResources, 'styles/jquery-ui.css' ) }" />
+    <link rel="stylesheet" href="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.css' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-ui.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.Bootstrap_3_3_5, 'js/bootstrap.min.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.CB_Detail, 'angular.min.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.chart_js_master, 'Chart.js-master/Chart.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.d3, 'd3.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.js' ) }" />
+    <apex:includeScript value="{! URLFOR( $Resource.dirPagination, 'dirPagination.js' ) }"/>
+
+    <style type="text/css">
+        .page-body {
+            background: white !important;
+            width: 100% !important; 
+        }
+        .collapseRow:hover {
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="bootstrap-sf1 container page-body" ng-app="ngHomeApp" ng-controller="ngHomeDetailsController">
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <h1>{! $Label.Customers_Header }</h1>
+                <hr />
+                <table class="table table-hover" id="customerListTable" >
+                    <thead>
+                        <tr>
+                            <c:CB_ColumnHeader objLabel="CUSTOMER_OBJ_LABEL" field="FirstName" fieldLabel="{! $Label.TableHeaderFirstName }" />
+                            <c:CB_ColumnHeader objLabel="CUSTOMER_OBJ_LABEL" field="LastName" fieldLabel="{! $Label.TableHeaderLastName }" />
+                            <c:CB_ColumnHeader objLabel="CUSTOMER_OBJ_LABEL" field="Email" fieldLabel="{! $Label.TableHeaderEmail }" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="customer in detailData.customer | orderBy : sortingHandler[ CUSTOMER_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ CUSTOMER_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ CUSTOMER_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'cstmr'" pagination-id="cstmr" current-page="pagingHandler[ CUSTOMER_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+                            <td width="30%" >
+                                <a ng-href="/{{ customer.Id }}"> {{ customer.FirstName }} </a>
+                            </td>
+                            <td width="30%" > {{ customer.LastName }} </td>
+                            <td width="40%" > {{ customer.Email }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <dir-pagination-controls pagination-id="cstmr" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <h1>{! $Label.Cases_Header }</h1>
+                <hr />
+                <table class="table table-hover" id="customerListTable" >
+                    <thead>
+                        <tr>
+                            <c:CB_ColumnHeader objLabel="CASE_OBJ_LABEL" field="CaseNumber" fieldLabel="{! $Label.TableHeaderCaseNumber }" />
+                            <c:CB_ColumnHeader objLabel="CASE_OBJ_LABEL" field="Application_Number__c" fieldLabel="{! $Label.TableHeaderApplicationNumber }" />
+                            <c:CB_ColumnHeader objLabel="CASE_OBJ_LABEL" field="Priority" fieldLabel="{! $Label.TableHeaderPriority }" />
+                            <c:CB_ColumnHeader objLabel="CASE_OBJ_LABEL" field="CreatedDate" fieldLabel="{! $Label.TableHeaderCreatedDate }" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="case in detailData.case | orderBy : sortingHandler[ CASE_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ CASE_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ CASE_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'case'" pagination-id="case" current-page="pagingHandler[ CASE_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+                            <td width="25%" >
+                                <a ng-href="{! $Page.CB_CaseDetailPage }?id={{ case.Id }}"> {{ case.CaseNumber }} </a>
+                            </td>
+                            <td width="25%" > {{ case.Application_Number__c }} </td>
+                            <td width="25%" > {{ case.Priority }} </td>
+                            <td width="25%" > {{ case.CreatedDate | date }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <dir-pagination-controls pagination-id="case" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{!$Label.Applications_Header }</h1>
+                <hr />
+                <table class="table table-hover" id="applicationListTable" >
+                    <thead>
+                        <tr>
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="Case_Number__c" fieldLabel="{! $Label.TableHeaderApplicationNumber }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="Customer_Name__c" fieldLabel="{! $Label.TableHeaderApplicantName }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="StageName" fieldLabel="{! $Label.TableHeaderStage }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="To_Do__c" fieldLabel="{! $Label.TableHeaderMortgageRegarding }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="Amount" fieldLabel="{! $Label.TableHeaderAmount }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="Deposit__c" fieldLabel="{! $Label.TableHeaderDeposit }" />
+                            <c:CB_ColumnHeader objLabel="APPLICATION_OBJ_LABEL" field="Mortgage_Term__c" fieldLabel="{! $Label.TableHeaderMortgageTerm }" />
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr dir-paginate="application in detailData.application | orderBy : sortingHandler[ APPLICATION_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ APPLICATION_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ APPLICATION_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'applctns'" pagination-id="applctns" current-page="pagingHandler[ APPLICATION_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+                            <td width="25%" >
+                                <a ng-href="{! $Page.CB_ApplicationDetail }?id={{ application.Id }}"> {{ application.Case_Number__c }} </a>
+                            </td>
+                            <td width="20%" > {{ application.Customer_Name__c }} </td>
+                            <td width="15%" > {{ application.StageName }} </td>
+                            <td width="20%" > {{ application.To_Do__c }} </td>
+                            <td width="10%" > {{ application.Amount }} </td>
+                            <td width="10%" > {{ application.Deposit__c }} </td>
+                            <td width="10%" > {{ application.Mortgage_Term__c }} </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <dir-pagination-controls pagination-id="applctns" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <h1>{! $Label.Graphic_Header }</h1>
+                <hr />
+                <div class="col-md-4" >
+                    <canvas id="bar" class="chart chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-series="chart.series" />
+                </div>
+            </div>
+        </div>  
+    </div>
+
+    <script type="text/javascript">
+        var app = angular.module( 'ngHomeApp', [ 'chart.js', 'angularUtils.directives.dirPagination' ] );
+
+        app.controller(
+            'ngHomeDetailsController',
+            [ '$scope', 'DataService', function( scope, dataService ) {
+
+            scope.CUSTOMER_OBJ_LABEL = 'customer';
+            scope.APPLICATION_OBJ_LABEL = 'application';
+            scope.CASE_OBJ_LABEL = 'case';
+
+            scope.SORTING_FIELD_LABEL = 'sortingField';
+            scope.SORTONG_DESC_LABEL = 'sortingDESC';
+
+            scope.PAGE_SIZE_LABEL = 'pageSize';
+            scope.CURRENT_PAGE_OBJ_LABEL = 'currentPage';
+
+            scope.detailData = {
+                customer: [],
+                application: [],
+                case: []
+            };
+
+            scope.sortingHandler = {
+                customer: {
+                    sortingField: 'FirstName',
+                    sortingDESC: false
+                },
+                application: {
+                    sortingField: 'Case_Number__c',
+                    sortingDESC: true
+                },
+                case: {
+                    sortingField: 'CaseNumber',
+                    sortingDESC: true
+                }
+            };
+
+            scope.pagingHandler = {
+                customer: {
+                    pageSize: 100,
+                    currentPage: 1
+                },
+                application: {
+                    pageSize: 10,
+                    currentPage: 1
+                },
+                case: {
+                    pageSize: 10,
+                    currentPage: 1
+                }
+            };
+
+            dataService.getCustomerList( function( result ) {
+                scope.detailData[ scope.CUSTOMER_OBJ_LABEL ] = result;
+                scope.$apply();
+            } );
+
+            dataService.getApplicationList( function( result ) {
+                scope.detailData[ scope.APPLICATION_OBJ_LABEL ] = result;
+                scope.$apply();
+            } );
+
+            dataService.getCaseList( function( result ) {
+                scope.detailData[ scope.CASE_OBJ_LABEL ] = result;
+                scope.$apply();
+            } );
+
+            scope.chart = {
+                labels: [],
+                series: [],
+                data: []
+            }
+
+            dataService.getChartData( function( result ) {
+                scope.chart.labels = result.registrationDate;
+                scope.chart.data[0] = result.cuctomerCount;
+                scope.$apply();
+            } );
+
+            //--- sorting ---
+            scope.order = function( sortingObject, sortingField ) {
+                scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] = ( scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] === sortingField ) ? !scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] : false;
+                scope.pagingHandler[ sortingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] = 1;
+                scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] = sortingField;
+            };
+            //---
+
+        } ] );
+
+
+
+        app.service( 'DataService', [ function() {
+            function getCustomerList( callback ) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{! $RemoteAction.CB_HOMEController.getCustomerList }',
+                    function( result, event ) {
+                        if ( event.status && result != null ) {
+                            callback( result );
+                        } else {
+                            callback( [] );
+                        }
+                    }, { escape: false });
+            };
+
+            function getApplicationList( callback ) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{! $RemoteAction.CB_HOMEController.getApplicationList }',
+                    function( result, event ) {
+                        if ( event.status && result != null ) {
+                            callback( result );
+                        } else {
+                            callback( [] );
+                        }
+                    }, { escape: false });
+            };
+
+            function getCaseList( callback ) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{! $RemoteAction.CB_HOMEController.getCaseList }',
+                    function( result, event ) {
+                        if ( event.status && result != null ) {
+                            callback( result );
+                        } else {
+                            callback( [] );
+                        }
+                    }, { escape: false });
+            };
+
+
+
+            function getChartData( callback ) {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{! $RemoteAction.CB_HOMEController.getCustomerChartData }',
+                    function( result, event ) {
+                        if ( event.status && result != null ) {
+                            callback( result );
+                        } else {
+                            callback( {} );
+                        }
+                    }, { escape: false });
+            };
+
+
+
+            return {
+                getCustomerList: getCustomerList,
+                getApplicationList: getApplicationList,
+                getCaseList: getCaseList,
+                getChartData: getChartData
+            };
+        } ] );
+    </script>
+
+</apex:page>

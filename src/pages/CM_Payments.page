@@ -1,0 +1,59 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" title="Payments">
+   
+   <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            <div style="padding-bottom:5px;background: url(https://www.paylease.com/corp/wp-content/uploads/2014/10/cash-payment-e1416365672670.jpg);min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -300px;">
+                <c:CommunityTabs selectedTab="mypayment"/>
+                <apex:outputpanel id="filterPanel">
+                     <apex:form >
+                       <!-- <div style="touch-action:pan-y;display:block">
+                            <div class="row filter" align="center" >
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '' || $CurrentPage.Parameters.filter == '= THIS_MONTH','selected','')}" value="This Month" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="= THIS_MONTH" name="filter" />
+                                </apex:commandLink>
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '= LAST_MONTH','selected','')}" value="Previous Month" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="= LAST_MONTH" name="filter" />
+                                </apex:commandLink>
+                                <apex:commandLink style="width:10%" styleclass="btn {!if($CurrentPage.Parameters.filter == '< LAST_MONTH','selected','')}" value="Older" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="< LAST_MONTH" name="filter" />
+                                </apex:commandLink>
+                            </div>
+                        </div>-->
+                        <ul style="padding: 40px !important;" class="filter">
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '' || $CurrentPage.Parameters.filter == '= THIS_MONTH','selected','')}" value="This Month" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="= THIS_MONTH" name="filter" />
+                                </apex:commandLink></li>
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '= LAST_MONTH','selected','')}" value="Previous Month" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="= LAST_MONTH" name="filter" />
+                                </apex:commandLink></li>
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '< LAST_MONTH','selected','')}" value="Older" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="< LAST_MONTH" name="filter" />
+                                </apex:commandLink></li>
+                          </ul>
+                    </apex:form>  
+                </apex:outputpanel>
+            </div>
+            
+                <apex:actionstatus id="status">
+                    <apex:facet name="start">
+                          <div align="center" style="padding:20px;">
+                              Loading please wait....<br/>
+                              <img src="/img/loading32.gif" style="padding:20px;"/>
+                          </div>
+                    </apex:facet>
+                    <apex:facet name="stop">
+                        <apex:outputpanel id="tablePanel">
+                            <c:TableTest ObjectName="Payment__c" Fields="Name,Application_Id__c,Customer_Name__c,Conversion_Date__c,Commission__c,Payment_Status__c" filterCriteria="{!If($CurrentPage.Parameters.filter != '', 'Conversion_Date__c '&$CurrentPage.Parameters.filter,'Conversion_Date__c= THIS_MONTH ')}"></c:TableTest>
+                        </apex:outputpanel>
+                    </apex:facet>
+                </apex:actionstatus>
+            
+            <c:WaitingDialog />
+
+            
+        </apex:define>
+    </apex:composition>
+</apex:page>

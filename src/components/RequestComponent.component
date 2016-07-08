@@ -1,0 +1,108 @@
+<apex:component controller="CommunityController" layout="block">
+    <apex:attribute type="string" name="type" Description="Request Type" default="Service"/>    
+
+    <div class="headerTab" >
+       <ul class="nav nav-tabs" id="tabs">
+          <li class="active"><a href="#serviceRequests" data-toggle="tab"  >{!type} Requests</a></li>
+          <li><a href="#createNewRequest" data-toggle="tab"  >Create Request</a></li>
+       </ul>
+    </div>
+    <div class="tab-content" style="padding:10px;" id="content" >
+        
+        <div id="serviceRequests" class="tab-pane fade in active">
+            <c:TableTest ObjectName="case"  Fields="CaseNumber,{!if(type == 'Payment','Payment_Id__c','Application_Number__c')},Priority,Status,CreatedDate" filterCriteria="{!if(type == 'Payment','Payment_Id__c != null','Application_Number__c != null')}"></c:TableTest>
+        </div>
+        <div id="createNewRequest" class="tab-pane fade">
+           
+            <form class="form-horizontal" name="newCaseForm" ng-app="CommunityApp" ng-controller="{!type}RequestController">
+                 <p>Enter Request Details</p>
+                 <div class="form-group" ng-show="type=='Service'">
+                    <label for="appNum" class="col-sm-4 control-label">Application Number:</label>
+                    <div class="col-sm-2 ">
+                      <input ng-model="appNum" id="appNum" class="form-control"  />                      
+                    </div>
+                  </div>
+                  <div class="form-group" ng-show="type == 'Payment'">
+                    <label for="payId" class="col-sm-4 control-label">Payment Id:*</label>
+                    <div class="col-sm-2 ">
+                      <input ng-model="paymentId" id="payId" class="form-control" required="true" />                      
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="fName" class="col-sm-4 control-label">Priority:*</label>
+                    <div class="col-sm-3 ">
+                       <select ng-model="request.Priority" class="form-control" required="true" id="title" ng-class="{red: newCaseForm.title.$invalid && formSubmitted}">
+                          <option value="">Please select</option>
+                           <option value="High">High</option>                          
+                           <option value="Medium">Medium</option>
+                           <option value="Low">Low</option>
+                      </select>
+                    </div>
+                  </div>  
+                  <div class="form-group">
+                    <label for="descr" class="col-sm-4 control-label">Enter your request details:*</label>
+                    <div class="col-sm-3 ">
+                       <textarea id="descr" ng-model="request.Description" class="form-control" style="width: 400px;" rows="5"/>
+                    </div>
+                  </div>
+                   <div class="form-group">
+                      <div class="col-sm-6">
+                          <div class="pull-right">
+                              <button ng-click="submit($event)"  data-loading-text="Processing..."  class="btn btn-default continueBtn" >Submit</button>
+                          </div>
+                      </div>
+                  </div>
+                  <c:MessageModal />
+              </form>        
+        </div>
+
+    </div>
+     <script type="text/javascript">
+
+        app.controller('{!type}RequestController', function($scope) {
+            $scope.request = {Priority : 'Please select'};
+            
+            $scope.type = '{!type}';
+            $scope.appNum = '';
+            $scope.paymentId = '';
+            if('{!$CurrentPage.Parameters.appNum}' != ''){
+                $scope.appNum = '{!$CurrentPage.Parameters.appNum}';
+            }
+
+            if('{!$CurrentPage.Parameters.payId}' != ''){
+                $scope.paymentId = '{!$CurrentPage.Parameters.payId}';
+            }
+            if($scope.paymentId != '' || $scope.appNum != ''){
+                $('#tabs a[href="#createNewRequest"]').tab('show');
+            }
+            if($scope.type == ''){
+                $scope.type = 'Service';
+            }
+            $scope.closeModal = function(){
+                $('#msgModal').modal("hide");
+                if($scope.type == 'Payment'){
+                   
+                   window.location.href = '{!$Page.CM_SupportPage}?filter=Payments';
+                }
+                else{
+                   window.location.href = '{!$Page.CM_SupportPage}?filter=Service Request';
+                }
+            }
+             $scope.submit = function(ev){
+                var btn = ev.currentTarget;
+                $(btn).button('loading');
+                     Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CommunityController.createRequest}', $scope.request, $scope.appNum, $scope.paymentId, function(result){
+                         if(result.isSuccess){
+                             $('#message').html('Request Submitted Successfully. <br/>Request Id: '+result.name);
+                             $('#msgModal').modal();
+                         }
+                         else{
+                             alert(response.message);
+                         }
+                         $(btn).button('reset');
+                     },{escape: true});
+                    
+                };
+        });
+    </script>
+</apex:component>

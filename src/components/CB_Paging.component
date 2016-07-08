@@ -1,0 +1,42 @@
+<apex:component >
+
+	<style type="text/css">
+		/*.pagingBlock {
+			text-align: center;
+		}
+		.pagination>li>a:focus, .pagination>li>a:hover {
+			color: #fff !important;
+			background-color: #337ab7 !important;
+			cursor: pointer !important;
+		}
+		.pagination>li>span:focus, .pagination>li>span:hover {
+			color: #337ab7 !important;
+			background-color: #fff !important;
+			border: 1px solid #ddd !important;
+			cursor: default !important;
+		}*/
+	</style>
+
+	<apex:attribute name="objLabel" type="String" description="Name of the object" required="true" />
+
+	<div class="pagingBlock">
+		<ul class="pagination" ng-if="1 < numberOfPages( {! objLabel } )">
+			<li ng-class="{ disabled : firstPage( {! objLabel } ) }">
+				<a href="" ng-click="setCurrent( {! objLabel }, 0 )">&laquo;</a>
+			</li>
+			<li ng-class="{ disabled : firstPage( {! objLabel } ) }" class="ng-scope">
+				<a href="" ng-click="setCurrent( {! objLabel }, pagingHandler[ {! objLabel } ][ CURRENT_PAGE_OBJ_LABEL ] - 1 )" class="ng-binding">‹</a>
+			</li>
+			<li>
+				<span>{{ pagingHandler[ {! objLabel } ][ CURRENT_PAGE_OBJ_LABEL ] + 1 }} / {{ numberOfPages( {! objLabel } ) }}</span>
+			</li>
+			<li ng-class="{ disabled : lastPage( {! objLabel } ) }" class="ng-scope">
+				<a href="" ng-click="setCurrent( {! objLabel }, pagingHandler[ {! objLabel } ][ CURRENT_PAGE_OBJ_LABEL ] + 1 )" class="ng-binding">›</a>
+			</li>
+			<li ng-class="{ disabled : lastPage( {! objLabel } ) }">
+				<a href="" ng-click="setCurrent( {! objLabel }, numberOfPages( {! objLabel } ) - 1 )">&raquo;</a>
+			</li>
+		</ul>
+	</div>
+
+</apex:component>

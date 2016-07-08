@@ -1,0 +1,143 @@
+<apex:component >
+        <div class="headerTab">
+        <ol class="breadcrumb">
+            <li class="active roleDetailsHdr"><a href="#">1. Your Details</a></li>
+            <li><a href="#" ng-click="Continue('AccountInfoForm')">2. Company Information</a></li>
+            <li><a href="#" ng-click="Continue('VerifyInfoForm')">3. Verify Information</a></li>
+        </ol>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>Your Details</h2></div>
+        <div class="panel-body">
+            <fieldset> 
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">First Name: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="FirstNameTextField" name="FirstNameTextField" ng-model="Form.ContactFirstName" placeholder="First Name" type="text"/>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Last Name: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="LastNameTextField" name="LastNameTextField" ng-model="Form.ContactLastName" placeholder="Last Name" type="text"/>
+                </div>
+            </div>
+             <div class="row marginTop20 mulCompTabDiv persGenderDiv infoRegIconParent">
+                <div class="col-md-3 col-sm-11 col-xs-10 paddleft0 mulCompPadRight0">
+                      <p class="inputHdr col-md-12 col-sm-12 col-xs-12">Gender *</p>
+                </div>
+                <i class="fa fa-question hidden-md hidden-lg infoRegGenderTabMarg infoReg infoRegIcon"></i>
+                    
+                <div class="col-md-8 col-sm-12 col-xs-12 infoRegPersGenderDiv infoRegIconDiv hide"> 
+                   
+                   <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12 margRight20">
+                            It is important that you manage the trading names for your company in order to produce accurate documentation.                                             
+                    </p>                                        
+                 </div>
+                <div class="col-md-3 col-sm-3 col-xs-12 infoRegBlankDiv hide">
+                </div>                         
+                <div class="rdMultiCoDiv col-md-8 col-sm-12 col-xs-12 paddleft0 rdMultiCo">                                     
+                    <div class="radio col-md-4 col-sm-12 col-xs-12 rdMultiCoYes persGenderMale">
+                        <input type="radio" name="radio1" id="radio1" value="Male" ng-model="Form.Gender"/>
+                        <label for="radio1" class="radioOptions">
+                            Male
+                        </label>                                    
+                    </div>   
+                    <div class="radio col-md-4 col-sm-12 col-xs-12 rdMultiCoNo persGenderFemale">
+                        <input type="radio" name="radio1" id="radio2" value="Female" ng-model="Form.Gender"/>
+                        <label for="radio2" class="radioOptions">
+                            Female
+                        </label>                                    
+                    </div>   
+                   
+                    <div class="radio col-md-4 col-sm-12 col-xs-12 rdMultiCoNo persGenderOther">
+                        <input type="radio" name="radio1" id="radio3" value="other" ng-model="Form.Gender"/>
+                        <label for="radio3" class="radioOptions">
+                            Other
+                        </label>                                    
+                    </div>   
+                 </div>
+                <i class="fa fa-question hidden-xs hidden-sm infoReg pull-left infoRegIcon"></i>
+            </div>
+             <div class="row margTop20 inputHdrMobDiv persMobileDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                 <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Date of Birth</p>                                 
+                 <input type="text" placeholder="" class="col-md-4 col-sm-12 col-xs-12 roleSelect datepicker" ng-model="Form.DOB"/>                        
+                </div>
+            </div>
+            
+            <div class="row margTop20 inputHdrMobDiv persLandlineDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                 <p class="inputHdr col-md-3 col-sm-3 col-xs-10">Landline *</p>                                 
+                 <i class="fa fa-question hidden-md hidden-lg infoReg infoRegPersLandline infoRegIcon"></i>
+                    
+                  <div class="col-md-8 col-sm-12 col-xs-12 infoRegPersLandlineDiv infoRegIconDiv hide"> 
+                   
+                   <p class="infoRegPopup col-md-12 col-sm-12 col-xs-12 margRight20">
+                            It is important that you manage the trading names for your company in order to produce accurate documentation.                                             
+                    </p>                                        
+                 </div>
+                 <div class="col-md-3 col-sm-3 col-xs-12 infoRegBlankDiv hidden">
+                 </div>    
+                 <input type="tel" placeholder="" class="col-md-4 col-sm-12 col-xs-12 roleSelect" ng-model="Form.Landline"/>
+                 <i class="fa fa-question hidden-xs hidden-sm infoReg pull-left infoRegPersLandline infoRegIcon"></i>                                   </div>
+            </div>
+            
+            <div class="row margTop20 inputHdrMobDiv persMobileDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                 <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Mobile (Optional)</p>                                 
+                 <input type="tel" placeholder="" class="col-md-4 col-sm-12 col-xs-12 roleSelect" ng-model="Form.Mobile"/>                        
+                </div>
+            </div>
+            
+            <div class="row margTop20 inputHdrMobDiv persFaxDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                 <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Fax (Optional)</p>                                 
+                 <input type="tel" placeholder="" class="col-md-4 col-sm-12 col-xs-12 roleSelect" ng-model="Form.Fax"/>                        
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Email: </p>
+                    <input class="col-md-8 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="EmailTextField" name="EmailTextField" ng-model="Form.Email" placeholder="Email" type="text"/>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Role: </p>
+                    <select class="col-md-4 col-sm-12 col-xs-12 roleSelect ng-pristine ng-untouched ng-valid" id="roleField" name="roleField" ng-model="Form.Role" >
+                        <option value="Admin">Admin</option>
+                        <option value="Director">Director</option>
+                        <option value="Broker">Broker</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row margTop20 inputHdrMobDiv">
+                <div class="col-md-12 col-sm-12 col-xs-12 inputHdrDiv">
+                    <p class="inputHdr col-md-3 col-sm-11 col-xs-10">Segment: </p>
+                    <select class="col-md-4 col-sm-12 col-xs-12 roleSelect  ng-pristine ng-untouched ng-valid" id="segField" name="segField" ng-model="Form.Segment" >
+                        <option value="PA (Platinum A)">PA (Platinum A)</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                    </select>
+                </div>
+            </div>
+         </fieldset>
+       <!--  <fieldset>
+            <h3 class="addressDetailsHdr">Address Details</h3>
+            <div class="addressDetailsBg">
+                
+            </div>
+        </fieldset>-->
+            
+        </div>
+        <br /><br />
+    </div>    
+    <div class="btnDiv">
+       <!-- <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange" ng-click="Continue('AccountInfoForm')">Back</button>-->
+        <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange margLeft10" ng-click="Continue('AccountInfoForm')">Continue</button>
+    </div>
+</apex:component>

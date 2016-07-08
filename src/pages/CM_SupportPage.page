@@ -1,0 +1,124 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" title="Support">
+   
+   <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+        
+       <style>
+           #content ul{
+               padding-left:20px; list-style:none;
+           }
+           #content li:before{
+               font-family: 'FontAwesome';
+                content: '\f0da';
+                margin:0 10px 0 -15px;
+                color: #db0011 !important;
+                font-size:1.5em;
+           }
+       </style>
+       <script type="text/javascript">
+        var app = angular.module('CommunityApp', []);
+        </script>
+            <div style="padding-bottom:5px;background: url(http://www.visionservicebd.com/wp-content/uploads/2014/09/Support-page-banner.jpg);min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -50px;">
+                <c:CommunityTabs selectedTab="support"/>
+                <apex:outputpanel id="filterPanel">
+                     <apex:form style="touch-action:pan-y;overflow-y:auto;">
+                        <!--<div class="row filter" align="center" >
+                            <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == 'Service Request','selected','')}" value="Service Request" rerender="tablePanel, filterPanel" status="status">
+                                <apex:param value="Service Request" name="filter" />
+                            </apex:commandLink>
+                            <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == 'Services','selected','')}" value="Services" rerender="tablePanel, filterPanel" status="status">
+                                <apex:param value="Services" name="filter" />
+                            </apex:commandLink>
+                            <apex:commandLink styleclass="btn  {!if($CurrentPage.Parameters.filter == 'Payments','selected','')}" value="Payments" rerender="tablePanel, filterPanel" status="status">
+                                <apex:param value="Payments" name="filter" />
+                            </apex:commandLink>
+                            <apex:commandLink styleclass="btn  {!if($CurrentPage.Parameters.filter == 'Contact Us','selected','')}" value="Contact Us" rerender="tablePanel, filterPanel" status="status">
+                                <apex:param value="Contact Us" name="filter" />
+                            </apex:commandLink>
+                        </div>-->
+                         <ul style="padding: 40px !important;" class="filter">
+                              <li><a href="{!$Page.CM_SupportPage}?filter=Service Request" class="btn {!if($CurrentPage.Parameters.filter == 'Service Request','selected','')}" >
+                              Service Request
+                               
+                            </a></li>
+                              <li>
+                              <a  href="{!$Page.CM_SupportPage}?filter=Payments" class="btn  {!if($CurrentPage.Parameters.filter == 'Payments','selected','')}"  >
+                                   Payments
+                             </a>
+                            </li>
+                              <li><apex:commandLink action="{!$Page.CM_SupportPage}?filter=Contact Us" styleclass="btn  {!if($CurrentPage.Parameters.filter == 'Contact Us','selected','')}" value="Contact Us" status="status">
+                                <!--<apex:param value="Contact Us" name="filter" />-->
+                            </apex:commandLink></li>
+                          </ul>
+                    </apex:form>  
+                </apex:outputpanel>
+            </div>
+            <apex:actionstatus id="status">
+                    <apex:facet name="start">
+                          <div align="center" style="padding:20px;">
+                              Loading please wait....<br/>
+                              <img src="/img/loading32.gif" style="padding:20px;"/>
+                          </div>
+                    </apex:facet>
+                    <apex:facet name="stop">
+                        <apex:outputpanel id="tablePanel">
+                               <apex:outputpanel rendered="{!$CurrentPage.Parameters.filter == 'Contact Us'}" >
+                                   <c:LiveChatComponent />
+                               </apeX:outputpanel>
+                               <apex:outputpanel rendered="{!$CurrentPage.Parameters.filter == ''}" >
+                                   <div class="row">
+                                       <div class="col-xs-12" >
+                                       <br/>
+                                            <div  class="supportTabContent">
+                                           <div id="home" class="tab-pane fade in active">
+                                            <i>At BTT we strive to ensure your clients have support and tools they need to perform at their best. Our Business Managers will take the time to work with your clients, providing expert advice and guidance as your clients' needs evolve.</i>
+                                            <br/>
+                                            <br/>
+                                            <ul>
+                                                 <li>Ability to offer your clients a fast-track BTT Business bank account whether they are a start-up business or wanting to switch over to BTT.</li>
+                                                 <li>Confidence that your clients will be contacted within one business day* to set up a convenient time to verify and complete the application in branch with a BTT Business Manager. </li>
+                                                 <li>Follow the progress of your client's BTT Business bank account application via account opening status alerts. </li>
+                                            </ul> 
+                                            <br/>
+                                
+                                            Your clients will get all they need to manage their day-to-day banking plus a range of free business benefits, including:
+                                            <br/>
+                                            <ul>
+                                                 <li>Day-today telephone support through our BTT Business Team</li>
+                                                 <li>A number of other way they can manage their money with BTT including online, mobile**, text alerts** or in over 1,600 branches</li>
+                                            </ul> 
+                                          </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </apex:outputpanel>
+                               <apex:outputpanel rendered="{!$CurrentPage.Parameters.filter == 'Service Request'}"><!--style="display:{!If($CurrentPage.Parameters.filter == 'Service Request', 'block','none')}" -->
+                                   <div class="row">
+                                       <div class="col-xs-12" >
+                                            <br/>
+                                            <div class="supportTabContent">
+                                               <c:RequestComponent />
+                                           </div>
+                                       </div>
+                                   </div>
+                               </apeX:outputpanel>
+                               <apex:outputpanel rendered="{!$CurrentPage.Parameters.filter == 'Payments'}"> <!--style="display:{!If($CurrentPage.Parameters.filter == 'Payments', 'block','none')}">-->
+                                   <div class="row">
+                                       <div class="col-xs-12" >
+                                            <br/>
+                                            <div  class="supportTabContent">
+                                               <c:RequestComponent type="Payment"/>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </apeX:outputpanel>
+                        </apex:outputpanel>
+                    </apex:facet>
+                </apex:actionstatus>
+
+        </apex:define>
+    </apex:composition>
+</apex:page>

@@ -1,0 +1,38 @@
+<apex:component >
+    <apex:attribute name="title" type="string" description="Title"/>
+    <apex:attribute name="description" type="string" description="Description" />
+    <apex:attribute name="imageUrl" type="string" description="Image"/>
+    <apex:attribute name="moreLink" type="string" description="More Link"/>
+    <apex:attribute name="moreLinkText" type="string" description="More Text"/>
+    <style>
+        .detailContainer{
+            background-color:white;
+            width:100%;
+            border-radius:5px;
+            border:1px solid #ccc;
+            padding-right: 10px !important;
+            padding-left: 10px !important;
+        }
+        .detailImg{
+            height: 100px;  
+            width: 100%;
+        }
+        .detailDescription{
+            padding:5px;
+            height: 100px;
+            display:block;
+        }
+    </style>
+    
+    <div class="col-xs-2 detailContainer">
+        <h4>{!title}</h4>
+        <img src="{!imageUrl}" class="detailImg"/>
+        <small class="detailDescription">
+            <apex:outputtext value="{!description}" escape="false"/>
+        </small>
+        <small>
+            <a href="{!moreLink}">{!moreLinkText}</a>
+        </small>
+    </div>
+   
+</apex:component>

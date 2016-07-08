@@ -1,0 +1,53 @@
+<!--
+* @author  IP Dev Team
+* @date  November 2014
+* @description  Manage content edit page
+-->
+<apex:page standardController="Manage_Content__c" extensions="MM_ManageContentController" >
+    <apex:form >
+         <apex:pageBlock title="Manage Content">
+             <apex:pageMessages ></apex:pageMessages>
+              <apex:pageBlockButtons >
+                <apex:commandButton action="{!Save}" title="Save" value="Save"/>
+                  <apex:commandButton action="{!Cancel}" title="Cancel" value="Cancel"/>
+                  <apex:commandButton action="{!Publish}" title="Publish" value="Publish" rendered="{!not(Manage_Content__c.isActivePublished__c)}"/>
+                   <apex:commandButton action="{!Publish}" title="Unpublish" value="Unpublish" rendered="{!Manage_Content__c.isActivePublished__c}"/>
+             </apex:pageBlockButtons>
+      
+            <apex:pageBlockSection >
+                    <apex:inputText value="{!Manage_Content__c.Title__c}" style="width:400px;"/>
+                    <apex:inputCheckbox value="{!Manage_Content__c.Approved__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection >
+                <apex:inputTextarea rows="3" value="{!Manage_Content__c.Summary__c}" style="width:400px;"/>
+                <apex:panelGroup >
+                    <apex:pageBlockSection columns="1">
+                        <apex:inputField value="{!Manage_Content__c.Publish_Start__c}"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:inputField value="{!Manage_Content__c.Publish_End__c}"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                       <apex:inputField value="{!Manage_Content__c.isActivePublished__c}" style="disabled;"/>
+                   </apex:pageBlockSection>
+              </apex:panelGroup>
+            </apex:pageBlockSection>
+             <apex:pageBlockSection columns="1">
+                    <apex:panelGroup style="width:90%">
+                        <apex:inputTextarea rows="20" value="{!Manage_Content__c.Body__c}" style="width:100%"/>
+                    </apex:panelGroup>
+             </apex:pageBlockSection>
+             <apex:pageBlockSection >
+                 <apex:inputfield value="{!Manage_Content__c.Link__c}" style="width:400px"/>
+             </apex:pageBlockSection>
+             <apex:pageBlockSection >
+                <apex:inputCheckbox value="{!Manage_Content__c.Signature__c}"/>
+                 <apex:inputfield value="{!Manage_Content__c.Type_of_Signature__c}"/>
+             </apex:pageBlockSection>
+             <apex:pageBlockSection columns="1">
+                 <apex:inputTextarea value="{!Manage_Content__c.Internal_comments__c}" rows="10" style="width:400px;"/> 
+             </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

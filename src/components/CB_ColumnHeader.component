@@ -1,0 +1,12 @@
+<apex:component >
+
+	<apex:attribute name="objLabel" type="String" description="Name of the object" required="true" />
+	<apex:attribute name="field" type="String" description="Name of the field" required="true" />
+	<apex:attribute name="fieldLabel" type="String" description="Label of the field" required="true" />
+
+	<th ng-click="order( {! objLabel }, '{! field }' )" class="collapseRow" >
+		{! fieldLabel }
+		<span class="glyphicon sort-icon" ng-show="sortingHandler[ {! objLabel } ][ SORTING_FIELD_LABEL ]=='{! field }'" ng-class="{ 'glyphicon-chevron-up' : sortingHandler[ {! objLabel } ][ SORTONG_DESC_LABEL ], 'glyphicon-chevron-down' : !sortingHandler[ {! objLabel } ][ SORTONG_DESC_LABEL ] }"></span>
+	</th>
+
+</apex:component>

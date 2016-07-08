@@ -1,0 +1,62 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" title="Login" controller="CC_LoginController" >
+    <apex:composition template="CC_CommunityTemplate">
+        <apex:define name="header">
+            <c:CC_HSBCHeader selectedTab="home" />
+        </apex:define>
+        <apex:define name="body">
+            <div class="page--container">
+                <form class="form-horizontal" name="loginForm" >
+                    <div class="col-md-6 col-md-offset-3 col-md-offset-2">
+                        <apex:pageMessages id="error"/>
+                    </div>
+                    <div ng-app="CommunityApp" ng-controller="loginController" >
+                        <br />
+                        <h3 class="text-center">Login</h3>
+                        <br />
+                        <div class="form-group">
+                            <label for="email" class="col-sm-5 control-label">{! $Label.Username }</label>
+                            <div class="col-sm-4 ">
+                                <input type="text" ng-model="username" required="true" id="email" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-5 control-label">{! $Label.Password }</label>
+                            <div class="col-sm-4 ">
+                                <input type="password" ng-model="password" required="true" id="password" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group actions">
+                            <div class="col-xs-12">
+                                <div class="text-center">
+                                    <a href="{! $Page.CC_ForgotPassword }" html-class="">
+                                        {! $Label.Forgot_Password }
+                                    </a>
+                                </div>
+                                <br />
+                                <button class="btn-rounded btn-centered" ng-click="validate()">{! $Label.login }</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <apex:form onsubmit="event.preventDefault();" >
+                    <apex:actionFunction name="Login" action="{! login }" rerender="error" >
+                        <apex:param name="username" value="" assignTo="{! username }" />
+                        <apex:param name="password" value="" assignTo="{! password }" />
+                    </apex:actionFunction>
+                </apex:form>
+            </div>
+        </apex:define>
+    </apex:composition>
+    <script type="text/javascript">
+        var app = angular.module( 'CommunityApp', [ 'toastr', 'ngAnimate' ] );
+        app.controller( 'loginController', function( $scope, toastr ) {
+            $scope.validate = function() {
+                if ( $scope.username !== undefined && $scope.password !== undefined &&
+                     $scope.username !== null && $scope.password !== null &&
+                     $scope.username != '' && $scope.password != '' ) {
+                    Login( $scope.username, $scope.password );
+                }
+            };
+        } );
+    </script>
+</apex:page>

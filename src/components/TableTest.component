@@ -1,0 +1,104 @@
+<apex:component controller="tableQuery">    
+   <!-- <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"></link>    
+    <apex:includeScript value="https://code.jquery.com/jquery-1.11.1.min.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>    
+    <apex:includeScript value="https://code.jquery.com/jquery-1.10.2.min.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.js"/>--> 
+
+    <apex:attribute name="Fields" type="String" description="Api Name of the fields" required="true" assignTo="{!apiFields}"/>
+    <apex:attribute name="Limit" type="Integer" description="Limit of soql query" assignTo="{!limitValue}"/>
+    <apex:attribute name="ObjectName" type="String" description="Name of the object" required="true" assignTo="{!objName}"/>
+    <apex:attribute name="filterCriteria" type="String" description="Filter for query" required="false" assignTo="{!filter}"/>
+    <apex:attribute name="linkField" type="String" description="API name fo the field where link to be shown" required="false" default="name" assignTo="{!nameField}"/>
+    <apex:attribute name="detailPage" type="String" description="name of detail page" required="false" default=""/>
+        
+    <apex:outputPanel id="displayResultBlock">       
+        <apex:form >   
+            <div class="table-responsive"> 
+                <table id="projectTable"  class="table table-striped table-bordered table-condensed display responsive nowrap" style="display:none;">
+                    <thead>
+                        <tr>
+                            <apex:repeat value="{!lableField}" var="label">
+                                <th> {!label} </th> 
+                            </apex:repeat>                       
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!objLst}" var="lst">
+                            <tr>
+                                <apex:repeat value="{!apiFieldslst}" var="apiName">
+                                    <td> 
+                                        <apex:outputfield value="{!lst[apiName]}" rendered="{!apiName!= linkField}"/> 
+                                        <apex:outputlink value="{!If(detailPage != '', detailPage & '?id='&lst.id, '/'&lst.id)}" rendered="{!apiName == linkField}">{!lst[linkField]}</apex:outputlink>
+                                        <apex:outputpanel rendered="{!apiName == 'StageName' && lst['Need_Additional_Information__c'] == 'Requested'}">
+                                            <span class="glyphicon glyphicon-question-sign pull-right" aria-hidden="true" style="color: rgb(74, 167, 189);"></span>
+                                        </apex:outputpanel>
+                                    </td>   
+                                </apex:repeat> 
+                            </tr>     
+                        </apex:repeat>
+                    </tbody>            
+                </table>
+            </div>
+            
+            <script>
+
+                $( document ).ready(function() {
+                    // use sType: "mysort"  for any columns you wish to use these routines
+ 
+                    /*jQuery.fn.dataTableExt.oSort['mysort-asc']  = function(a,b) {
+                        var re = new RegExp("^([a-zA-Z]*)(.*)");
+                        var x = re.exec(a);
+                        var y = re.exec(b);
+
+                        // you might want to force the first portion to lowercase
+                        // for case insensitive matching
+                        // x[1] = x[1].toLowerCase();
+                        // y[1] = y[1].toLowerCase();
+
+                        if (x[1] > y[1]) return 1;
+                        if (x[1] < y[1]) return -1;
+
+                        // if you want to force the 2nd part to only be numeric:
+                        x[2] = parseInt(x[2]);
+                        y[2] = parseInt(y[2]);
+
+                        return ((x[2] < y[2]) ? -1 : ((x[2] > y[2]) ?  1 : 0));
+                    };
+
+                    jQuery.fn.dataTableExt.oSort['mysort-desc'] = function(a,b) {
+                        var re = new RegExp("^([a-zA-Z]*)(.*)");
+                        var x = re.exec(a);
+                        var y = re.exec(b);
+
+                        // you might want to force the first portion to lowercase
+                        // for case insensitive matching
+                        // x[1] = x[1].toLowerCase();
+                        // y[1] = y[1].toLowerCase();
+
+                        if (x[1] > y[1]) return -1;
+                        if (x[1] < y[1]) return 1;
+
+                        // if you want to force the 2nd part to only be numeric:
+                        x[2] = parseInt(x[2]);
+                        y[2] = parseInt(y[2]);
+
+                        return ((x[2] < y[2]) ?  1 : ((x[2] > y[2]) ? -1 : 0));
+                    };*/
+                    $('#projectTable').show();
+               
+                    $('#projectTable').DataTable({                    
+                        "searching": false,
+                        "lengthChange": false,
+                        "pageLength": 10,
+                        "info": false        ,
+                        aaSorting: [[0, 'desc']],  
+                        'aoColumnDefs': [
+                            {'sType': 'mySort', 'aTargets': [0]}
+                        ]
+                        });
+                });
+            </script>
+        </apex:form>
+    </apex:outputPanel>
+</apex:component>

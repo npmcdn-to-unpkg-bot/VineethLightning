@@ -1,0 +1,114 @@
+<!--
+* @author  Siddhant Indra
+* @date  December 2014
+* @description  Displays my news or products detail page
+-->
+<apex:page controller="MM_MyNewsController" docType="html-5.0" standardStylesheets="false" showHeader="false">
+    <head>
+        <title>News Article Title</title>
+<!--         <c:IP_StaticResources ></c:IP_StaticResources> -->
+        
+        <script type="text/javascript">
+            var IPAppModule = angular.module('IPApp', []);
+            IPAppModule.controller('MyNewsDetailCtrl', function($scope){
+            
+                $scope.MyInbox = {};
+                $scope.manageContentId = '{!HTMLENCODE($CurrentPage.parameters.newsId)}';
+                $scope.manageContentDetailList = [];
+                
+                $scope.BackToMyCases = function(){
+                    window.location = '{!HTMLENCODE($CurrentPage.parameters.returnURL)}';
+                };
+                
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.MM_MyNewsController.GetNewsDetail}', $scope.manageContentId, function(result, event){
+                        if(event.type === 'exception'){
+                            window.console && console.log('Exception occured.');
+                        }else if(event.status) {
+                            $scope.manageContentDetailList = result.Data['ManageContentDetailList'];
+                            $scope.$apply();
+                        }
+                });
+            });
+            
+            $(function(){
+                $('.ip-navbar li').removeClass('active');
+                $('.my-news').addClass('active');
+            });
+        </script>
+
+    </head>
+        
+    <body>
+    <div xmlns:ng="http://angularjs.org" id="ng-app" ng-app="IPApp" ng-controller="MyNewsDetailCtrl" ng-cloak="ngCloak">
+
+        <div class="container">
+            <ol class="breadcrumb">
+                <li><a href="{!$Site.BaseUrl}/apex/IP_CommunityHome">Home</a></li>
+                <li><a href="{!$Site.BaseUrl}/apex/MM_MyNews">My News</a></li>
+                <li class="active">News Article Title</li>
+            </ol>
+        </div>
+        <hr />
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="panel-title fontstyle">
+                        <i class="fa fa-newspaper-o fa-icon fa-lg"></i>
+                        <span>My News</span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+            
+    <!--Anil:Container for News Article Starts Here-->
+    <div class="container" ng-repeat="manageContent in manageContentDetailList">
+        <!--Anil:Panel Title Starts Here-->
+        <div class="row containerTitle">
+            <div class="col-md-12">
+                <h1 class="panel-title" ng-bind-html="manageContent.Title__c"></h1>
+            </div>
+        </div>
+        <!--Anil:Panel Title Ends Here-->
+        
+        <!--Anil:Date Section Starts Here-->
+        <div class="row containerDate">
+            <div class="col-sm-10">
+                <h3>Published: {{manageContent.Publish_Start__c | date: 'dd/MM/yyyy'}}</h3>
+            </div>
+        </div>
+        <!--Anil:Date Section Ends Here-->
+        
+        <!--Anil:Article Section Starts Here-->
+        <div class="row containerContent">
+            <div class="col-xs-12">
+                <p><b ng-bind-html="manageContent.Summary__c"></b></p>
+            </div>
+        </div>
+        <!--Anil:Article Section Ends Here-->
+        
+        <div class="row containerContent">
+            <div class="col-xs-12">
+                <p ng-bind-html="manageContent.Body__c"></p>
+            </div>
+        </div>
+        
+        <div class="row containerDate" ng-show="manageContent.Link__c.length">
+            <div class="col-sm-10">
+                <h3>URL:&nbsp;&nbsp;<a target="_blank" href="{{manageContent.Link__c}}" >{{manageContent.Link__c}}</a></h3>
+            </div>
+        </div>
+        
+        <!--Anil:Back Button Starts Here-->
+        <div class="row">
+            <div class="col-xs-12 col-sm-3 col-md-2">
+                <button type="button" class="btn btn-default buttonstyle" ng-click="BackToMyCases()">Back</button>
+            </div>
+        </div>
+        <!--Anil:Back Button Ends Here-->
+    </div>
+<!--Anil:Container for News Article Starts Here-->
+
+    </div>
+    </body>
+</apex:page>

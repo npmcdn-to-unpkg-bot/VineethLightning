@@ -1,0 +1,292 @@
+<apex:page showHeader="false" sidebar="false"  StandardController="Opportunity" extensions="CommunityApplicationController" title="Application: {!Opportunity.Case_Number__c}">
+     <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            <!-- <div style="padding-bottom:5px;background: url(http://intermediarybank.com/wp-content/uploads/2013/07/mortgage.jpg)"> -->
+            <div style="padding-bottom:5px; background: url('{!$Resource.MyApplications}');min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -40px;">
+                <c:CommunityTabs selectedTab="mycases"/>
+                <br/>
+            </div>
+
+            <div class="col-xs-12">
+                <br/>
+                <ol class="breadcrumb" >
+                    <li><a href="{!$Page.CM_HOME}">Home</a></li>
+                    <li class="active" id="caseNumber">{!Opportunity.Case_Number__c}</li>
+                    <a class="pull-right" href="{!$Page.CM_SupportPage}?filter=Service Request&appNum={!opportunity.Case_Number__c}" >Raise Request</a>
+                </ol>
+               
+                <c:StatusProgressComponent steps="{!steps}" activeStepIndex="{!activeStageIndex}"/>
+                
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default" id="addInfo" style="display:{!if(Not(IsBlank(Opportunity.Need_Additional_Information__c)),'block','none')};">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse"  href="#addInfoSection">
+                                    Additional Information
+                                </a>
+                            </h4>
+                        </div>
+                        
+                        <div id="addInfoSection" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <apex:form >
+                                    <apex:pageMessages id="pgMsg"/>
+                                    <table class="table ">
+                                        <tbody>
+                                            <tr>
+                                                <td class="col-md-4 col-sm-6 col-xs-8">{!$ObjectType.Opportunity.fields.Gross_annual_income__c.label}</td>
+                                                <td class="col-md-8 col-sm-6 col-xs-4" style="/*word-break:break-all*/">
+                                                    <div class="col-xs-4">
+                                                        <apex:inputfield value="{!Opportunity.Gross_annual_income__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Requested'}" />
+                                                        <apex:outputfield value="{!Opportunity.Gross_annual_income__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Submitted'}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-4 col-sm-6 col-xs-8">{!$ObjectType.Opportunity.fields.Current_credit_card_balance__c.label}</td>
+                                                <td class="col-md-8 col-sm-6 col-xs-4" style="/*word-break:break-all*/">
+                                                    <div class="col-xs-4">
+                                                        <apex:inputfield value="{!Opportunity.Current_credit_card_balance__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Requested'}" />
+                                                        <apex:outputfield value="{!Opportunity.Current_credit_card_balance__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Submitted'}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-4 col-sm-6 col-xs-8">{!$ObjectType.Opportunity.fields.Total_monthly_loan_payments__c.label}</td>
+                                                <td class="col-md-8 col-sm-6 col-xs-4" style="/*word-break:break-all*/">
+                                                    <div class="col-xs-4">
+                                                        <apex:inputfield value="{!Opportunity.Total_monthly_loan_payments__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Requested'}" />
+                                                        <apex:outputfield value="{!Opportunity.Total_monthly_loan_payments__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Submitted'}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-4 col-sm-6 col-xs-8">{!$ObjectType.Opportunity.fields.Other_monthly_financial_commitments__c.label}</td>
+                                                <td class="col-md-8 col-sm-6 col-xs-4" style="/*word-break:break-all*/">
+                                                    <div class="col-xs-4">
+                                                        <apex:inputfield value="{!Opportunity.Other_monthly_financial_commitments__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Requested'}" />
+                                                        <apex:outputfield value="{!Opportunity.Other_monthly_financial_commitments__c}" styleclass="form-control" rendered="{!Opportunity.Need_Additional_Information__c == 'Submitted'}" />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>    
+                                    <c:UploadAttachmentComponent parentid="{!opportunity.Id}" readonly="{!Opportunity.Need_Additional_Information__c != 'Requested'}"/>
+                                    <apex:commandButton value="Submit" styleclass="btn btn-default" action="{!saveApplication}" rendered="{!Opportunity.Need_Additional_Information__c == 'Requested'}"/>
+                                </apex:form>    
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="panel panel-default" id="chatter">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse"  href="#collapseChatter">
+                                    Chatter
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseChatter" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <chatter:feed entityId="{!Opportunity.Id}"/> 
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="panel panel-default" id="panel1">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse"  href="#collapseOne">
+                                    Applicant Details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Title</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.Salutation}"/>
+                                                <apex:outputfield style="diplay:none;" value="{!Opportunity.Stagename}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's First Name</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.FirstName}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's Last Name</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.LastName}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's Date of Birth</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.BirthDate}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Is the applicant male or a female?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.Gender__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's home telephone number</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.Phone}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's mobile telephone number</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                               <apex:outputfield value="{!Opportunity.Customer__r.MobilePhone}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's Email address</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.Email}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's current address located</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.MailingCountry}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Applicant's postcode</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Customer__r.MailingPOstalCode}"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default" id="panel2">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#collapseTwo">
+                                    Mortgage Details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">What is this mortgage regarding?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                                <apex:outputfield value="{!Opportunity.To_Do__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">What's the property estimated value?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Amount}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">How much will be the deposit?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Deposit__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">What type of mortgage is required?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Type}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">What would the applicant prefer to pay?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Prefer_to_Pay__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">How long does the applicant want to pay the mortgage over?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Mortgage_Term__c}"/> Years
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel panel-default" id="panel3">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse"  href="#collapseThree">
+                                    Property Details
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Building Name / Number</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                                <apex:outputfield value="{!Opportunity.Building_Name__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Town / City</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.City__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">County</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.County__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Postcode</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Postcode__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Country</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Country__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Type of Property</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Type_of_Property__c}"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Which Council Tax band is your property in?</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                                <apex:outputfield value="{!Opportunity.Council_Tax_Band__c}"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

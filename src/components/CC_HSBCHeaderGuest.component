@@ -1,0 +1,16 @@
+<apex:component >
+    <nav class="navbar navbar-default" style="background-color: white; border-color: white;">
+ 
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">{! $Label.CC_Toggle_navigation }</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{! $Page.CC_HOME }"><img src="{!URLFOR($Resource.CC_Resources, 'CC_Resources/btt_new_updated.png')}" style="margin-top: -13px; margin-left: -13px;"/></a>
+    </div>
+
+</nav>
+</apex:component>

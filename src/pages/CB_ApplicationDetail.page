@@ -1,0 +1,14 @@
+<apex:page showHeader="true" standardStylesheets="true" sidebar="false" StandardController="Opportunity" title="Application: {!Opportunity.Case_Number__c}" docType="html-5.0">
+    <c:CB_CommunityStaticResource />
+    <div class="col-xs-12">
+        <br/>
+        <ol class="breadcrumb" >
+            <li><a href="{!$Page.CC_HOME}">{! $label.Home }</a></li>
+            <li class="active" id="caseNumber">{! Opportunity.Case_Number__c }</li>
+        </ol>
+       
+        <c:CB_ApplicationDetail opp="{!Opportunity}"/>
+
+    </div>
+
+</apex:page>

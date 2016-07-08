@@ -1,0 +1,240 @@
+<apex:page standardController="Case" showHeader="false" extensions="CaseExtension" >
+
+<html>
+<head>
+    <link href="https://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.com/IP/resource/1429170964000/IP_Resources/styles/jquery-ui.css" rel="stylesheet" />
+    <link href="https://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.com/IP/resource/1429170964000/IP_Resources/frmwks/bootstrap331/css/bootstrap.css" rel="stylesheet" />
+    <link href="https://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.comhttps://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.com/IP/resource/1429170964000/IP_Resources/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="https://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.com/IP/resource/1429170964000/IP_Resources/styles/custom.css" rel="stylesheet" />
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet" />
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" type="text/javascript"></script>
+    <link id="bsdp-css" href="bootstrap-datepicker/css/datepicker3.css" rel="stylesheet" />
+    <script src="//code.jquery.com/jquery-1.9.1.min.js"></script>
+    <style>
+        body{
+            background-color: white;
+        }
+        .centered-form{
+            margin-top: 60px;
+        }
+
+        .centered-form .panel{
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: rgba(0, 0, 0, 0.3) 20px 20px 20px;
+        }
+        
+        .navbar{
+    border-radius: 0px;
+}
+.navbar-head .navbar-default .navbar-nav{
+    height: 40px;
+}
+.navbar-default{
+    background-color : rgb(1,126,182);
+    border-color : rgb(1,126,182);
+}
+
+.navbar-default .navbar-nav > li > a{
+    color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a:hover{
+    color: rgb(1,57,94);
+}
+
+.navbar-default .navbar-nav > li{
+    cursor: pointer;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color: rgb(1,57,94);
+}
+
+.navbar-nav > li > a { 
+    padding-bottom:11px;    
+    padding-right:30px; 
+    padding-top: 10px;
+    padding-left:25px;/*Alok- changes header 28/11*/
+    font-weight:bold;/*Alok- changes header 28/11*/
+    
+
+}
+
+
+
+.nav-top ul li a{
+    font-size: 16px;
+}
+
+.navbar {min-height:30px !important}
+
+.navbar-default{
+    margin-top: 10px;
+}
+
+.navbar{
+    margin-bottom: 0px;
+}
+
+.brand-logo img{            
+                margin:40px 0px 15px 0px;
+}
+
+}
+.container label {
+    margin-bottom: 20px;
+    
+    }
+.tab-content select{
+    //margin-bottom: 20px;
+    }   
+.control-label{
+    color: rgb(140, 140, 140);
+}
+.form-control{
+    width:250px;
+}
+.container label {
+    margin-bottom: 0px;
+}
+.dateFormat {
+font-size: 0px;
+}
+body button, body .x-btn, body .btn, body .btnDisabled, body .btnCancel, body .menuButton .menuButtonButton{
+    background: #017EB6;    
+}
+
+</style>
+</head>
+<!-- META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8" /-->
+
+
+<body>
+
+<div ng-app="IPApp" ng-controller="headerCtrl" ng-init="getTotalCount()" class="ng-scope">
+        <div class="row header-logo mobile-header">
+            <div>
+                <div class="container paddRight0">
+                    <nav class="navbar navbar-default nav-top col-md-12 col-sm-1 col-xs-1 mobile-hamburger hidden-md hidden-lg hideSearchClick" role="navigation">
+                        <div class="navbar-header col-xs-12">
+                            <button class="navbar-toggle collapsed mobile-hamburger-button col-xs-12 col-sm-12" type="button">
+                                <span class="sr-only">Toggle Navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="col-md-6 col-xs-4 col-sm-4 brand-logo hideSearchClick">
+                        <img alt="Barclays" src="https://ipdev-ipdev-barclaysintermediaryportal--ipdev.cs20.force.com/IP/resource/1429170964000/IP_Resources/images/barc_brand_logo.png"/>
+                    </div>
+                    
+                    <div class="col-md-6 col-sm-6 col-xs-6 header-links">
+                        <div class="padding0 col-md-12 col-sm-12">
+                            <span class="padding0 col-md-12 col-sm-8 col-xs-8 hideSearchClick mobile-align">
+                                <a class="col-md-8 col-sm-8 col-xs-6 header-alert" href="#">
+                                </a>                                
+                            </span>
+                            <div class="btn-group btnGrpUserName col-md-4 paddRight0">
+                                    <button aria-expanded="false" class="btn btn-default dropdown-toggle userNameBTN pull-right" data-toggle="dropdown" type="button"> 
+                                        <span class="hidden-xs hidden-sm userNameBTNText ellipsisUserName" style="width: 108px;color: white;" title="Demo Introducer">Demo Introducer</span> <span/>
+                                    </button>                                    
+                                </div>
+                                
+                            <span class="padding0 col-md-12 search-input">
+                                <input class="searchInput inputAlignmentMobile inputAlignmentTablet form-control hidden-xs hidden-sm" id="GlobalKnowledgeSearchTextBox" placeholder="Search" style="height:20px" type="search" value="" />
+                            </span>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="toggle-navbar-tab modal fade" id="ip-navbar-collapse-2" role="dialog">
+                        
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-default nav-top navbar-head visible-md visible-lg" role="navigation">
+            <div class="collapse navbar-collapse" id="ip-navbar-collapse-1">
+                <div class="container">
+                <ul class="nav navbar-nav ip-navbar">
+                    <li class="home "><a href="#">My Leads</a></li>
+                    <li class="my-deals"><a href="#">My Deals</a></li>
+                    <li class="my-cases active"><a href="#">My Cases</a></li>
+                    <li class="my-news"><a href="#">My News</a></li>
+                    <li class="knowledge"><a href="#">Knowledge</a></li>
+                    <li class="contact-us"><a href="#">Contact Us</a></li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <br/><br/>
+
+<div class="container">   
+    <apex:pagemessages ></apex:pagemessages>
+</div>    
+  
+  <apex:outputpanel rendered="{!caseInstance.Id == null}">
+<div class="container">
+    <div class="tab-content">
+        <apex:form styleclass="form-horizontal">
+
+            <div class="form-group col-xs-12">
+                <h3 class="panel-title ViewAddressForm ng-binding">Submit a new Case</h3><br/><br/>
+                <h5 class="ng-binding" style="font-family: 'Expertsans Regular', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size: 16px;color: rgb(0,126,182);">Please provide information below to submit a new case to Barclays -</h5><br/><br/>
+            </div>
+            
+            <div>
+                <label class="control-label ng-binding" for="CorrespondenceDropdown">Type</label>
+                <apex:inputField value="{!caseInstance.Type}" styleClass="form-control input-sm"/>
+            </div>
+            
+            
+    
+            <div>
+                <label class="control-label ng-binding" for="CorrespondenceDropdown">Description</label>
+                <apex:inputField value="{!caseInstance.Description}" styleClass="form-control input-sm "/>
+            </div>
+            
+           
+            
+            <!--div class="form-group col-md-4" >
+                <label class="control-label ng-binding" for="CorrespondenceDropdown">First Name</label>
+                <input type="text" name="first_name" id="first_name"  class="form-control input-sm" />
+            </div -->
+            
+            <div >
+                <label class="control-label ng-binding" for="CorrespondenceDropdown">Priority</label>
+                <apex:inputField value="{!caseInstance.Priority}" styleClass="form-control input-sm" required="true"/>
+            </div>
+            
+            
+            <div>
+                <label class="control-label ng-binding" for="CorrespondenceDropdown">Please upload related attachment</label>
+                <apex:inputfile value="{!myfile.body}" filename="{!myfile.Name}" styleClass="form-control input-sm"></apex:inputfile>
+            </div>        
+            
+            <div class="form-group col-md-10" ></div>
+            
+            <div class="form-group col-md-3" ></div>
+            
+            <!-- div class="form-group col-md-4" >
+                <input style="background-color: rgb(1,126,182)" type="submit" name="submit" value="Submit" class="btn btn-info btn-block" />
+            </div -->
+            
+            <div class="form-group col-md-3">
+                <apex:commandButton value="Submit" action="{!save}" style="background-color: rgb(1,126,182)" styleClass="btn btn-info btn-block"/>
+            </div>
+            
+       
+        </apex:form> 
+        
+    </div>
+</div>
+  
+</apex:outputpanel>
+</body>
+</html>
+  
+</apex:page>

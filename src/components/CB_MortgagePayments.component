@@ -1,0 +1,160 @@
+<apex:component controller="CB_MortgagePaymentsController" >
+
+	<apex:attribute name="currentContact" type="Contact" description="Contact details" required="true" />
+
+	<style type="text/css">
+		.collapseRow:hover {
+			cursor: pointer;
+		}
+	</style>
+
+	<div ng-controller="ngMortgagePaymentsAppController" >
+		<div class="col-sm-12">
+			<div class="col-sm-6">
+				<c:CB_Label label="{! $Label.Mortgage_Number }" />
+				<c:CB_Value value="{{ mortgageInfo.mortgageNumber }}" />
+
+				<c:CB_Label label="{! $Label.Loan_Amount }" />
+				<c:CB_Value value="{{ mortgageInfo.loanAmount }}" />
+
+				<c:CB_Label label="{! $Label.Interest }" />
+				<c:CB_Value value="{{ mortgageInfo.interest }} %" />
+
+				<c:CB_Label label="{! $Label.Approved_On }" />
+				<c:CB_Value value="{{ mortgageInfo.approvedOn | date }}" />
+
+				<c:CB_Label label="{! $Label.Last_Payment }" />
+				<c:CB_Value value="{{ mortgageInfo.lastPayment | date }}" />
+			</div>
+			<div class="col-sm-6">
+				<c:CB_Label label="{! $Label.Status }" />
+				<c:CB_Value value="{{ mortgageInfo.status }}" />
+
+				<c:CB_Label label="{! $Label.Due_Amount }" />
+				<c:CB_Value value="{{ mortgageInfo.dueAmount }}" />
+
+				<c:CB_Label label="{! $Label.Payment_Amount }" />
+				<c:CB_Value value="{{ mortgageInfo.paymentAmount }}" />
+
+				<c:CB_Label label="{! $Label.Term }" />
+				<c:CB_Value value="{{ mortgageInfo.term }} years" />
+
+				<c:CB_Label label="{! $Label.Next_Payment }" />
+				<c:CB_Value value="{{ mortgageInfo.nextPayment | date }}" />
+			</div>
+
+			<div class="col-sm-12">
+				<br />
+				<br />
+				<div class="col-sm-6">
+					<table class="table table-hover" id="customerListTable" >
+						<thead>
+							<tr>
+								<c:CB_ColumnHeader objLabel="MORTGAGE_PAYMENT_OBJ_LABEL" field="paymentDate" fieldLabel="{! $Label.TableHeaderPaymentDate }" />
+								<c:CB_ColumnHeader objLabel="MORTGAGE_PAYMENT_OBJ_LABEL" field="amount" fieldLabel="{! $Label.TableHeaderAmount }" />
+								<c:CB_ColumnHeader objLabel="MORTGAGE_PAYMENT_OBJ_LABEL" field="status" fieldLabel="{! $Label.TableHeaderStatus }" />
+							</tr>
+						</thead>
+						<tbody>
+							<tr dir-paginate="mortgagePayment in detailData[ MORTGAGE_PAYMENT_OBJ_LABEL ] | orderBy : sortingHandler[ MORTGAGE_PAYMENT_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ MORTGAGE_PAYMENT_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ MORTGAGE_PAYMENT_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'mpaym'" pagination-id="mpaym" current-page="pagingHandler[ MORTGAGE_PAYMENT_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+								<td width="30%" > {{ mortgagePayment.paymentDate | date }} </td>
+								<td width="30%" > {{ mortgagePayment.amount | currency : mortgagePayment.currencySymbol : 2 }} </td>
+								<td width="40%" > {{ mortgagePayment.status }} </td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center">
+						<dir-pagination-controls pagination-id="mpaym" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		app.controller(
+			'ngMortgagePaymentsAppController',
+			[ '$scope', 'toastr', 'MortgagePaymentsService', function( scope, toastr, dataService ) {
+
+			scope.MORTGAGE_PAYMENT_OBJ_LABEL = 'mortgagePayments';
+
+			scope.SORTING_FIELD_LABEL = 'sortingField';
+			scope.SORTONG_DESC_LABEL = 'sortingDESC';
+
+			scope.PAGE_SIZE_LABEL = 'pageSize';
+			scope.CURRENT_PAGE_OBJ_LABEL = 'currentPage';
+
+			scope.sortingHandler = {
+				mortgagePayments: {
+					sortingField: 'paymentDate',
+					sortingDESC: true
+				}
+			};
+
+			scope.pagingHandler = {
+				mortgagePayments: {
+					pageSize: 5,
+					currentPage: 1
+				}
+			};
+
+			scope.mortgageInfo = {};
+			dataService.mortgageInfo( '111111111111111', function( result ) {
+				scope.mortgageInfo = result;
+				scope.$apply();
+			} );
+
+			scope.detailData = {
+				mortgagePayments: []
+			};
+			dataService.mortgagePayments( '111111111111111', function( result ) {
+				scope.detailData[ scope.MORTGAGE_PAYMENT_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			//--- sorting ---
+			scope.order = function( sortingObject, sortingField ) {
+				scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] = ( scope.sortingHandler[ sortingObject ][  scope.SORTING_FIELD_LABEL ] === sortingField ) ? !scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] : false;
+				scope.pagingHandler[ sortingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] = 1;
+				scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] = sortingField;
+			};
+			//---
+		} ] );
+
+
+
+		app.service( 'MortgagePaymentsService', [ function() {
+			function mortgageInfo( mortgageId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_MortgagePaymentsController.getMortgageInfo }',
+					mortgageId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( {} );
+						}
+					});
+			};
+
+			function mortgagePayments( mortgageId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_MortgagePaymentsController.getMortgagePayments }',
+					mortgageId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+			return {
+				mortgageInfo: mortgageInfo,
+				mortgagePayments: mortgagePayments
+			};
+		} ] );
+	</script>
+
+</apex:component>

@@ -1,0 +1,52 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false">
+   
+   <apex:composition template="LC_CommunityTemplate">
+        <apex:define name="header">   
+            <c:LC_HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            <!-- <div style="padding-bottom:5px;background: url('{!$Resource.MyApplications}')"> -->
+            <div style="padding-bottom:5px; background: url('{!$Resource.MyApplicationCar}');min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -40px;">
+            
+                <c:LC_CommunityTabs selectedTab="mycases"/>
+                <apex:outputpanel id="filterPanel">
+                    <apex:form style="touch-action:pan-y;overflow-y:auto;">
+                        <ul style="padding:40px !important; align: center;" class="filter">
+                            <li>
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == '','selected','')}" value="View All" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="" name="filter" />
+                                </apex:commandLink></li>
+                            <li> 
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == 'New','selected','')}" value="New" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="New" name="filter" />
+                                </apex:commandLink></li>
+                            <li>
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == 'Offer','selected','')}" value="Offer" rerender="tablePanel, filterPanel" status="status">
+                                <apex:param value="Offer" name="filter" />
+                                </apex:commandLink>
+                            </li>
+                            <li>
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.filter == 'Gone-Off','selected','')}" value="Gone Off" rerender="tablePanel, filterPanel" status="status">
+                                    <apex:param value="Gone-Off" name="filter" />
+                                </apex:commandLink>
+                            </li>
+                          </ul>
+                    </apex:form>  
+                </apex:outputpanel>
+            </div>
+            <apex:actionstatus id="status">
+                <apex:facet name="start">
+                    <div align="center" style="padding:20px;">
+                        Loading please wait....<br/>
+                        <img src="/img/loading32.gif" style="padding:20px;"/>
+                    </div>
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:outputpanel id="tablePanel">
+                        <c:TableTest ObjectName="opportunity" linkField="Case_Number__c" detailPage="{!$Page.LC_ApplicationDetailPage}" Fields="Case_Number__c,Customer_Name__c,StageName,To_Do__c,Amount,Deposit__c,Mortgage_Term__c,CreatedDate" filterCriteria="{!If($CurrentPage.Parameters.filter != '', 'StageName =\''&$CurrentPage.Parameters.filter&'\' AND','')} RecordType.Name = 'Car Finance'"></c:TableTest>
+                    </apex:outputpanel>
+                </apex:facet>
+            </apex:actionstatus>
+        </apex:define>
+    </apex:composition>
+</apex:page>

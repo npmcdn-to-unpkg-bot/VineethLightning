@@ -1,0 +1,15 @@
+<!-- Page: composition -->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <c:CC_CommunityStaticResource ></c:CC_CommunityStaticResource>
+    <div class="app">
+        <header class="app-header">
+            <apex:insert name="header"/>
+        </header>
+        <main class="app-content">
+            <apex:insert name="body"/>
+        </main>
+        <footer class="app-footer">
+            <c:CC_HSBCFooter />
+        </footer>
+    </div>
+</apex:page>

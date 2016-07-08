@@ -1,0 +1,303 @@
+<apex:component controller="CB_ProductAndSavingsController" >
+
+	<apex:attribute name="currentContact" type="Contact" description="Contact details" required="true" />
+
+	<style type="text/css">
+		.collapseRow:hover {
+			cursor: pointer;
+		}
+	</style>
+
+	<div ng-controller="ngProductsAndSavingsAppController" >
+		<div class="col-sm-6">
+			
+			<h2> {! $Label.Bank_Account_Header } </h2>
+			<table class="table table-hover" id="customerListTable" >
+				<thead>
+					<tr>
+						<c:CB_ColumnHeader objLabel="BANK_ACCOUNT_OBJ_LABEL" field="accountNumber" fieldLabel="{! $Label.TableHeaderAccountNumber }" />
+						<c:CB_ColumnHeader objLabel="BANK_ACCOUNT_OBJ_LABEL" field="availableBalance" fieldLabel="{! $Label.TableHeaderAvailableBalance }" />
+						<c:CB_ColumnHeader objLabel="BANK_ACCOUNT_OBJ_LABEL" field="overdraft" fieldLabel="{! $Label.TableHeaderOverdraft }" />
+					</tr>
+				</thead>
+				<tbody>
+					<tr dir-paginate=" bankAccount in detailData[ BANK_ACCOUNT_OBJ_LABEL ] | orderBy : sortingHandler[ BANK_ACCOUNT_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ BANK_ACCOUNT_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ BANK_ACCOUNT_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'bankAcc'" pagination-id="bankAcc" current-page="pagingHandler[ BANK_ACCOUNT_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+						<td width="30%" > {{ bankAccount.accountNumber }} </td>
+						<td width="30%" > {{ bankAccount.availableBalance | currency : bankAccount.currencySymbol : 2 }} </td>
+						<td width="40%" > {{ bankAccount.overdraft }} </td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-center">
+				<dir-pagination-controls pagination-id="bankAcc" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+			</div>
+
+			<br />
+			<br />
+
+			<h2> {! $Label.Credit_Card_Header } </h2>
+			<table class="table table-hover" id="customerListTable" >
+				<thead>
+					<tr>
+						<c:CB_ColumnHeader objLabel="CREDIT_CARD_OBJ_LABEL" field="cardNumber" fieldLabel="{! $Label.TableHeaderCardNumber }" />
+						<c:CB_ColumnHeader objLabel="CREDIT_CARD_OBJ_LABEL" field="cardLimit" fieldLabel="{! $Label.TableHeaderLimit }" />
+						<c:CB_ColumnHeader objLabel="CREDIT_CARD_OBJ_LABEL" field="available" fieldLabel="{! $Label.TableHeaderAvailable }" />
+					</tr>
+				</thead>
+				<tbody>
+					<tr dir-paginate="creditCard in detailData[ CREDIT_CARD_OBJ_LABEL ] | orderBy : sortingHandler[ CREDIT_CARD_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ CREDIT_CARD_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ CREDIT_CARD_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'crdtCard'" pagination-id="crdtCard" current-page="pagingHandler[ CREDIT_CARD_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+						<td width="30%" > {{ creditCard.cardNumber }} </td>
+						<td width="30%" > {{ creditCard.cardLimit | currency : creditCard.currencySymbol : 2 }} </td>
+						<td width="40%" > {{ creditCard.available | currency : creditCard.currencySymbol : 2 }} </td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-center">
+				<dir-pagination-controls pagination-id="crdtCard" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+			</div>
+
+			<br />
+			<br />
+
+			<h2> {! $Label.Mortgage_Header } </h2>
+			<table class="table table-hover" id="customerListTable" >
+				<thead>
+					<tr>
+						<c:CB_ColumnHeader objLabel="MORTGAGE_OBJ_LABEL" field="mortgageNumber" fieldLabel="{! $Label.TableHeaderMortgageNumber }" />
+						<c:CB_ColumnHeader objLabel="MORTGAGE_OBJ_LABEL" field="mortgageDate" fieldLabel="{! $Label.TableHeaderMortgageDate }" />
+						<c:CB_ColumnHeader objLabel="MORTGAGE_OBJ_LABEL" field="term" fieldLabel="{! $Label.TableHeaderTerm }" />
+						<c:CB_ColumnHeader objLabel="MORTGAGE_OBJ_LABEL" field="loanAmount" fieldLabel="{! $Label.TableHeaderLoanAmount }" />
+						<c:CB_ColumnHeader objLabel="MORTGAGE_OBJ_LABEL" field="amountDue" fieldLabel="{! $Label.TableHeaderAmountDue }" />
+					</tr>
+				</thead>
+				<tbody>
+					<tr dir-paginate="mortgage in detailData[ MORTGAGE_OBJ_LABEL ] | orderBy : sortingHandler[ MORTGAGE_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ MORTGAGE_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ MORTGAGE_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'mrtgg'" pagination-id="mrtgg" current-page="pagingHandler[ MORTGAGE_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+						<td width="20%" > {{ mortgage.mortgageNumber }} </td>
+						<td width="20%" > {{ mortgage.mortgageDate | date }} </td>
+						<td width="20%" > {{ mortgage.term }} years </td>
+						<td width="20%" > {{ mortgage.loanAmount | currency : mortgage.currencySymbol : 2 }} </td>
+						<td width="20%" > {{ mortgage.amountDue | currency : mortgage.currencySymbol : 2 }} </td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-center">
+				<dir-pagination-controls pagination-id="mrtgg" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+			</div>
+
+			<br />
+			<br />
+
+			<h2> {! $Label.Investment_Header } </h2>
+			<table class="table table-hover" id="customerListTable" >
+				<thead>
+					<tr>
+						<c:CB_ColumnHeader objLabel="INVESTMENT_OBJ_LABEL" field="product" fieldLabel="{! $Label.TableHeaderProduct }" />
+						<c:CB_ColumnHeader objLabel="INVESTMENT_OBJ_LABEL" field="description" fieldLabel="{! $Label.TableHeaderDescription }" />
+						<c:CB_ColumnHeader objLabel="INVESTMENT_OBJ_LABEL" field="amount" fieldLabel="{! $Label.TableHeaderAmount }" />
+					</tr>
+				</thead>
+				<tbody>
+					<tr dir-paginate="investment in detailData[ INVESTMENT_OBJ_LABEL ] | orderBy : sortingHandler[ INVESTMENT_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ INVESTMENT_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ INVESTMENT_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'invstmnt'" pagination-id="invstmnt" current-page="pagingHandler[ INVESTMENT_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+						<td width="30%" > {{ investment.product }} </td>
+						<td width="30%" > {{ investment.description }} </td>
+						<td width="40%" > {{ investment.amount | currency : investment.currencySymbol : 2 }} </td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="text-center">
+				<dir-pagination-controls pagination-id="invstmnt" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<h2> {! $Label.Savings_Header } </h2>
+			<canvas id="pie" class="chart chart-pie" chart-data="chart.data" chart-labels="chart.labels" />
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		app.controller(
+			'ngProductsAndSavingsAppController',
+			[ '$scope', '$filter', 'toastr', 'ProductAndSavingsService', function( scope, filter, toastr, dataService ) {
+
+			scope.BANK_ACCOUNT_OBJ_LABEL = 'bankAccounts';
+			scope.CREDIT_CARD_OBJ_LABEL = 'creaditCards';
+			scope.MORTGAGE_OBJ_LABEL = 'mortgages';
+			scope.INVESTMENT_OBJ_LABEL = 'investments';
+
+			scope.SORTING_FIELD_LABEL = 'sortingField';
+			scope.SORTONG_DESC_LABEL = 'sortingDESC';
+
+			scope.PAGE_SIZE_LABEL = 'pageSize';
+			scope.CURRENT_PAGE_OBJ_LABEL = 'currentPage';
+
+			scope.detailData = {
+				bankAccounts: [],
+				creaditCards: [],
+				mortgages: [],
+				investments: []
+			};
+
+			scope.sortingHandler = {
+				bankAccounts: {
+					sortingField: 'accountNumber',
+					sortingDESC: false
+				},
+				creaditCards: {
+					sortingField: 'cardNumber',
+					sortingDESC: false
+				},
+				mortgages: {
+					sortingField: 'mortgageNumber',
+					sortingDESC: false
+				},
+				investments: {
+					sortingField: 'product',
+					sortingDESC: false
+				}
+			};
+
+			scope.pagingHandler = {
+				bankAccounts: {
+					pageSize: 5,
+					currentPage: 1
+				},
+				creaditCards: {
+					pageSize: 5,
+					currentPage: 1
+				},
+				mortgages: {
+					pageSize: 5,
+					currentPage: 1
+				},
+				investments: {
+					pageSize: 5,
+					currentPage: 1
+				}
+			};
+
+			dataService.bankAccounts( '{! currentContact.Id }', function( result ) {
+				scope.detailData[ scope.BANK_ACCOUNT_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			dataService.creaditCards( '{! currentContact.Id }', function( result ) {
+				scope.detailData[ scope.CREDIT_CARD_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			dataService.mortgages( '{! currentContact.Id }', function( result ) {
+				scope.detailData[ scope.MORTGAGE_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			dataService.investments( '{! currentContact.Id }', function( result ) {
+				scope.detailData[ scope.INVESTMENT_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			scope.chart = {
+				data: [],
+				labels: []
+			};
+			dataService.chartData( '{! currentContact.Id }', function( result ) {
+				scope.chart = result;
+				scope.$apply();
+			} );
+
+			//--- sorting ---
+			scope.order = function( sortingObject, sortingField ) {
+				console.log(1);
+				scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] = ( scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] === sortingField ) ? !scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] : false;
+				scope.pagingHandler[ sortingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] = 1;
+				scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] = sortingField;
+			};
+			//---
+		} ] );
+
+
+
+		app.service( 'ProductAndSavingsService', [ function() {
+			function bankAccounts( customerId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_ProductAndSavingsController.getBankAccounts }',
+					customerId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+	
+	
+	
+			function creaditCards( customerId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_ProductAndSavingsController.getCreaditCards }',
+					customerId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+	
+	
+	
+			function mortgages( customerId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_ProductAndSavingsController.getMortgages }',
+					customerId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+	
+	
+	
+			function investments( customerId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_ProductAndSavingsController.getInvestments }',
+					customerId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+	
+	
+	
+			function chartData( customerId, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_ProductAndSavingsController.getChartData }',
+					customerId,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( {} );
+						}
+					});
+			};
+
+			return {
+				bankAccounts: bankAccounts,
+				creaditCards: creaditCards,
+				mortgages: mortgages,
+				investments: investments,
+				chartData: chartData
+			};
+		} ] );
+	</script>
+
+</apex:component>

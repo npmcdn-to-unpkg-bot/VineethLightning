@@ -1,0 +1,39 @@
+<apex:component >
+    <div>
+        <ol class="breadcrumb">
+            <li class="active"><a href="#">Track Your Registration</a></li>            
+        </ol>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><h2>Registration Progress</h2></div>
+        <div class="panel-body"><br/>
+             <div class="bs-example">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-success" style="width: 25%;background-color:#007EB6;">
+                        <span class="sr-only">35% Complete (success)</span>
+                        <span>Request Received</span>
+                    </div>
+                    <div class="progress-bar progress-bar-success" style="width: 25%;background-color:#007EB6;">
+                        <span class="sr-only">20% Complete (warning)</span>ID&amp;V in Process
+                    </div>
+                    <div class="progress-bar progress-bar-danger" style="width: 25%;color:#8c8c8c;background-color:#efefef;">
+                        <span class="sr-only">10% Complete (danger)</span>Onboarding in Progress
+                    </div>
+                    <div class="progress-bar progress-bar-dange" style="width: 25%;color:#8c8c8c;background-color:#efefef;">
+                        <span class="sr-only">10% Complete (danger)</span>Onboarding Complete
+                    </div>
+                </div>
+            </div>   
+           <div>
+            Dear Martin Loheac,
+            
+            Your Introducer Portal Registration Request with Request ID 768JK34743L is currently under ID&amp;V in Process state. Your will receive an email once your onboarding is completed or a Barclays Business Manager will contact you in case any additional information is required. 
+           </div>
+                    
+            
+        </div>
+        <br /><br />
+    </div>
+    
+    
+</apex:component>

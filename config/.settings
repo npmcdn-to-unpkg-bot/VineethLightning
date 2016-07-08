@@ -1,0 +1,19 @@
+{
+    "projectName": "BTT",
+    "username": "vineeth.vadnal@btt.com.dev1",
+    "id": "548eb8b0-4518-11e6-b190-b528757702bd",
+    "namespace": "",
+    "environment": "sandbox",
+    "loginUrl": "https://test.salesforce.com/",
+    "workspace": "/Users/vineeth.vadnal/Documents/MavensMate/",
+    "subscription": [
+        "ActionLinkGroupTemplate",
+        "AnalyticSnapshot",
+        "ApexClass",
+        "ApexComponent",
+        "ApexPage",
+        "ApexTrigger",
+        "EmailTemplate",
+        "StaticResource"
+    ]
+}

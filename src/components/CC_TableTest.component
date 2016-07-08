@@ -1,0 +1,89 @@
+<apex:component controller="CC_tableQuery">    
+    <apex:attribute name="Fields" type="String" description="Api Name of the fields" required="true" assignTo="{! apiFields }" />
+    <apex:attribute name="Limit" type="Integer" description="Limit of soql query" assignTo="{! limitValue }" />
+    <apex:attribute name="ObjectName" type="String" description="Name of the object" required="true" assignTo="{! objName }" />
+    <apex:attribute name="filterCriteria" type="String" description="Filter for query" required="false" assignTo="{! filter }" />
+    <apex:attribute name="linkField" type="String" description="API name fo the field where link to be shown" required="false" default="name" assignTo="{! nameField }" />
+    <apex:attribute name="detailPage" type="String" description="name of detail page" required="false" default="" />
+        
+    <apex:outputPanel rendered="{! objLst == null || objLst.size == 0 }">
+        <p>{! $Label.CC_There_is_no_any_applications }</p>
+    </apex:outputPanel>
+
+    
+        <!-- Labels for tablet/mobile devices -->
+        <style>
+            @media (max-width: 48.0525em) {
+                <apex:variable value="1" var="num" />
+                <apex:repeat value="{! lableField }" var="label">
+                
+                .app .table.responsive td:nth-of-type( {! VALUE( num ) } ):before {
+                  content: "{! label }: ";
+                }
+
+                <apex:variable var="num" value="{! VALUE( num ) + 1 }"/>
+                </apex:repeat>
+            }
+            
+        </style>
+        <!-- End :: Labels for tablet/mobile devices -->
+        
+
+    <apex:outputPanel id="displayResultBlock" rendered="{! objLst != null && objLst.size > 0 }">       
+        <apex:form >
+            <div class="table-responsive"> 
+                <table id="projectTable" class="table display responsive nowrap" style="display:none;">
+                    <thead>
+                        <tr>
+                            <apex:repeat value="{! lableField }" var="label">
+                                <th> {! label } </th>
+                            </apex:repeat>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{! objLst }" var="lst">
+                            <tr>
+                                <apex:repeat value="{! apiFieldslst }" var="apiName">
+                                    <td>
+                                        <apex:outputfield value="{! lst[apiName] }" rendered="{! apiName != linkField }"/> 
+                                        <apex:outputlink value="{! If(detailPage != '', detailPage & '?id='&lst.id, '/'&lst.id) }" rendered="{! apiName == linkField }">{! lst[linkField] }</apex:outputlink>
+                                        <apex:outputpanel rendered="{! apiName == 'StageName' && lst['Need_Additional_Information__c'] == 'Requested' }">
+                                            <span class="glyphicon glyphicon-question-sign pull-right" aria-hidden="true" style="color: rgb(74, 167, 189);"></span>
+                                        </apex:outputpanel>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+            
+            <script>
+                $( document ).ready(function() {
+                    $('#projectTable').show();
+
+                    var pageSize = 10;
+                    var paging = false;
+
+                    if ( pageSize < {! objLst.size } ) {
+                        paging = true;
+                    }
+               
+                    $('#projectTable').DataTable({
+                        "searching": false,
+                        paging: paging,
+                        ordering: false,
+                        "lengthChange": false,
+                        "pageLength": pageSize,
+                        "info": false,
+                        aaSorting: [[0, 'desc']],
+                        'aoColumnDefs': [
+                            {'sType': 'mySort', 'aTargets': [0]}
+                        ]
+                    });
+                });
+            </script>
+
+        </apex:form>
+    </apex:outputPanel>
+</apex:component>

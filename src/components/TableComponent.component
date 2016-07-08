@@ -1,0 +1,6 @@
+<apex:component >
+    <link rel="stylesheet" href="{!URLFOR($Resource.JqueryDatatable, 'css/jquery.dataTables.min.css')}" />
+    <script src="{!$Resource.JqueryDatatable}/js/jquery.js"/>
+    <script src="{!$Resource.JqueryDatatable}/js/jquery.dataTables.js"/>
+  
+</apex:component>

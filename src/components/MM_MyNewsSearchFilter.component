@@ -1,0 +1,102 @@
+<!--
+* @author: Namrata Mehta
+* @date: November 2015
+* @description: MM_MyNews/ Component to display newslist 
+*               Used in SRM_ContactUs page.
+-->
+<apex:component >
+    <style type="text/css">
+
+    .right-inner-addon {
+        position: relative;
+    }
+    .right-inner-addon input {
+        padding-right: 30px;    
+    }
+    .right-inner-addon i {
+        position: absolute;
+        right: 0px;
+        padding: 10px 12px;
+        pointer-events: none;
+    }   
+    </style>
+
+    
+    <div class="contactUsBody myNewsContainer">
+        <div class="panel-heading">
+            <div class="row">
+                <form ng-submit="showUpdatedNews()">
+                    <div class="panel-group knowSearchFilter" id="accordion" role="tablist"
+                         aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div role="tab" class="accord" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" class="hover-action collapsed hvr-icon-hang" data-parent="#accordion" data-target="#collapseOne" ng-click="reverse = predicate == 'FilterCase' && !reverse; predicate = 'FilterCase';showValue(!reverse);ShowNewsList(reverse);" aria-expanded="false" aria-controls="collapseOne">
+                                        <span>
+                                            Filter My News
+                                        </span>
+                                        <!-- <i class="glyphicon glyphicon-chevron-down hvr-icon-hang icon-style"></i> -->
+                                    </a>
+                                </h4>
+                            </div>
+                            
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body myNewsPanel"> 
+                                    <div class="form-group col-md-12 col-xs-12">
+                                        <label class="formlabel">Date Opened</label>
+                                        <div class="col-md-12">                                            
+                                             <div class='col-sm-6 col-md-4'>
+                                                <div class="form-group">
+                                                    <div class='input-group date' id='datetimepicker1'>
+                                                        <input class="form-control cursor-pointer txtDtSubmitted textbox-n" id="datepicker-dateFrom" ng-model="dateFrom" placeholder="From" type="text" />
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class='col-sm-6 col-md-4'>
+                                                <div class="form-group">
+                                                    <div class='input-group date' id='datetimepicker1'>
+                                                        <input class="form-control cursor-pointer txtDtSubmitted textbox-n" id="datepicker-dateTo" ng-model="dateTo" placeholder="To" type="text" />
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                     <!--Search Input-->
+                                     <div class="col-md-10">
+                                        <div class="col-xs-12 col-sm-12 col-md-8 newsSearch" style="padding-left: 30px;">
+                                          
+                                            <div class="right-inner-addon">
+                                                <i  class="glyphicon glyphicon-search searchIcon" ng-click="News.search(true)" ng-hide="News.IsProcessing"></i>
+                                                <i class="fa fa-refresh fa-spin searchIcon" ng-show="News.IsProcessing"></i>
+                                                <input class="form-control knowledgeSearchInput newsSearchInput myAlertsULLI ng-pristine ng-valid ng-touched" ng-enter="newsBase.search()" id="searchStringText" ng-model="searchString" placeholder="Search News" type="search" />
+                                            </div>
+
+                                        </div> 
+                                        
+                                        <div class="row updateResultsBtntDiv">
+                                            <div class="col-md-4 col-sm-3 col-xs-12" style="padding-left: 30px;">
+                                                <button type="submit" class="btn btn-default buttonstyle top-buffer" ng-click="updateNewsList()">
+                                                    <img src="/img/loading.gif" height="16px" width="16px" ng-show="IsProcessing" />Update Results</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div> 
+
+                            </div>
+                        </div>
+                    </div> 
+                </form>
+                         
+            </div>
+        </div>
+    </div>
+</apex:component>

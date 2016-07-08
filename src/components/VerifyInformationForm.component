@@ -1,0 +1,163 @@
+<apex:component >
+    <div class="headerTab">
+        <ol class="breadcrumb">
+            <li><a href="#" ng-click="Continue('ContactInfoForm')">1. Your Details</a></li>
+            <li><a href="#" ng-click="Continue('AccountInfoForm')">2. Company Information</a></li>
+            <li class="active"><a href="#">3.Verify Information</a></li>
+        </ol>
+    </div>
+    
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>
+                <span>Your Details</span>
+                <i class="pull-right" ng-class="{ 'glyphicon glyphicon-plus': ContactCollapse, 'glyphicon glyphicon-minus': !ContactCollapse }" ng-click="ContactCollapse=!ContactCollapse"></i>
+            </h2>
+        </div>
+        <div class="panel-body" ng-hide="ContactCollapse">
+            <div class="verifyTableDiv">
+                <table class="table table-striped verifyTable">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">First Name</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                <span>{{Form.ContactFirstName}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Last Name</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.ContactLastName}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Gender</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Gender}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Date of Birth</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.DOB}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Landline</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Landline}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Mobile</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Mobile}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Fax</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Fax}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Email</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Email}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Role</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Role}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!--<div class="form-group col-xs-12">
+                <label class="control-label margTop20 floatLeft">Sign Here</label>
+                <div id="signature1"></div>
+            </div>-->
+        </div>
+        
+        <br/><br />
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>
+                <span>Company Information</span>
+                <i class="pull-right" ng-class="{ 'glyphicon glyphicon-plus': AccountCollapse, 'glyphicon glyphicon-minus': !AccountCollapse }" ng-click="AccountCollapse=!AccountCollapse"></i>
+            </h2>
+        </div>
+        <div class="panel-body" ng-hide="AccountCollapse">
+            <div class="verifyTableDiv">
+                <table class="table table-striped verifyTable">
+                    <tbody>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Company Name</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                <span>{{Form.Name}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Company Address</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Introducer_Firm_Main_Trading_Address__c}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Main phone no.</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Phone}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Email address for payment advices</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Email_address_for_payment_advices__c}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Email address for general correspondence</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Email_address_for_general_correspondence__c}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Introducer Firm FCA registration</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Introducer_Firm_FCA_registration__c}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Sort Code</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.Sort_Code__c}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Account Number</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.AccountNumber}}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-md-4 col-sm-6 col-xs-8">Firm Reference No. / 6 digit type of address</td>
+                            <td class="col-md-8 col-sm-6 col-xs-4">
+                                <span>{{Form.FRN}}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br /><br />
+    </div>
+        <div class="btnDiv">
+            <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange" ng-click="Continue('AccountInfoForm')">Back</button>
+            <button type="button" class="btn btn-default btnSubmit col-xs-12 col-md-2 btnSubmitChange margLeft10" ng-click="Submit()">Submit</button>
+        </div>
+    </div>    
+</apex:component>

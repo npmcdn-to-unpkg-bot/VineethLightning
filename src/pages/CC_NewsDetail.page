@@ -1,0 +1,171 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" controller="CC_NewsBroadcastsCtrl">
+   
+   <apex:composition template="CC_CommunityTemplate">
+        <apex:define name="header">   
+            <c:CC_HSBCHeader selectedTab="myhsbc" />
+        </apex:define>
+        <apex:define name="body">
+        	<style type="text/css">
+        		/* Added by Anil for Chat Page */
+				.containerSearchInput{
+					width:294px;
+				}
+
+				.knowledgeSearchInput{
+					width: 280px;
+					display: inline-block;
+				}
+
+				.searchIcon{
+					position: relative;
+					top: 12px;
+					float: right;
+					right: 20px;
+					cursor:pointer;
+					color:#7F99B2;
+				}
+
+				.resultLinks{
+					color:#007EB6;
+					text-decoration:underline;
+					cursor:pointer;
+				}
+
+
+				.chatIcon{	
+					background-color: #007EB6;
+					width: 50px;
+					height: 60px;
+					display: inline-block;
+				}
+
+				.chatTitleContainer{
+					vertical-align:middle;
+					height: 60px;
+					display:inline-block;
+				}
+
+				.chatTitle{
+					color:#007EB6;
+					font-size: 16px;
+					padding-left:5px;
+					position:relative;
+					top:-10px;	
+				}
+
+				.btnSortBy{
+					padding:2px 6px;
+					height: 32px;
+				}
+
+				.containerDate p{
+					color: #007EB6;
+					margin-top:10px;
+					margin-bottom:10px;
+				}
+
+				.containerDate button{	
+					margin-top:10px;
+					margin-bottom:10px;
+				}
+
+				.containerContent{
+					margin-top:15px;
+					margin-bottom:15px;
+				}
+
+				.btnBack{
+					color:#007EB6;
+					font-size:16px;
+					border-color:#007EB6;
+				}
+				/* Added by Anil for Chat Page */
+				.titleNews{
+					color: #337ab7;
+				    text-decoration: none;
+				}
+				</style>
+	        <script type="text/javascript">
+	            var IPAppModule = angular.module('IPApp', []);
+	            IPAppModule.controller('MyNewsDetailCtrl', function($scope) {
+	            
+	                $scope.manageContentId = '{!HTMLENCODE($CurrentPage.parameters.newsId)}';
+	                $scope.manageContentDetailList = [];
+	                
+	                $scope.BackToMyCases = function() {
+	                    window.location = '{!HTMLENCODE($CurrentPage.parameters.returnURL)}';
+	                };
+	                
+	                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CC_NewsBroadcastsCtrl.getNewsDetail}', $scope.manageContentId, function(result, event) {
+	                        if (event.type === 'exception') {
+	                            window.console && console.log('Exception occured.');
+	                        } else if(event.status) {
+	                            $scope.manageContentDetailList = result.Data['ManageContentDetailList'];
+	                            $scope.$apply();
+	                        }
+	                });
+	            });
+	            
+	            $(function() {
+	                $('.ip-navbar li').removeClass('active');
+	                $('.my-news').addClass('active');
+	            });
+	        </script>
+	    	<div class="page--news-detail">
+	    		<div class="page-banner"></div>
+	    		<div class="page--container">
+			        <div id="ng-app" ng-app="IPApp" ng-controller="MyNewsDetailCtrl" ng-cloak="ngCloak">
+					    <!--Anil:Container for News Article Starts Here-->
+					    <div ng-repeat="manageContent in manageContentDetailList">
+					        <!--Anil:Panel Title Starts Here-->
+					        <div class="row">
+					            <div class="col-md-12">
+					                <strong><h1 class="panel-title titleNews" ng-bind="manageContent.Title__c"></h1></strong>
+					            </div>
+					        </div>
+					        
+					        <!--Anil:Panel Title Ends Here-->
+					        
+					        <!--Anil:Date Section Starts Here-->
+					        <div class="row containerDate">
+					            <div class="col-sm-10">
+					                <p>{! $Label.CC_Published }: {{ manageContent.Publish_Start__c | date: 'dd/MM/yyyy' }}</p>
+					            </div>
+					        </div>
+					        <!--Anil:Date Section Ends Here-->
+					        
+					        <!--Anil:Article Section Starts Here-->
+					        <div class="row containerContent">
+					            <div class="col-xs-12">
+					                <p><b ng-bind="manageContent.Summary__c"></b></p>
+					            </div>
+					        </div>
+					        <!--Anil:Article Section Ends Here-->
+					        
+					        <div class="row containerContent">
+					            <div class="col-xs-12">
+					                <p ng-bind="manageContent.Body__c"></p>
+					            </div>
+					        </div>
+					        
+					        <div class="row containerDate" ng-show="manageContent.Link__c.length">
+					            <div class="col-sm-10">
+					                <h5>{! $Label.CC_URL }:&nbsp;&nbsp;<a target="_blank" href="{{manageContent.Link__c}}" >{{ manageContent.Link__c }}</a></h5>
+					            </div>
+					        </div>
+					        <br />
+					        <!--Anil:Back Button Starts Here-->
+					        <div class="row">
+					            <div class="col-xs-12">
+					                <button type="button" class="btn-rounded" ng-click="BackToMyCases()"> {! $Label.BackBTN } </button>
+					            </div>
+					        </div>
+					        <!--Anil:Back Button Ends Here-->
+					    </div>
+					<!--Anil:Container for News Article Starts Here-->
+			    	</div>
+	    		</div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

@@ -1,0 +1,70 @@
+<apex:component >
+
+	<style>
+        .myCases {
+            background: rgba(226,226,226,1);
+            background: -moz-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 0%, rgba(254,254,254,1) 51%, rgba(209,209,209,1) 100%);
+            background: -webkit-gradient(left top, right top, color-stop(0%, rgba(226,226,226,1)), color-stop(0%, rgba(219,219,219,1)), color-stop(51%, rgba(254,254,254,1)), color-stop(100%, rgba(209,209,209,1)));
+            background: -webkit-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 0%, rgba(254,254,254,1) 51%, rgba(209,209,209,1) 100%);
+            background: -o-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 0%, rgba(254,254,254,1) 51%, rgba(209,209,209,1) 100%);
+            background: -ms-linear-gradient(left, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 0%, rgba(254,254,254,1) 51%, rgba(209,209,209,1) 100%);
+            background: linear-gradient(to right, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 0%, rgba(254,254,254,1) 51%, rgba(209,209,209,1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2e2e2', endColorstr='#d1d1d1', GradientType=1 );
+            margin: 10px;
+            margin-left: 20px;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+            width: 30%
+        }
+        .blue {
+            /*color: #db0011;*/
+            color: rgba(75, 168, 190, 0.99);
+        }
+        @media (max-width: 768px) {
+        	.myCases {
+        		margin-left: 20px;
+        		width: 40%;
+        	}
+		}
+		@media (max-width: 500px) {
+			.myCases {
+				margin-left: 20px;
+				width: 90%;
+			}
+		}
+	</style>
+
+    <div style="" class="myCases">
+        <span  class="pull-left">
+            <i class="fa fa-dashboard fa-2x blue" ></i> {! $Label.CC_My_Applications }
+        </span>
+        <span>
+            <a href="#" class="pull-right"> {! $Label.CC_View_all } </a>
+        </span>
+        <span>
+            <a class="btn" style="width: 90%; background: rgba(75, 168, 190, 0.99); color: white; margin:10px">
+                <div>
+                    <i class="fa fa-download fa-2x" style="float:left"></i> {! $Label.CC_New_Applications }
+                    <span style="float: right" id="count" align="right">123</span>
+                  </div>
+            </a>
+            <br/>
+            <a class="btn" style="width: 90%; background: rgba(107, 180, 71, 0.9) !important; color: white; margin: 10px">
+                <div>
+                    <i class="fa fa-money fa-2x" style="float: left"></i> {! $Label.CC_Total_Value }
+                    <span style="float: right" id="total" align="right">£10,876,432</span>
+                </div>
+            </a>
+            <br/>
+            <br/>
+          </span>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#count').width($('#total').width()); 
+        });
+    </script>
+        
+</apex:component>

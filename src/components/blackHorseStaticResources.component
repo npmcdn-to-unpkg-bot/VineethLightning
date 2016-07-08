@@ -1,0 +1,171 @@
+<apex:component >
+
+    <apex:stylesheet value="{!$Resource.Bootstrap_3_3_5}/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.blackHorseStaticResources, 'fonts/font-awesome/css/font-awesome.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.bxslider, 'jquery.bxslider.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.blackHorseStaticResources, 'styles/jquery-ui.css')}" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css"></link>    
+    
+    <apex:includeScript value="{!URLFOR($Resource.blackHorseStaticResources, 'scripts/jquery-2.1.1.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.blackHorseStaticResources, 'scripts/jquery-ui.js')}"/>
+    <apex:includeScript value="{!$Resource.Bootstrap_3_3_5}/js/bootstrap.min.js"/>
+    <apex:includeScript value="{!$Resource.bxslider}/jquery.bxslider.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>    
+    <apex:includeScript value="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"/> 
+    <script src="{!URLFOR($Resource.blackHorseStaticResources, 'frmwks/angular134/angular.js')}"></script> 
+    
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <style>
+        body{    
+            background: #e8e8e8 
+        }
+        .navbar {
+            margin-bottom: 0px !important;
+        }
+        .container{
+            background-color:white;
+            padding-left:0px;
+            padding-right:0px;
+            -webkit-box-shadow: 0 0 10px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0 0 10px rgba(0,0,0,0.75);
+            box-shadow: 0 0 10px rgba(0,0,0,0.75);
+        }
+        .filter{
+            overflow-y:auto;
+            touch-action:pan-y;
+        }
+        .filter a, .filter a:visited{
+            //background: rgba(75, 168, 190, 0.9);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            line-height: 35px;
+            vertical-align: middle;
+            margin: 10px;
+            width:100%;
+            height:100%;
+            white-space: normal !important;
+        }
+        .filter a:hover, .filter a.selected{
+            color:white !important;
+            background-color: #00BFFF; /*rgba(107, 180, 71, 0.9);#db0011; */
+        }
+        .filter>.col-md-1{
+            float: initial !important;
+        }
+        .filter li{
+            text-align: center;
+            padding:0 10px 0 10px;
+            display: table-cell;
+            vertical-align:middle;
+        }
+        .filter{
+            margin:0 auto;
+            display:table;
+        }
+        .headerTab .breadcrumb > li + li::before {
+            content: "" !important;
+        }
+        .row{
+            margin:0 auto !important;
+        }
+        .headerTab li.active a, .headerTab li a:hover{
+            background-color: #00728f !important;
+        }
+        .headerTab li a{
+            background-color: rgba(75, 168, 190, 0.99) !important;
+            padding: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .headerTab li a{
+            color: white !important;
+        }
+        .imgBanner{
+            //padding-bottom:5px;
+        }
+        .sliderBackground{
+           margin:0 !important;
+           background:rgba(0,0,0,0.4);
+        }
+        .sliderBackground a.btn:hover, .sliderBackground a.btn.selected {
+            color: white !important;
+            background-color: #00BFFF !important; //rgba(107, 180, 71, 0.9)
+        }
+        .sliderBackground a.btn, .sliderBackground a.btn:visited {
+            background: rgba(0,0,0, 0.5);
+            color: white;
+            vertical-align: middle;
+            margin: 10px;
+            white-space:normal;
+        }
+        #detailBackground{
+            background:#eee !important;
+        }
+        
+
+        .bx-wrapper .bx-prev {
+            left: -50px !important;
+        }
+        .bx-wrapper .bx-next{
+            right: -50px !important;
+        }
+        .bx-wrapper{
+            -moz-box-shadow: none !important;  
+            -webkit-box-shadow: none !important; 
+            box-shadow: none !important;
+            border: none !important; 
+            margin:0 auto !important;
+            background: transparent;
+        }
+        .supportTabContent{
+            width:80%;margin:0 auto;
+        }
+         .continueBtn{
+            background: #00728f !important;
+            color: white !important;
+        }
+        .backBtn{
+            background: grey !important;
+            color: white !important;
+        }
+        @media (max-width: 768px){
+            .imgBanner{
+               padding-top:5px;
+            }
+            .supportTabContent{
+                width:100%;
+            }
+        }
+        .tableHeading{
+            background-color:black;
+            color:white;
+        }
+        .row{
+            margin: 0px !important;
+        }
+        .bxslider{
+            margin:0 auto;
+            display:none;
+        }
+        @media (min-width: 1200px){
+            .container {
+                width: 1040px !important;
+            }
+        }
+        @media (max-width: 500px){
+            .filter li{
+                padding:0 5px 0 5px;
+            }
+            .filter{
+                display:inline;
+            }
+            .filter a, .filter a:visited{
+                line-height: normal !important;
+            }
+            
+        }
+    </style>
+</apex:component>

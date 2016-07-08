@@ -1,0 +1,48 @@
+<apex:component >
+	<script type='text/javascript' src='https://c.la10.salesforceliveagent.com/content/g/js/34.0/deployment.js'></script>
+	<div class="row">
+		<div class="col-xs-12" style="padding:20px;">
+			<div class="col-xs-12">
+				{! $Label.CC_contact_support_immediatly_using_chat }
+			</div>
+			<div class="col-xs-12">
+				<div id="loading" align="center" style="padding:20px;">
+					{! $Label.CC_Fetching_agent_availability }<br/>
+					<img src="/img/loading32.gif" style="padding:20px;"/>
+				</div>
+			</div>
+
+			<a class="btn btn-default" id="liveagent_button_online_57328000000Kzc8"  href="javascript://Chat" style="display: none;margin:20px;" onclick="liveagent.startChat('57328000000Kzc8')">
+				<img src="http://files.softicons.com/download/system-icons/web0.2ama-icons-by-chrfb/png/256x256/Chat.png" width="50px"/>
+				{! $Label.CC_Start_Chat }
+			</a>
+
+			<div  id="liveagent_button_offline_57328000000Kzc8" style="display: none;margin:20px;">
+				<br/>
+				{! $Label.CC_Sorry_no_agent_is_available }
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			liveagent.init('https://d.la10.salesforceliveagent.com/chat', '57228000000GnMW', '00D28000000fuBi');
+			if (!window._laq) { window._laq = []; }
+			window._laq.push(function() {
+				liveagent.showWhenOnline('57328000000Kzc8', document.getElementById('liveagent_button_online_57328000000Kzc8'));
+				liveagent.showWhenOffline('57328000000Kzc8', document.getElementById('liveagent_button_offline_57328000000Kzc8'));
+			});
+
+			var dsplCheck = setInterval(function() { 
+				var dsplOffline = $( "#liveagent_button_offline_573280000008P5c" ).css( "display" );
+				var dsplOnline = $( "#liveagent_button_online_573280000008P5c" ).css( "display" );
+				if(dsplOffline != 'none' || dsplOnline != 'none') {
+					$('#loading').hide();
+					stopSetIntrvl();
+				}
+			}, 100);
+			dsplCheck();
+			function stopSetIntrvl() {
+				clearInterval(dsplCheck);
+			}
+		</script>
+	</div>
+</apex:component>

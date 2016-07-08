@@ -1,0 +1,35 @@
+<apex:page showHeader="false" sidebar="false" docType="html-5.0" standardController="Contact" >
+
+	<link rel="Stylesheet" href="{! $Resource.bootstrapsf1 }/css/bootstrap-namespaced.css" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.IntroducerStaticResources, 'styles/jquery-ui.css' ) }" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.css' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-ui.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.Bootstrap_3_3_5, 'js/bootstrap.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CB_Detail, 'angular.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.chart_js_master, 'Chart.js-master/Chart.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.d3, 'd3.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.angular_chart, 'angular-chart.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CC_Detail, 'angular-toastr.tpls.min.js' ) }"/>
+	<apex:includeScript value="{! URLFOR( $Resource.dirPagination, 'dirPagination.js' ) }"/>
+
+	<style type="text/css">
+		.page-body {
+			background: white !important;
+		}
+		.row {
+			margin: 0 !important;
+		}
+	</style>
+
+	<script type="text/javascript">
+		var app = angular.module( 'ngCustomerDetailsApp', [ 'toastr', 'chart.js', 'angularUtils.directives.dirPagination' ] );
+	</script>
+
+	<div class="bootstrap-sf1 container page-body" ng-app="ngCustomerDetailsApp" >
+		<div class="row">
+			<c:CB_ProductsAndSavings currentContact="{! contact }" />
+		</div>
+	</div>
+	
+</apex:page>

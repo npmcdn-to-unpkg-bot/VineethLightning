@@ -1,0 +1,25 @@
+<apex:component allowDML="true" controller="BTT_CaseUpdateController">
+     <script>
+      $(document).ready(function() {
+    $('.disagree').on('click',function(){
+    $('.information').css('display','none');
+     closedeal();
+   
+    })
+    
+    $('.agree').on('click',function(){
+   window.location='{!$Page.cm_newoffers}';
+    })
+      });
+     </script>
+   <apex:form id="closepopup">
+       <apex:actionFunction name="closedeal" action="{!closeDeal}" rerender=""/> <!--alert alert-info information-->
+   </apex:form>
+  <div class="alert alert-danger information" style="margin:50px 20px 20px 20px;display:{!IF(showpopup== true,'block','none')}" role="alert">
+       <a href="#" class="close" data-dismiss="alert">&times;</a>
+       <h7>Hi,{!$User.FirstName}</h7>
+       <p>Your mortgage fixed term is close to end soon. We have prepared a personalised re-mortgage offer for you</p>
+       
+      <p>
+      <a href="{!URLFOR($Resource.ReadMe)}" download="BTT_OFFERS.pdf" class="alert-link agree">INTERESTED</a>&nbsp;&nbsp;<a href="#" class="alert-link disagree">NOT INTERESTED</a></p></div>
+</apex:component>

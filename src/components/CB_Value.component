@@ -1,0 +1,14 @@
+<apex:component >
+
+	<apex:attribute name="value" type="String" description="Custom value" required="true" />
+	<apex:attribute name="link" type="String" description="Custom link" required="false" />
+
+	<div class="col-sm-6">
+		<apex:outputText value="{! value }" rendered="{! OR( link == null, link == '' ) }" />
+
+		<apex:outputLink value="{! link }" rendered="{! AND( link != null, link != '' ) }" >
+			{! value }
+		</apex:outputLink>
+	</div>
+
+</apex:component>

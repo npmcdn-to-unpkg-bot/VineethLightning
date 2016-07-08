@@ -1,0 +1,64 @@
+<apex:component layout="none">
+
+    <apex:attribute type="string" name="selectedTab" required="false" default="home" description="Contains Id of tab to be selected"/>
+
+    <nav class="header-nav">
+        <div class="header-nav-inner clearfix">
+            <a href="{! $Page.CC_HOME }" class="header-nav-logotype"></a>
+            <div class="header-nav-controls clearfix">
+                <apex:outputPanel rendered="{! ISPICKVAL( $User.UserType, 'Guest' ) }" layout="none">
+                    <div class="login">
+                        <a href="{! $Page.CC_Login }" class="login-button"><i class="login-button-icon"></i>{! $Label.Login }</a>
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{! NOT( ISPICKVAL( $User.UserType, 'Guest' ) ) }" layout="none">
+                    <div class="customer" id="js-customer-link">
+                        <i class="customer-icon" aria-hidden="true"></i>
+                        <div class="customer-name">{! $User.FirstName } {! $User.LastName }</div>
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                        <ul class="customer-dropdown-list" id="js-dropdown-list">
+                            <li class="customer-dropdown-list-item"><a class="customer-dropdown-list-item-link" href="{! $Page.CC_MyDetails }">{! $Label.CC_Edit_My_Details }</a></li>
+                            <li class="customer-dropdown-list-item"><a class="customer-dropdown-list-item-link" href="{! $Page.CC_ChangePassword }">{! $Label.CC_Change_Password }</a></li>
+                            <li class="customer-dropdown-list-item"><a class="customer-dropdown-list-item-link" href="{! $Site.Prefix }/secur/logout.jsp">{! $Label.CC_Logout }</a></li>
+                        </ul>
+                    </div>
+                </apex:outputPanel>
+                <button class="mobile-menu-button" id="js-mobile-menu-button">
+                    <div class="mobile-menu-button-line"></div>
+                    <div class="mobile-menu-button-line"></div>
+                    <div class="mobile-menu-button-line"></div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <script type="text/javascript">
+        $(function(){
+            var dropdownLink = $('#js-customer-link');
+            var dropdownList = $('#js-dropdown-list');
+            dropdownLink.on('click', function(event){
+                dropdownList.toggleClass('isVisible');
+                $('html').one('click',function() {
+                  dropdownList.removeClass('isVisible');
+                });
+                event.stopPropagation();
+            });
+
+            // Script for menu on mobile devices
+            var $mobileMenuButton = $('#js-mobile-menu-button');
+            var $headerMenuList = $('#js-header-menu-list');
+            $mobileMenuButton.on('click', function(){
+                $(this).toggleClass('isActive');
+                $headerMenuList.toggleClass('isVisibleOnMobile');
+            });
+            $(window).on('resize', function(){
+                $mobileMenuButton.removeClass('isActive');
+                $headerMenuList.removeClass('isVisibleOnMobile');
+            })
+
+        });
+    </script>
+
+    <c:CC_CommunityTabs selectedtab="{! selectedTab }" />
+
+</apex:component>

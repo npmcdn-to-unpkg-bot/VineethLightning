@@ -1,0 +1,23 @@
+<apex:component >
+    <div class="row header-logo mobile-header regHeader">
+        <div class="col-md-12 col-xs-12 col-sm-12 regContainerDiv">
+            <div class="container regContainer">
+                <div class="col-md-8 col-xs-8 col-sm-8 brand-logo hideSearchClick regBrandLogoDiv">
+                    <img alt="Barclays" src="{!URLFOR($Resource.IntroducerStaticResources, 'images/brand_logo.png')}" />
+                </div>
+                <div class="col-md-4 col-sm-3 col-xs-2 closeLink">
+                    <a class="pull-right helpLink secureLock" href="#">
+                        <span class="glyphicon glyphicon-lock "></span>
+                        <label class="hidden-xs secureLabel">Secure</label>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-1 col-xs-2 helpHeaderLink">
+                    <div class="pull-right">
+                        <span class="hidden-md hidden-lg">|</span>
+                        <a class="hidden-md hidden-lg secureLabel" href="#" data-toggle="modal" data-target="#myModal">Help</a>
+                    </div>
+                </div>
+            </div>
+        </div>	
+    </div>
+</apex:component>

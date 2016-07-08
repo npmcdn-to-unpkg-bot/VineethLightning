@@ -1,0 +1,14 @@
+<apex:component >
+    <nav class="navbar navbar-default footer col-md-12 col-sm-12 col-xs-12 margBot20 paddleft10 regFooterNav" role="navigation">
+        <div class="col-md-12 col-xs-12 col-sm-12 paddleft0 margBot20 footerMobDiv">    
+            <p class="footerNote">
+                {!$Label.Registration_Footer}
+            </p>
+        </div>  
+        <!--<div class="col-md-12 col-sm-12 col-xs-12 paddleft0 hidden-xs">
+            <div class="cookieDiv">
+                <p class="cookieLink"><a id="editCookiePermissionsTrigger" href="#" class="">Cookies</a></p>
+            </div>
+        </div>-->
+    </nav>
+</apex:component>

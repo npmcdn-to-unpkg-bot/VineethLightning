@@ -1,0 +1,372 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="CommunityController" title="New Application">
+    
+    <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            <style>
+                .red{
+                    color:red;
+                }
+               
+                .form-group label{
+                    font-size:12px !important;
+                }
+            </style>
+            <script>
+                $(document).ready(function(){
+                    $('.datepicker').datepicker({
+                        dateFormat: 'yy-mm-dd'
+                    })
+                });
+                
+                var app = angular.module('CommunityApp', []);
+                app.controller('newCaseController', function($scope) {
+                    $scope.contact = {Salutation: 'Mr.', FirstName: 'John', LastName: 'Parker', Gender__c: 'Male',
+                                      Phone : '123345678', MobilePhone: '987654345676', Email: 'john.parker@demo.com',
+                                      MailingCountry: 'UK', MailingPostalCode: 'BH-3A', Birthdate: '1987-05-13'};
+                    $scope.view = {};
+                    $scope.CurrentForm = 'WhosApplying';
+                    
+                    $scope.formSubmitted = false;
+                    $scope.secondFormSubmitted = false;
+                    $scope.opportunity = {To_Do__c:'Buying a first property', Council_Tax_Band__c: 'B', Deposit__c:700000, Amount: 50000,
+                                          Mortgage_For__c:'', Mortgage_Term__c: '10',  Type: 'Fixed rates',Prefer_to_Pay__c:'Capital repayment',
+                                          Building_Name__c: 'Bulding 201', City__c: 'Test', County__c: 'Test', Country__c: 'UK', 
+                                          Postcode__c: 'BT-3A4', Type_of_Property__c:'Bungalow'};
+                    $scope.saveAndContinue = function(){
+                        if(!$scope.newCaseForm.$valid){
+                            $scope.formSubmitted = true;
+                        }
+                        else{
+                            $scope.CurrentForm = 'MortgageDetails';
+                            $scope.formSubmitted = false;
+                        }                        
+                    }
+                    
+                    $scope.submit = function(ev){
+                        var btn = ev.currentTarget;
+                        $(btn).button('loading');
+                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CommunityController.createOpportunity}',JSON.stringify( $scope.contact),JSON.stringify( $scope.opportunity), function(result){
+                            if(result.isSuccess){
+                                $('#message').html('Application created successfully');
+                                $('#msgModal').modal();
+                            }
+                            else{
+                                alert(response.message);
+                            }
+                            $(btn).button('reset');
+                        },{escape: true});
+                    };
+                    $scope.closeModal = function(){
+                        $('#msgModal').modal("hide");
+                        window.location.href = '{!$Page.CM_MyApplications}';
+                    }
+                    $scope.Continue = function(form){
+                        $scope.CurrentForm = form;
+                        $('.datepicker').datepicker({
+                          dateFormat: 'yy-mm-dd'
+                        });
+                    }
+                });
+            </script>
+            
+            <div style="padding-bottom:5px;background: url(https://www.hsbc.co.uk/1/PA_esf-ca-app-content/content/pws/content/personal/mortgages/first-time-buyers/images/mortgages-banner4.jpg)">
+                <c:CommunityTabs selectedTab="mycases"/>
+                <br/>
+            </div>
+            
+            <div class="col-xs-12" ng-app="CommunityApp" ng-controller="newCaseController">
+                <br/>
+                <ol class="breadcrumb" >
+                    <li><a href="{!$Page.CM_Home}">Home</a></li>
+                    <li class="active">Submit a new Application</li>
+                </ol>
+                 
+                 <form class="form-horizontal" name="newCaseForm" ng-switch="CurrentForm">
+                    <div class="headerTab">
+                        <ul class="nav nav-tabs">
+                            <li ng-class="{ 'active' : CurrentForm === 'WhosApplying' }"><a href="#" ng-click="Continue('WhosApplying')" >1. Who's Applying?</a></li>
+                            <li ng-class="{ 'active' : CurrentForm === 'MortgageDetails' }"><a href="#" ng-click="Continue('MortgageDetails')" >2. Mortgage Details</a></li>
+                            <li ng-class="{ 'active' : CurrentForm === 'PropertyDetails' }"><a href="#" ng-click="Continue('PropertyDetails')">3.Property Details</a></li>
+                        </ul>
+                    </div>
+                   
+                    <div ng-switch-when="WhosApplying">
+                        <h3/>
+                        <p>Enter applicant details</p>
+                        <div class="form-group">
+                            <label for="title" class="col-sm-4 control-label">Title:*</label>
+                            <div class="col-sm-2 ">
+                                <select ng-model="contact.Salutation" class="form-control" required="true" id="title" ng-class="{red: newCaseForm.title.$invalid && formSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="Mr.">Mr.</option>
+                                    <option value="Mrs.">Mrs.</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fName" class="col-sm-4 control-label">Applicant's first name:*</label>
+                            <div class="col-sm-3 ">
+                                <input ng-model="contact.FirstName" id="fName" class="form-control" required="true" ng-class="{red: newCaseForm.fName.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lName" class="col-sm-4 control-label">Applicant's surname:*</label>
+                            <div class="col-sm-3 ">
+                                <input type="text" ng-model="contact.LastName" id="lName" class="form-control" required="true" ng-class="{red: newCaseForm.lName.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="db" class="col-sm-4 control-label">Applicant's date of birth:*</label>
+                            <div class="col-sm-2 ">
+                                <input  id="db" ng-model="contact.Birthdate" class="form-control datepicker"  ng-class="{red: newCaseForm.db.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>    
+                        
+                        <div class="form-group">
+                            <label for="inlineRadioOptions" class="col-sm-4 control-label">Is the applicant male or a female?*</label>
+                            <div class="col-sm-3 ">
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Male" ng-model="contact.Gender__c" required="true" ng-class="{red: newCaseForm.inlineRadioOptions.$invalid && formSubmitted}"/> Male
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Female" ng-model="contact.Gender__c" required="true" ng-class="{red: newCaseForm.inlineRadioOptions.$invalid && formSubmitted}"/> Female
+                                </label>
+                            </div>
+                        </div>  
+                        
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" ng-class="{red: !(contact.Phone || contact.MobilePhone)&& formSubmitted}">Please provide at least one phone number</label>
+                            <label  class="col-sm-3" ></label>
+                        </div>  
+                        
+                        <div class="form-group">
+                            <label for="phone" class="col-sm-4 control-label">Applicant's home telephone number:*</label>
+                            <div class="col-sm-2 ">
+                                <input type="text" ng-model="contact.Phone" class="form-control" id="phone"/>
+                            </div>
+                        </div>   
+                        <div class="form-group">
+                            <label for="mphone" class="col-sm-4 control-label">Applicant's mobile telephone number:*</label>
+                            <div class="col-sm-2 ">
+                                <input type="text" ng-model="contact.MobilePhone" class="form-control" id="mphone"/>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label for="email" class="col-sm-4 control-label">Applicant's email address:*</label>
+                            <div class="col-sm-2 ">
+                                <input type="email" ng-model="contact.Email" class="form-control" id="email" required="true" ng-class="{red: newCaseForm.email.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label for="sa" class="col-sm-4 control-label">Applicant's current address located:*</label>
+                            <div class="col-sm-2 ">
+                              <!--<input type="text" ng-model="contact.MailingStreet" class="form-control" id="sa" required="true" ng-class="{red: newCaseForm.sa.$invalid && formSubmitted}"/>-->
+                                <select  class="form-control" required="true" ng-model="contact.MailingCountry"  id="sa" >
+                                    <option value="">Please select</option>
+                                    <option value="UK">UK</option>
+                                    <option value="USA">USA</option>
+                                    <option value="India">India</option>
+                                </select>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label for="code" class="col-sm-4 control-label">Applicant's postcode:*</label>
+                            <div class="col-sm-2 ">
+                                <input type="text" ng-model="contact.MailingPostalCode" class="form-control" id="code" required="true" ng-class="{red: newCaseForm.code.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <div class="pull-right">
+                                    <a  class="btn btn-default backBtn" href="{!$Page.CM_Home}">Back</a>
+                                    <button ng-click="saveAndContinue()" class="btn btn-default continueBtn" >Save and Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div  ng-switch-when="MortgageDetails">
+                        <!--<h3 class="page-header">Mortgage Details</h3>-->
+                        <h3/>
+                        <div class="form-group">
+                            <label for="wanttodo" class="col-sm-4 control-label">What is this mortgage regarding?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control"  required="true" id="wanttodo" ng-model="opportunity.To_Do__c" ng-class="{red: secondForm.wanttodo.$invalid && secondFormSubmitted}">
+                                    <option value="" selected="true" >Please select</option>
+                                    <option value="Buying a first property">Buying a first property</option>
+                                    <option value="Move house/Buy another property">Move house/Buy another property</option>
+                                    <option value="Re-mortgage">Re-mortgage</option>
+                                    <option value="Borrow more (existing customer)">Borrow more (existing customer)</option>
+                                    <option value="Borrow funds (has no mortgage)">Borrow funds (has no mortgage)</option>
+                                    <option value="An additional property">An additional property</option>
+                                    <option value="A Buy-to-Let (funded by rental income)">A Buy-to-Let (funded by rental income)</option>
+                                    <option value="A Buy-to-Let (funded by my income)">A Buy-to-Let (funded by my income)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <label for="whatfor" class="col-sm-4 control-label">What's the mortgage for?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control"  id="whatfor" ng-model="opportunity.Mortgage_For__c" ng-class="{red: secondForm.whatfor.$invalid && secondFormSubmitted}">
+                                   <option value="">Please select</option>
+                                   <option value="My main home">My main home</option>
+                                   <option value="An additional property">An additional property</option>
+                                   <option value="A Buy-to-Let (funded by rental income)">A Buy-to-Let (funded by rental income)</option>
+                                   <option value="A Buy-to-Let (funded by my income)">A Buy-to-Let (funded by my income)</option>
+                                </select>
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <label for="estimateVal" class="col-sm-4 control-label">What's the property estimated value?*</label>
+                            <div class="col-sm-4 ">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">£</span>  
+                                    <input type="number" required="true" ng-model="opportunity.Amount" id="estimateVal" class="form-control" ng-class="{red: secondForm.estimateVal.$invalid && secondFormSubmitted}"/>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="depositVal" class="col-sm-4 control-label">How much will be the deposit?*</label>
+                            <div class="col-sm-4 ">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1">£</span>  
+                                    <input type="number" ng-model="opportunity.Deposit__c" required="true" id="depositVal" class="form-control" ng-class="{red: secondForm.depositVal.$invalid && secondFormSubmitted}"/>
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="typeMortage" class="col-sm-4 control-label">What type of mortgage is required?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control" required="true"  id="typeMortage" ng-model="opportunity.Type" ng-class="{red: secondForm.typeMortage.$invalid && secondFormSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="All mortgages">All mortgages </option>
+                                    <option value="Fixed rates">Fixed rates</option>
+                                    <option value="Discount rates">Discount rates</option>
+                                    <option value="Tracker rates">Tracker rates</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="prefPay" class="col-sm-4 control-label">What would the applicant prefer to pay?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control" required="true" ng-model="opportunity.Prefer_to_Pay__c" id="prefPay" ng-class="{red: secondForm.prefPay.$invalid && secondFormSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="Capital repayment">Capital repayment</option>
+                                    <option value="Interest only">Interest only</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="howLong" class="col-sm-4 control-label">How long does the applicant want to pay the mortgage over?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control" required="true"  id="howLong" ng-model="opportunity.Mortgage_Term__c"  ng-class="{red: secondForm.howLong.$invalid && secondFormSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="5">5 Years</option>
+                                    <option value="10">10 Years</option>
+                                    <option value="15">15 Years</option>
+                                    <option value="20">20 Years</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!--<div class="form-group">
+                            <div class="col-sm-6">
+                                <div class="pull-right">
+                                    <a  class="btn btn-default " ng-click="view.contactDetail = true">Back</a>
+                                    <button class="btn btn-default " ng-click="submit()">Submit</button>
+                                </div>
+                            </div>
+                        </div>-->
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <div class="pull-right">
+                                    <a  class="btn btn-default backBtn " ng-click="Continue('WhosApplying')">Back</a>
+                                    <button ng-click="Continue('PropertyDetails')" class="btn btn-default continueBtn" >Save and Continue</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div ng-switch-when="PropertyDetails">
+                        <!--<h3 class="page-header">Property Details</h3>-->
+                        <h3/>
+                        <p>Enter the details of new property</p>
+                        <div class="form-group">
+                            <label for="buildNumber" class="col-sm-4 control-label">Building Name / Number:*</label>
+                            <div class="col-sm-4 ">
+                                <input type="text" ng-model="opportunity.Building_Name__c" class="form-control" id="buildNumber" required="true" ng-class="{red: thirdForm.buildNumber.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label for="city" class="col-sm-4 control-label">Town / City:*</label>
+                            <div class="col-sm-4 ">
+                                <input type="text" class="form-control" ng-model="opportunity.City__c" id="city" required="true" ng-class="{red: thirdForm.city.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="county" class="col-sm-4 control-label">County:*</label>
+                            <div class="col-sm-4 ">
+                                <input type="text"  class="form-control" ng-model="opportunity.County__c" id="county" required="true" ng-class="{red: thirdForm.county.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="pcode" class="col-sm-4 control-label">Postcode:*</label>
+                            <div class="col-sm-4 ">
+                                <input type="text"  class="form-control" id="pcode" ng-model="opportunity.Postcode__c" required="true" ng-class="{red: thirdForm.pcode.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="country" class="col-sm-4 control-label">Country:*</label>
+                            <div class="col-sm-4 ">
+                                <input type="text"  class="form-control" id="country" required="true" ng-model="opportunity.Country__c" ng-class="{red: thirdForm.counrty.$invalid && formSubmitted}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="typeofflat" class="col-sm-4 control-label">Type of Property*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control" required="true"  id="typeofflat" ng-model="opportunity.Type_of_Property__c"  ng-class="{red: secondForm.howLong.$invalid && secondFormSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="Bungalow">Bungalow</option>
+                                    <option value="Cottage">Cottage</option>
+                                    <option value="Detached">Detached</option>
+                                    <option value="Flat">Flat</option>
+                                    <option value="Semi-detached">Semi-detached</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="typeofflat" class="col-sm-4 control-label">Which Council Tax band is your property in?*</label>
+                            <div class="col-sm-4 ">
+                                <select  class="form-control" required="true"  id="typeofflat" ng-model="opportunity.Council_Tax_Band__c"  ng-class="{red: secondForm.howLong.$invalid && secondFormSubmitted}">
+                                    <option value="">Please select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="E">E</option>
+                                    <option value="F">F</option>
+                                    <option value="G">G</option>
+                                    <option value="H">H</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <div class="pull-right">
+                                    <a  class="btn btn-default backBtn" ng-click="Continue('MortgageDetails')">Back</a>
+                                    <button ng-click="submit($event)"  data-loading-text="Processing..."  class="btn btn-default continueBtn" >Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <c:MessageModal />
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

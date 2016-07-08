@@ -1,0 +1,98 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" title="Knowledge Base" >
+
+
+
+	<apex:composition template="CC_CommunityTemplate">
+		<apex:define name="header">   
+			<c:CC_HSBCHeader />
+		</apex:define>
+
+		<apex:define name="body">
+			<style>
+		#content ul{
+			padding-left: 20px;
+			list-style: none;
+		}
+		#content li: before{
+			font-family: 'FontAwesome';
+			content: '\f0da';
+			margin: 0 10px 0 -15px;
+			color: #db0011 !important;
+			font-size: 1.5em;
+		}
+	</style>
+			<div style="padding-bottom:5px;background: url(http://www.visionservicebd.com/wp-content/uploads/2014/09/Support-page-banner.jpg); min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -50px;">
+
+				<c:CC_CommunityTabs selectedTab="support"/>
+
+				<apex:outputpanel id="filterPanel">
+					<apex:form style="touch-action:pan-y;overflow-y:auto;">
+						<apex:outputpanel rendered="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" >
+							<ul style="padding: 40px !important;" class="filter">
+								<li>
+									<a href="{! $Page.CC_SupportPage }?filter=Service Request" class="btn {! if($CurrentPage.Parameters.filter == 'Service Request','selected','') }" >
+										{! $Label.Service_Request }
+									</a>
+								</li>
+								<li>
+									<apex:commandLink action="{! $Page.CC_SupportPage}?filter=Contact Us" styleclass="btn  {!if($CurrentPage.Parameters.filter == 'Contact Us','selected','') }" value="Contact Us" status="status">
+									</apex:commandLink>
+								</li>
+							</ul>
+						</apex:outputpanel>
+						<apex:outputpanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" >
+							<ul style="padding: 40px !important;" class="filter">
+								<li>
+									<apex:commandLink action="{! $Page.CC_SupportPage}?filter=Contact Us" styleclass="btn  {!if($CurrentPage.Parameters.filter == 'Contact Us','selected','') }" value="Contact Us" status="status">
+									</apex:commandLink>
+								</li>
+							</ul>
+						</apex:outputpanel>
+					</apex:form>  
+				</apex:outputpanel>
+			</div>
+		</apex:define>
+	</apex:composition>
+
+	<!--style>
+		td {
+			vertical-align : top;
+			text-align: left;
+		}
+	</style>
+
+	<apex:form >
+		<apex:pageBlock title="Article List" >
+			<apex:panelGrid width="100%">
+				<table width="99%">
+					<tr>
+						<th width="33%">Title</th>
+						<th width="33%">Article Type</th>
+						<th width="33%">Summary</th>
+					</tr>
+				</table>
+				<knowledge:articleList articleVar="article" hasMoreVar="false" pageSize="10">
+					<table width="99%">
+						<tr>
+							<td width="33%">
+								<apex:outputLink target="_blank" value="{! URLFOR( $Action.KnowledgeArticle.View, article.id, [ 'popup' = 'true' ] ) }">
+									{! article.title }
+								</apex:outputLink>
+							</td>
+							<td width="33%">
+								<apex:outputText >
+									{! article.articleTypeLabel }
+								</apex:outputText>
+							</td>
+							<td width="33%">
+								<apex:outputText >
+									{! article.abstract }
+								</apex:outputText>
+							</td>
+						</tr>
+					</table>
+				</knowledge:articleList>
+			</apex:panelGrid>
+		</apex:pageBlock>
+	</apex:form-->
+</apex:page>

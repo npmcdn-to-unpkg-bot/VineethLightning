@@ -1,0 +1,12 @@
+<apex:page sidebar="false" showHeader="false" title="Chatter">
+    <apex:composition template="LC_CommunityTemplate">
+        <apex:define name="header">   
+            <c:LC_HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+             <c:LC_CommunityTabs selectedTab="mychatter"/>
+              <chatter:feedWithFollowers entityId="0F9280000008meq"/>
+              <!--<chatter:newsfeed />-->
+        </apex:define>
+    </apex:composition>
+</apex:page>

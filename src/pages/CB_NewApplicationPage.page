@@ -1,0 +1,1139 @@
+<apex:page showHeader="true" sidebar="false" title="New Application" docType="html-5.0" standardController="Opportunity" extensions="CB_NewApplicationController">
+
+	<link rel="Stylesheet" href="{! $Resource.bootstrapsf1 }/css/bootstrap-namespaced.css" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.IntroducerStaticResources, 'styles/jquery-ui.css' ) }" />
+	<link rel="stylesheet" href="{!URLFOR($Resource.CB_Detail,'css/dateselector.css')}"/>
+	<link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-ui.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.Bootstrap_3_3_5, 'js/bootstrap.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CB_Detail, 'angular.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CC_Detail, 'angular-toastr.tpls.min.js' ) }"/>
+	<apex:includeScript value="{! URLFOR( $Resource.dirPagination, 'dirPagination.js' ) }"/>
+
+	<style type="text/css">
+		.page-body {
+			background: white !important;
+			width: 100% !important; 
+		}
+		.collapseRow:hover {
+			cursor: pointer;
+		}
+		.red {
+			color: red;
+		}
+		.stepHeader {
+			text-align: center;
+		}
+	</style>
+
+	<div class="bootstrap-sf1 container page-body" ng-app="ngNewApp" ng-controller="ngNewAppController" >
+		 <script type="text/ng-template" id="date-select.html">
+            <div class="dateselector-container dateselector-default">
+                <select class="form-control dateselector-year" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.year" ng-options="year for year in vm.years track by year" ng-change="vm.onYearChange()"></select>
+                <select class="form-control dateselector-day" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.month" ng-options="('0' + month).slice(-2) for month in vm.months track by month" ng-change="vm.onMonthChange()">
+                        <option value="">--None--</option>
+                </select>
+                <select class="form-control dateselector-day" id="{{id}}" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.day" ng-options="('0' + day).slice(-2) for day in vm.days track by day" ng-change="vm.onDayChange()" id="{{controlId}}">
+                        <option value="">--None--</option>
+                </select>
+            </div>
+        </script>
+
+		<div class="col-xs-12">
+			<br />
+			<!-- START Chose mortgage type (create application for customer or broker) -->
+			<div id="mortgageTypeStep" ng-show="createAppCurrentStep == STEP_SELECT_MORTGAGE_TYPE" >
+				<form class="form-horizontal" name="mortgageTypeForm" >
+					<div class="stepHeader">
+						<h2>{{ STEP_SELECT_MORTGAGE_TYPE }}</h2>
+					</div>
+					<div class="form-group">
+						<label for="mortgageType" class="col-sm-5 control-label"> {! $Label.Mortgage_type }: </label>
+						<div class="col-sm-2">
+							<select class="form-control" name="mortgageType" id="mortgageType" ng-model="newMortgage.	mortgageType" required="true" >
+								<option ng-repeat="mortgageType in mortgageTypes" value="{{ mortgageType.value }}">
+									{{ mortgageType.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="pull-right">
+								<button ng-click="selectMortgageTypeStep()" class="btn btn-primary" ng-disabled="!mortgageTypeForm.$valid" >
+									{! $Label.ContinueBTN }
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- END Chose mortgage type (create application for customer or broker) -->
+
+
+
+			<!-- START Create or find existing broker -->
+			<div id="mortgageBrokerStep" >
+				<!-- START Select broker type -->
+				<div id="selectMortgageBrokerTypeBlock" ng-show="createAppCurrentStep == STEP_SELECT_BROKER_TYPE" >
+					<form class="form-horizontal" name="mortgageBrokerSelectTypeForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_SELECT_BROKER_TYPE }}</h2>
+						</div>
+						<div class="form-group">
+							<label for="brokerType" class="col-sm-5 control-label"> {! $Label.Create_or_find_broker }: </label>
+							<div class="col-sm-2">
+								<label class="radio-inline">
+									<input type="radio" id="brokerTypeCreate" ng-model="newMortgage.brokerType" ng-value="STEP_CREATE_BROKER" ng-required="!newMortgage.brokerType" /> {! $Label.Create_label }
+								</label>
+								<label class="radio-inline">
+									<input type="radio" id="brokerTypeFind" ng-model="newMortgage.brokerType" ng-value="STEP_FIND_BROKER" ng-required="!newMortgage.brokerType" /> {! $Label.Find_label }
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="selectBrokerTypeStep()" class="btn btn-primary" ng-disabled="!mortgageBrokerSelectTypeForm.$valid" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Select broker type -->
+
+				<!-- START Create broker -->
+				<div id="createMortgageBrokerBlock" ng-show="createAppCurrentStep == STEP_CREATE_BROKER" >
+					<form class="form-horizontal" name="mortgageBrokerCreateForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_CREATE_BROKER }}</h2>
+						</div>
+						<div class="form-group">
+							<label for="brokerTitle" class="col-sm-5 control-label"> {! $Label.ContactTitle }:* </label>
+							<div class="col-sm-2">
+								<select class="form-control" id="brokerTitle" ng-model="newMortgage.broker.Salutation" required="true">
+									<option ng-repeat="salutation in salutations" value="{{ salutation.value }}">
+										{{ salutation.label }}
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerFirstName" class="col-sm-5 control-label"> {! $Label.ContactFirstName }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.FirstName" id="brokerFirstName" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerLastName" class="col-sm-5 control-label"> {! $Label.ContactLastName }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.LastName" id="brokerLastName" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerBirthdate" class="col-sm-5 control-label"> {! $Label.ContactBirthdate }:* </label>
+							<!-- <div class="col-sm-2">
+								<input id="brokerBirthdate" ng-model="newMortgage.broker.Birthdate" class="form-control date" />
+							</div> -->
+							<div class="col-sm-4">
+                                <date-select required="true" model="newMortgage.broker.Birthdate"></date-select>
+                		    </div>
+						</div>
+						<div class="form-group">
+							<label for="brokerGender" class="col-sm-5 control-label"> {! $Label.ContactGender }:* </label>
+							<div class="col-sm-2">
+								<label class="radio-inline">
+									<input type="radio" name="brokerGender" id="brokerGenderMale" value="Male" ng-model="newMortgage.broker.Gender__c" ng-required="!newMortgage.broker.Gender__c" /> {! $Label.Male_label }
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="brokerGender" id="brokerGenderFemale" value="Female" ng-model="newMortgage.broker.Gender__c" ng-required="!newMortgage.broker.Gender__c" /> {! $Label.Female_label }
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerPhone" class="col-sm-5 control-label"> {! $Label.ContactPhone }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.Phone" id="brokerPhone" 	required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerMobilePhone" class="col-sm-5 control-label"> {! $Label.ContactMobilePhone }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.MobilePhone" id="brokerMobilePhone" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerEmail" class="col-sm-5 control-label"> {! $Label.ContactEmail }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.Email" id="brokerEmail" 	required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerCountry" class="col-sm-5 control-label"> {! $Label.ContactCountry }:* </label>
+							<div class="col-sm-2">
+								<select class="form-control" id="brokerCountry" ng-model="newMortgage.broker.MailingCountry" 	required="true">
+									<option ng-repeat="country in countries" value="{{ country.value }}">
+										{{ country.label }}
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="brokerPostalCode" class="col-sm-5 control-label"> {! $Label.ContactPostalCode }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.broker.MailingPostalCode" id="brokerPostalCode" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="createBrokerStep()" class="btn btn-primary" ng-disabled="!mortgageBrokerCreateForm.$valid" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Create broker -->
+
+				<!-- START Select existing broker -->
+				<div id="searchMortgageBrokerBlock" ng-show="createAppCurrentStep == STEP_FIND_BROKER" >
+					<form class="form-horizontal" name="mortgageBrokerSearchForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_FIND_BROKER }}</h2>
+						</div>
+						<div class="col-sm-3">
+							<input type="text" placeholder="Search" class="form-control" ng-model="searchBrokerStr" />
+						</div>
+						<table class="table table-hover" id="mortgageBrokerTable" >
+							<thead>
+								<tr>
+									<th >{! $Label.TableHeaderAction }</th>
+									<c:CB_ColumnHeader objLabel="BROKER_OBJ_LABEL" field="FirstName" fieldLabel="{! $Label.TableHeaderFirstName }" />
+									<c:CB_ColumnHeader objLabel="BROKER_OBJ_LABEL" field="LastName" fieldLabel="{! $Label.TableHeaderLastName }" />
+									<c:CB_ColumnHeader objLabel="BROKER_OBJ_LABEL" field="Email" fieldLabel="{! $Label.TableHeaderEmail }" />
+								</tr>
+							</thead>
+							<tbody>
+								<tr dir-paginate="broker in detailData.broker | filter : brokerFilter | orderBy : sortingHandler[ BROKER_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ BROKER_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ BROKER_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'brkr'" pagination-id="brkr" current-page="pagingHandler[ BROKER_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+									<td width="10%" >
+										<input type="radio" ng-model="newMortgage.broker" ng-value="broker" />
+									</td>
+									<td width="30%" >
+										<a ng-href="/{{ broker.Id }}"> {{ broker.FirstName }} </a>
+									</td>
+									<td width="30%" > {{ broker.LastName }} </td>
+									<td width="30%" > {{ broker.Email }} </td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="text-center">
+							<dir-pagination-controls pagination-id="brkr" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }"></dir-pagination-controls> 
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="findBrokerStep()" class="btn btn-primary" ng-disabled="newMortgage.broker.Id===undefined" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Select existing broker -->
+			</div>
+			<!-- END Create or find existing broker -->
+
+
+
+			<!-- START Create or find existing applicant -->
+			<div id="mortgageApplicantStep" >
+				<!-- START Select applicant type -->
+				<div id="selectMortgageApplicantTypeBlock" ng-show="createAppCurrentStep == STEP_SELECT_APPLICANT_TYPE" >
+					<form class="form-horizontal" name="mortgageApplicantSelectTypeForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_SELECT_APPLICANT_TYPE }}</h2>
+						</div>
+						<div class="form-group">
+							<label for="applicantType" class="col-sm-5 control-label"> {! $Label.Create_or_find_applicant }: </label>
+							<div class="col-sm-2">
+								<label class="radio-inline">
+									<input type="radio" id="applicantTypeCreate" ng-model="newMortgage.applicantType" ng-value="STEP_CREATE_APPLICANT" ng-required="!newMortgage.applicantType" /> {! $Label.Create_label }
+								</label>
+								<label class="radio-inline">
+									<input type="radio" id="applicantTypeFind" ng-model="newMortgage.applicantType" ng-value="STEP_FIND_APPLICANT" ng-required="!newMortgage.applicantType" /> {! $Label.Find_label }
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="selectApplicantTypeStep()" class="btn btn-primary" ng-disabled="!mortgageApplicantSelectTypeForm.$valid" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Select applicant type -->
+
+				<!-- START Create applicant -->
+				<div id="createMortgageApplicantBlock" ng-show="createAppCurrentStep == STEP_CREATE_APPLICANT" >
+					<form class="form-horizontal" name="mortgageApplicantCreateForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_CREATE_APPLICANT }}</h2>
+						</div>
+						<div class="form-group">
+							<label for="applicantTitle" class="col-sm-5 control-label"> {! $Label.ContactTitle }:* </label>
+							<div class="col-sm-2">
+								<select class="form-control" id="applicantTitle" ng-model="newMortgage.applicant.Salutation" required="true">
+									<option ng-repeat="salutation in salutations" value="{{ salutation.value }}">
+										{{ salutation.label }}
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantFirstName" class="col-sm-5 control-label"> {! $Label.ContactFirstName }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.FirstName" id="applicantFirstName" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantLastName" class="col-sm-5 control-label"> {! $Label.ContactLastName }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.LastName" id="applicantLastName" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantBirthdate" class="col-sm-5 control-label"> {! $Label.ContactBirthdate }:* </label>
+							<!-- <div class="col-sm-2">
+								<input id="applicantBirthdate" ng-model="newMortgage.applicant.Birthdate" class="form-control date" />
+							</div> -->
+							<div class="col-sm-8 col-md-3">
+                                <date-select required="true" model="newMortgage.applicant.Birthdate"></date-select>
+                		    </div>
+						</div>
+						<div class="form-group">
+							<label for="applicantGender" class="col-sm-5 control-label"> {! $Label.ContactGender }:* </label>
+							<div class="col-sm-2">
+								<label class="radio-inline">
+									<input type="radio" name="applicantGender" id="applicantGenderMale" value="Male" ng-model="newMortgage.applicant.Gender__c" ng-required="!newMortgage.applicant.Gender__c" /> {! $Label.Male_label }
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="applicantGender" id="applicantGenderFemale" value="Female" ng-model="newMortgage.applicant.Gender__c" ng-required="!newMortgage.applicant.Gender__c" /> {! $Label.Female_label }
+								</label>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantPhone" class="col-sm-5 control-label"> {! $Label.ContactPhone }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.Phone" id="applicantPhone" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantMobilePhone" class="col-sm-5 control-label"> {! $Label.ContactMobilePhone }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.MobilePhone" id="applicantMobilePhone" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantEmail" class="col-sm-5 control-label"> {! $Label.ContactEmail }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.Email" id="applicantEmail" 	required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantCountry" class="col-sm-5 control-label"> {! $Label.ContactCountry }:* </label>
+							<div class="col-sm-2">
+								<select class="form-control" id="applicantCountry" ng-model="newMortgage.applicant.MailingCountry" required="true">
+									<option ng-repeat="country in countries" value="{{ country.value }}">
+										{{ country.label }}
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="applicantPostalCode" class="col-sm-5 control-label"> {! $Label.ContactPostalCode }:* </label>
+							<div class="col-sm-2">
+								<input type="text" class="form-control" ng-model="newMortgage.applicant.MailingPostalCode" id="applicantPostalCode" required="true" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="createApplicantStep()" class="btn btn-primary" ng-disabled="!mortgageApplicantCreateForm.$valid" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Create applicant -->
+
+				<!-- START Select existing applicant -->
+				<div id="searchMortgageApplicantBlock" ng-show="createAppCurrentStep == STEP_FIND_APPLICANT" >
+					<form class="form-horizontal" name="mortgageApplicantSearchForm" >
+						<div class="stepHeader">
+							<h2>{{ STEP_FIND_APPLICANT }}</h2>
+						</div>
+						<div class="col-sm-3">
+							<input type="text" placeholder="Search" class="form-control" ng-model="searchApplicantStr" />
+						</div>
+						<table class="table table-hover" id="mortgageApplicantTable" >
+							<thead>
+								<tr>
+									<th >{! $Label.TableHeaderAction }</th>
+									<c:CB_ColumnHeader objLabel="APPLICANT_OBJ_LABEL" field="FirstName" fieldLabel="{! $Label.TableHeaderFirstName }" />
+									<c:CB_ColumnHeader objLabel="APPLICANT_OBJ_LABEL" field="LastName" fieldLabel="{! $Label.TableHeaderLastName }" />
+									<c:CB_ColumnHeader objLabel="APPLICANT_OBJ_LABEL" field="Email" fieldLabel="{! $Label.TableHeaderEmail }" />
+								</tr>
+							</thead>
+							<tbody>
+								<tr dir-paginate="applicant in detailData.applicant | filter : applicantFilter | orderBy : sortingHandler[ APPLICANT_OBJ_LABEL ][ SORTING_FIELD_LABEL ] : sortingHandler[ APPLICANT_OBJ_LABEL ][ SORTONG_DESC_LABEL ] | itemsPerPage : pagingHandler[ APPLICANT_OBJ_LABEL ][ PAGE_SIZE_LABEL ] : 'applcnt'" pagination-id="applcnt" current-page="pagingHandler[ APPLICANT_OBJ_LABEL ][ CURRENT_PAGE_OBJ_LABEL ]" >
+									<td width="10%" >
+										<input type="radio" ng-model="newMortgage.applicant" ng-value="applicant" />
+									</td>
+									<td width="30%" >
+										<a ng-href="/{{ applicant.Id }}"> {{ applicant.FirstName }} </a>
+									</td>
+									<td width="30%" > {{ applicant.LastName }} </td>
+									<td width="30%" > {{ applicant.Email }} </td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="text-center">
+							<dir-pagination-controls pagination-id="applcnt" boundary-links="true" template-url="{! URLFOR( $Resource.dirPagination, 'dirPagination.tpl.html' ) }" ></dir-pagination-controls>
+						</div>
+
+						<div class="form-group">
+							<div class="col-sm-6">
+								<div class="pull-right">
+									<button ng-click="previousStep()" class="btn btn-default" >
+										{! $Label.BackBTN }
+									</button>
+									<button ng-click="findApplicantStep()" class="btn btn-primary" ng-disabled="newMortgage.applicant.Id===undefined" >
+										{! $Label.ContinueBTN }
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- END Select existing applicant -->
+			</div>
+			<!-- END Create or find existing applicant -->
+
+
+
+			<!-- START Create application (application details) -->
+			<div id="mortgageApplicationStep" ng-show="createAppCurrentStep == STEP_MORTGAGE_DETAILS" >
+				<form class="form-horizontal" name="mortgageApplicationForm" >
+					<div class="stepHeader">
+						<h2>{{ STEP_MORTGAGE_DETAILS }}</h2>
+					</div>
+					<div class="form-group">
+						<label for="appToDo" class="col-sm-5 control-label">{! $Label.What_is_this_mortgage_regarding }*</label>
+						<div class="col-sm-2">
+							<select name="appToDo" class="form-control" id="appToDo" ng-model="newMortgage.mortgage.To_Do__c" required="true" >
+								<option ng-repeat="appToDo in appsToDo" value="{{ appToDo.value }}">
+									{{ appToDo.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="appAmount" class="col-sm-5 control-label">{! $Label.What_s_the_property_estimated_value }*</label>
+						<div class="col-sm-2">
+							<input type="number" min="1" class="form-control" ng-model="newMortgage.mortgage.Amount" id="appAmount" required="true" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="appDeposit" class="col-sm-5 control-label">{! $Label.How_much_will_be_the_deposit }*</label>
+						<div class="col-sm-2">
+							<input type="number" min="1" class="form-control" ng-model="newMortgage.mortgage.Deposit__c" id="appDeposit" required="true" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="appType" class="col-sm-5 control-label">{! $Label.What_type_of_mortgage_is_required }*</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="appType" ng-model="newMortgage.mortgage.Type" required="true" >
+								<option ng-repeat="appType in appsType" value="{{ appType.value }}">
+									{{ appType.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="appPreferToPay" class="col-sm-5 control-label">{! $Label.What_would_the_applicant_prefer_to_pay }*</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="appPreferToPay" ng-model="newMortgage.mortgage.Prefer_to_Pay__c" required="true" >
+								<option ng-repeat="appPreferToPay in appsPreferToPay" value="{{ appPreferToPay.value }}">
+									{{ appPreferToPay.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="appMortgageTerm" class="col-sm-5 control-label">{! $Label.How_long_does_the_applicant_want_to_pay_the_mortgage_over }*</label>
+						<div class="col-sm-2">
+							<!--input type="number" min="1" max="999" class="form-control" ng-model="newMortgage.mortgage.Mortgage_Term__c" id="appMortgageTerm" required="true" /-->
+							<select class="form-control" id="appType" ng-model="newMortgage.mortgage.Mortgage_Term__c" required="true" >
+								<option ng-repeat="year in years" value="{{ year.value }}">
+									{{ year.label }}
+								</option>
+							</select> {! $Label.Years }
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="pull-right">
+								<button ng-click="previousStep()" class="btn btn-default" >
+									{! $Label.BackBTN }
+								</button>
+								<button ng-click="mortgageDetailsStep()" class="btn btn-primary" ng-disabled="!mortgageApplicationForm.$valid" >
+									{! $Label.ContinueBTN }
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- END Create application (application details) -->
+
+
+
+			<!-- START Create application (property details) -->
+			<div id="mortgagePropertyStep" ng-show="createAppCurrentStep == STEP_PROPERTY_DETAILS" >
+				<form class="form-horizontal" name="mortgagePropertyForm" >
+					<div class="stepHeader">
+						<h2>{{ STEP_PROPERTY_DETAILS }}</h2>
+					</div>
+					<div class="form-group" >
+						<label for="buildNumber" class="col-sm-5 control-label">{! $Label.Building_Name_Number }*</label>
+						<div class="col-sm-2">
+							<input type="text" ng-model="newMortgage.mortgage.Building_Name__c" class="form-control" id="buildNumber" required="true" />
+						</div>
+					</div>  
+					<div class="form-group">
+						<label for="city" class="col-sm-5 control-label">{! $Label.Town_City }*</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" ng-model="newMortgage.mortgage.City__c" id="city" required="true" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="county" class="col-sm-5 control-label">{! $Label.County }*</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" ng-model="newMortgage.mortgage.County__c" id="county" required="true" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="pcode" class="col-sm-5 control-label">{! $Label.Postcode }*</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="pcode" ng-model="newMortgage.mortgage.Postcode__c" required="true" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="country" class="col-sm-5 control-label">{! $Label.Country }*</label>
+						<div class="col-sm-2">
+							<input type="text" class="form-control" id="country" required="true" ng-model="newMortgage.mortgage.Country__c" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="typeOfProperty" class="col-sm-5 control-label">{! $Label.Type_of_Property }*</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="typeOfProperty" ng-model="newMortgage.mortgage.Type_of_Property__c" required="true" >
+								<option ng-repeat="typeOfProperty in typesOfProperty" value="{{ typeOfProperty.value }}">
+									{{ typeOfProperty.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="councilTaxBand" class="col-sm-5 control-label">{! $Label.Which_Council_Tax_band_is_your_property_in }*</label>
+						<div class="col-sm-2">
+							<select class="form-control" id="typeOfProperty" ng-model="newMortgage.mortgage.Council_Tax_Band__c" required="true" >
+								<option ng-repeat="councilTaxBand in councilTaxBands" value="{{ councilTaxBand.value }}">
+									{{ councilTaxBand.label }}
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="pull-right">
+								<button ng-click="previousStep()" class="btn btn-default" >
+									{! $Label.BackBTN }
+								</button>
+								<button ng-click="submit()" data-loading-text="Processing..." class="btn btn-primary" ng-disabled="!mortgagePropertyForm.$valid" >
+									{! $Label.SubmitBTN }
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- END Create application (property details) -->
+
+		</div>
+
+		<c:CC_MessageModal />
+
+	</div>
+
+	<script type="text/javascript">
+
+		var app = angular.module( 'ngNewApp', [ 'toastr', 'angularUtils.directives.dirPagination' ] );
+
+		app.controller(
+			'ngNewAppController',
+			[ '$scope', 'toastr', 'DataService', function( scope, toastr, dataService ) {
+
+			scope.STEP_SELECT_MORTGAGE_TYPE = '{! $Label.Step_select_mortgage_type }';
+			scope.STEP_SELECT_BROKER_TYPE = '{! $Label.Step_select_broker_type }';
+			scope.STEP_FIND_BROKER = '{! $Label.Step_find_broker }';
+			scope.STEP_CREATE_BROKER = '{! $Label.Step_create_broker }';
+			scope.STEP_SELECT_APPLICANT_TYPE = '{! $Label.Step_select_applicant_type }';
+			scope.STEP_FIND_APPLICANT = '{! $Label.Step_find_applicant }';
+			scope.STEP_CREATE_APPLICANT = '{! $Label.Step_create_applicant }';
+			scope.STEP_MORTGAGE_DETAILS = '{! $Label.Step_mortgage_details }';
+			scope.STEP_PROPERTY_DETAILS = '{! $Label.Step_property_details }';
+			
+			scope.createAppCurrentStep = scope.STEP_SELECT_MORTGAGE_TYPE;
+			scope.createAppSteps = [ scope.STEP_SELECT_MORTGAGE_TYPE ];
+			scope.createAppCurrentStepIndex = 0;
+
+			scope.BROKER_OBJ_LABEL = 'broker';
+			scope.APPLICANT_OBJ_LABEL = 'applicant';
+
+			scope.SORTING_FIELD_LABEL = 'sortingField';
+			scope.SORTONG_DESC_LABEL = 'sortingDESC';
+
+			scope.PAGE_SIZE_LABEL = 'pageSize';
+			scope.CURRENT_PAGE_OBJ_LABEL = 'currentPage';
+
+			scope.detailData = {
+				broker: [],
+				applicant: []
+			};
+
+			scope.sortingHandler = {
+				broker: {
+					sortingField: 'FirstName',
+					sortingDESC: false
+				},
+				applicant: {
+					sortingField: 'FirstName',
+					sortingDESC: false
+				}
+			};
+
+			scope.pagingHandler = {
+				broker: {
+					pageSize: 10,
+					currentPage: 1
+				},
+				applicant: {
+					pageSize: 10,
+					currentPage: 1
+				}
+			};
+
+			scope.newMortgage = {
+				mortgageType: '',
+				brokerType: '',
+				applicantType: '',
+				broker: {},
+				applicant: {},
+				mortgage: {},
+				createBroker: false,
+				findBroker: false,
+				createApplicant: false,
+				findApplicant: false
+			};
+
+			scope.searchBrokerStr = '';
+			scope.brokerFilter = function( item ) {
+				return ( item.FirstName.indexOf( scope.searchBrokerStr ) > -1 ||
+					     item.LastName.indexOf( scope.searchBrokerStr ) > -1 ||
+					     item.Email.indexOf( scope.searchBrokerStr ) > -1 );
+			};
+
+			scope.searchApplicantStr = '';
+			scope.applicantFilter = function( item ) {
+				return ( item.FirstName.indexOf( scope.searchApplicantStr ) > -1 ||
+					     item.LastName.indexOf( scope.searchApplicantStr ) > -1 ||
+					     item.Email.indexOf( scope.searchApplicantStr ) > -1 );
+			};
+
+			dataService.getMortgageBrokers( function( result ) {
+				scope.detailData[ scope.BROKER_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			dataService.getMortgageApplicants( function( result ) {
+				scope.detailData[ scope.APPLICANT_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			scope.salutations = [];
+			dataService.getSalutations( function( result ) {
+				scope.salutations = result;
+				scope.$apply();
+			} );
+
+			scope.countries = [];
+			dataService.getCountries( function( result ) {
+				scope.countries = result;
+				scope.$apply();
+			} );
+
+			scope.mortgageTypes = [];
+			dataService.getMortgageTypes( function( result ) {
+				scope.mortgageTypes = result;
+				scope.$apply();
+			} );
+
+			scope.appsToDo = [];
+			dataService.getAppToDo( function( result ) {
+				scope.appsToDo = result;
+				scope.$apply();
+			} );
+
+			scope.appsType = [];
+			dataService.getAppType( function( result ) {
+				scope.appsType = result;
+				scope.$apply();
+			} );
+
+			scope.appsPreferToPay = [];
+			dataService.getAppPreferToPay( function( result ) {
+				scope.appsPreferToPay = result;
+				scope.$apply();
+			} );
+
+			scope.typesOfProperty = [];
+			dataService.getMortgageTypesOfProperty( function( result ) {
+				scope.typesOfProperty = result;
+				scope.$apply();
+			} );
+
+			scope.councilTaxBands = [];
+			dataService.getAppCouncilTaxBand( function( result ) {
+				scope.councilTaxBands = result;
+				scope.$apply();
+			} );
+
+			scope.years = [];
+			dataService.getAppYears( function( result ) {
+				scope.years = result;
+				scope.$apply();
+			} );
+
+			scope.previousStep = function() {
+				scope.createAppSteps.pop();
+				scope.createAppCurrentStepIndex--;
+				scope.createAppCurrentStep = scope.createAppSteps[ scope.createAppCurrentStepIndex ];
+			};
+
+			scope.selectMortgageTypeStep = function() {
+				scope.newMortgage.brokerType = '';
+				scope.newMortgage.applicantType = '';
+				scope.newMortgage.broker = {};
+				scope.newMortgage.applicant = {};
+				scope.newMortgage.createBroker = false;
+				scope.newMortgage.findBroker = false;
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = false;
+
+				if ( scope.newMortgage.mortgageType == '' ) {
+					return;
+				}
+
+				var step = '';
+				if ( scope.newMortgage.mortgageType == 'broker' ) {
+					step = scope.STEP_SELECT_BROKER_TYPE;
+				} else {
+					step = scope.STEP_SELECT_APPLICANT_TYPE;
+				}
+
+				scope.newStep( step );
+			};
+
+			scope.selectBrokerTypeStep = function() {
+				scope.newMortgage.createBroker = false;
+				scope.newMortgage.findBroker = false;
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = false;
+
+				if ( scope.newMortgage.brokerType == '' ) {
+					return;
+				}
+
+				scope.newMortgage.applicantType = '';
+				scope.newMortgage.broker = {};
+				scope.newMortgage.applicant = {};
+				scope.newStep( scope.newMortgage.brokerType );
+			};
+
+			scope.createBrokerStep = function() {
+				scope.newMortgage.createBroker = true;
+				scope.newMortgage.findBroker = false;
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = false;
+
+				var username = scope.newMortgage.broker.Email;
+
+				dataService.isValidUsername( username, function( result ) {
+					scope.$apply( function() {
+						if ( result ) {
+							scope.newStep( scope.STEP_SELECT_APPLICANT_TYPE);
+						} else {
+							toastr.error( '{! JSENCODE( $Label.Username_is_not_valid ) }', '{! $Label.Error }' );
+						}
+					} );
+				} );
+			};
+
+			scope.findBrokerStep = function() {
+				scope.newMortgage.createBroker = false;
+				scope.newMortgage.findBroker = true;
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = false;
+
+				scope.newStep( scope.STEP_SELECT_APPLICANT_TYPE );
+			};
+
+			scope.selectApplicantTypeStep = function() {
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = false;
+
+				if ( scope.newMortgage.applicantType == '' ) {
+					return;
+				}
+
+				scope.newMortgage.applicant = {};
+				scope.newStep( scope.newMortgage.applicantType );
+			};
+
+			scope.createApplicantStep = function() {
+				scope.newMortgage.createApplicant = true;
+				scope.newMortgage.findApplicant = false;
+
+				var username = scope.newMortgage.applicant.Email;
+
+				dataService.isValidUsername( username, function( result ) {
+					scope.$apply( function() {
+						if ( result ) {
+							scope.newStep( scope.STEP_MORTGAGE_DETAILS );
+						} else {
+							toastr.error( '{! JSENCODE( $Label.Username_is_not_valid ) }', '{! $Label.Error }' );
+						}
+					} );
+				} );
+			};
+
+			scope.findApplicantStep = function() {
+				scope.newMortgage.createApplicant = false;
+				scope.newMortgage.findApplicant = true;
+
+				scope.newStep( scope.STEP_MORTGAGE_DETAILS );
+			};
+
+			scope.mortgageDetailsStep = function() {
+				scope.newStep( scope.STEP_PROPERTY_DETAILS );
+			};
+
+			scope.submit = function() {
+				if ( scope.newMortgage.broker.Email == scope.newMortgage.applicant.Email ) {
+					toastr.error( '{! JSENCODE( $Label.Usernames_are_equal ) }', '{! $Label.Error }' );
+				}
+
+				dataService.submitApplication( angular.toJson( scope.newMortgage ), function( result ) {
+					scope.$apply( function() {
+						console.log( result );
+						if ( result.isSuccess ) {
+							//$( '#message' ).html( '{! $Label.CB_NewAppCreateSuccessfully }' );
+							$( '#message' ).html( result.message );
+							$( '#msgModal' ).attr( 'result', 'success' );
+							$( '#msgModal' ).modal();
+						} else {
+							//$( '#message' ).html( '{! $Label.CB_NewAppCreateFailed }' );
+							$( '#message' ).html( result.message );
+							$( '#msgModal' ).attr( 'result', 'failed' );
+							$( '#msgModal' ).modal();
+						}
+					} );
+				} );
+			};
+
+			scope.closeModal = function() {
+				if ( $( '#msgModal' ).attr( 'result' ) == 'success' ) {
+					window.location.href = '{! $Page.CB_NewApplicationPage }';
+				}
+				$( '#msgModal' ).modal( 'hide' );
+			};
+
+			scope.newStep = function( step ) {
+				scope.createAppCurrentStep = step;
+				scope.createAppSteps.push( step );
+				scope.createAppCurrentStepIndex++;
+			};
+
+			//--- sorting ---
+			scope.order = function( sortingObject, sortingField ) {
+				scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] = ( scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] === sortingField ) ? !scope.sortingHandler[ sortingObject ][ scope.SORTONG_DESC_LABEL ] : false;
+				scope.pagingHandler[ sortingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] = 1;
+				scope.sortingHandler[ sortingObject ][ scope.SORTING_FIELD_LABEL ] = sortingField;
+			};
+			//---
+		} ] );
+
+
+
+		app.service( 'DataService', [ function() {
+			function getMortgageTypes( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getMortgageTypes }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getMortgageBrokers( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getMortgageBrokers }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getMortgageApplicants( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getMortgageApplicants }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getSalutations( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getSalutations }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getCountries( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getCountries }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getAppToDo( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppToDo }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getAppType( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppType }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getAppPreferToPay( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppPreferToPay }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getMortgageTypesOfProperty( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppTypeOfProperty }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getAppCouncilTaxBand( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppCouncilTaxBand }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function getAppYears( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.getAppYears }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					});
+			};
+
+
+
+			function checkEmailDuplicates( email, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.checkEmailDuplicates }',
+					email,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( false );
+						}
+					});
+			};
+
+
+
+			function isValidUsername( username, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.isValidUsername }',
+					username,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( false );
+						}
+					});
+			};
+
+
+
+			function submitApplication( newMortgage, callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CB_NewApplicationController.submitApplication }',
+					newMortgage,
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( {} );
+						}
+					});
+			};
+
+			return {
+				getMortgageTypes: getMortgageTypes,
+				getMortgageBrokers: getMortgageBrokers,
+				getMortgageApplicants: getMortgageApplicants,
+				getSalutations: getSalutations,
+				getCountries: getCountries,
+				getAppToDo: getAppToDo,
+				getAppType: getAppType,
+				getAppPreferToPay: getAppPreferToPay,
+				getMortgageTypesOfProperty: getMortgageTypesOfProperty,
+				getAppCouncilTaxBand: getAppCouncilTaxBand,
+				getAppYears: getAppYears,
+				checkEmailDuplicates: checkEmailDuplicates,
+				isValidUsername: isValidUsername,
+				submitApplication: submitApplication
+			};
+		} ] );
+
+	</script>
+	<apex:variable var="CB_App" value="{!URLFOR($Resource.app_CB)}"/>
+    <script type="text/javascript" src="{! CB_App }/directives/date-select/date-select.js"></script>
+    <script type="text/javascript" src="{! CB_App }/directives/date-select/DateSelectController.js"></script>
+</apex:page>

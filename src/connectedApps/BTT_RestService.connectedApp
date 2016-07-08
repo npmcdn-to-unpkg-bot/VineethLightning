@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>vineeth.vadnal@cognizant.com</contactEmail>
+    <label>BTT_RestService</label>
+    <oauthConfig>
+        <callbackUrl>https://test.salesforce.com/services/oauth2/authorize</callbackUrl>
+        <consumerKey>3MVG9w8uXui2aB_rNx9j9Z4u1yWn1Ljpilm2cLrR8LfXGGDNv32ETuVzGEffBWlUnwmiqCRGLwJWJCzvBL5dZ</consumerKey>
+        <scopes>Basic</scopes>
+        <scopes>Api</scopes>
+        <scopes>Web</scopes>
+        <scopes>Full</scopes>
+        <scopes>Chatter</scopes>
+        <scopes>CustomApplications</scopes>
+        <scopes>RefreshToken</scopes>
+        <scopes>OpenID</scopes>
+        <scopes>CustomPermissions</scopes>
+        <scopes>Wave</scopes>
+    </oauthConfig>
+</ConnectedApp>

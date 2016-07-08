@@ -1,0 +1,211 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" title="My Details" controller="CC_MyDetailsController" >
+
+	<apex:composition template="CC_CommunityTemplate">
+
+		<apex:define name="header">   
+            <c:CC_HSBCHeader />
+        </apex:define>
+        
+        <apex:define name="body">
+
+        	<script>
+
+                var config = {
+                    remoteActions: {
+                        getCustomerDetailInformation: '{! $RemoteAction.CC_MyDetailsController.getCustomerDetailInformation }',
+                        setCustomerDetailInformation: '{! $RemoteAction.CC_MyDetailsController.setCustomerDetailInformation }'
+                    },
+                    labels: {
+                        updateFailed: '{! JSENCODE( $Label.Unfortunately_user_info_wasn_t_successfully_updated ) }',
+                        updateSuccess: '{! JSENCODE( $Label.User_info_was_successfully_updated ) }'
+                    },
+                    userId: '{! $User.Id }'
+                };
+
+                function formatDate( dateSting ) {
+                    var dateDate = new Date( dateSting );
+                    var formatedDate = dateDate.getFullYear() + '-' +
+                        ( '0' + ( dateDate.getMonth() + 1 ) ).slice( -2 ) + '-' +
+                        ( '0' + dateDate.getDate() ).slice( -2 );
+
+                    return formatedDate;
+                };
+              
+                var app = angular.module( 'CommunityMyDetails', [ 'toastr', 'ngAnimate' ] );
+
+                app.config( function( toastrConfig ) {
+                    angular.extend( toastrConfig, {
+                        "positionClass": "toast-top-center",
+                        closeButton: true  
+                    } );
+                } );
+
+                app.controller( 'customerDetails', function( $scope, $rootScope, toastr ) {
+					$scope.contact = { Salutation: 'Please select', MailingCountry: 'Please select' };
+
+					Visualforce.remoting.Manager.invokeAction(
+						'{! $RemoteAction.CC_MyDetailsController.getCustomerDetailInformation }', "{! $User.Id }",
+							function( result, event ) {
+								if ( event.status && result != null ) {
+									$scope.contact = result;
+                                    $scope.contact.Birthdate = formatDate( result.Birthdate );
+									$scope.$apply();
+								}
+							} );
+                    
+                    $scope.submit = function( ev ) {
+                        var btn = ev.currentTarget;
+                        $( btn ).button( 'loading' );
+
+                        Visualforce.remoting.Manager.invokeAction(
+							config.remoteActions.setCustomerDetailInformation,
+                            config.userId,
+                            JSON.stringify( $scope.contact ),
+							function( result, event ) {
+								if ( event.status && result != null ) {
+                                    $scope.contact = result;
+                                    $scope.contact.Birthdate = formatDate( result.Birthdate );
+                                    $scope.$apply();
+
+                                    $( '#message' ).html( config.labels.updateSuccess);
+                                    $( '#msgModal' ).attr( 'result', 'success' );
+                                    $( '#msgModal' ).modal();
+								} else {
+                                    $( '#message' ).html( config.labels.updateFailed );
+                                    $( '#msgModal' ).attr( 'result', 'failed' );
+                                    formSubmitted = false;
+                                    $( '#msgModal' ).modal();
+                                }
+                                $( btn ).button( 'reset' );
+							} );
+                    };
+
+                    $scope.closeModal = function() {
+                        if ( $( '#msgModal' ).attr( 'result' ) == 'success') {
+                            window.location.href = '{! $Page.CC_MyDetails }';
+                        }
+                        $( '#msgModal' ).modal( "hide" );
+                    };
+                } );
+            </script>
+
+            <apex:variable var="CC_App" value="{!URLFOR($Resource.app)}"/>
+            <script type="text/javascript" src="{! CC_App }/directives/date-select/CC_MyDetails/date-select.js"></script>
+            <script type="text/javascript" src="{! CC_App }/directives/date-select/CC_MyDetails/DateSelectController.js"></script>
+
+            <!-- My Details Page -->
+            <div class="page--my-details page--container">
+                <div class="row">
+                                <div class="col-xs-12" ng-app="CommunityMyDetails" ng-controller="customerDetails">
+                                     <script type="text/ng-template" id="date-select.html">
+                                        <div class="dateselector-container dateselector-default">
+                                            <select class="form-control dateselector-year" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.year" ng-options="year for year in vm.years track by year" ng-change="vm.onYearChange()"></select>
+                                            <select class="form-control dateselector-day" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.month" ng-options="('0' + month).slice(-2) for month in vm.months track by month" ng-change="vm.onMonthChange()">
+                                                    <option value="">--None--</option>
+                                            </select>
+                                            <select class="form-control dateselector-day" id="{{id}}" ng-disabled="vm.disabled" ng-required="vm.required" ng-model="vm.day" ng-options="('0' + day).slice(-2) for day in vm.days track by day" ng-change="vm.onDayChange()" id="{{controlId}}">
+                                                    <option value="">--None--</option>
+                                            </select>
+                                        </div>
+                                    </script>
+                                    <form class="form-horizontal" name="customerDetails">
+                                        <div>
+                                            <div class="form-group">
+                                                <label for="title" class="col-sm-4 control-label">Title:</label>
+                                                <div class="col-sm-4">
+                                                    <select ng-model="contact.Salutation" class="form-control" required="true" id="title" ng-class="{red: newCaseForm.title.$invalid && formSubmitted}">
+                                                        <option value="Mr.">Mr.</option>
+                                                        <option value="Mrs.">Mrs.</option>
+                                                    </select> 
+                                               </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="fName" class="col-sm-4 control-label">{! $Label.ContactFirstName }:</label>
+                                                <div class="col-sm-4">
+                                                    <input ng-model="contact.FirstName" id="fName" class="form-control" required="true" ng-class="{red: newCaseForm.fName.$invalid && formSubmitted}"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="lName" class="col-sm-4 control-label">{! $Label.ContactLastName }:</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" ng-model="contact.LastName" id="lName" class="form-control" required="true" ng-class="{red: newCaseForm.lName.$invalid && formSubmitted}"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="db" class="col-sm-4 col-md-4 control-label">{! $Label.ContactBirthdate }:</label>
+                                                <div class="col-sm-4 col-md-4">
+                                                    <date-select required="true" model="contact.Birthdate"></date-select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="inlineRadioOptions" class="col-sm-4 control-label">{! $Label.ContactGender }</label>
+                                                <div class="col-sm-4">
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Male" ng-model="contact.Gender__c" required="true" ng-class="{red: newCaseForm.inlineRadioOptions.$invalid && formSubmitted}"/> {! $Label.Male_label }
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Female" ng-model="contact.Gender__c" required="true" ng-class="{red: newCaseForm.inlineRadioOptions.$invalid && formSubmitted}"/> {! $Label.Female_label }
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <label for="phone" class="col-sm-4 control-label">{! $Label.ContactPhone }:</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" ng-model="contact.Phone" class="form-control" id="phone"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="mphone" class="col-sm-4 control-label">{! $Label.ContactMobilePhone }:</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" ng-model="contact.MobilePhone" class="form-control" id="mphone"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email" class="col-sm-4 control-label">{! $Label.ContactEmail }:</label>
+                                                <div class="col-sm-4">
+                                                    <input type="email" ng-model="contact.Email" class="form-control" id="email" required="true" ng-class="{red: newCaseForm.email.$invalid && formSubmitted}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="sa" class="col-sm-4 control-label">{! $Label.ContactCountry }:</label>
+                                                <div class="col-sm-4">
+                                                    <select  class="form-control" required="true" ng-model="contact.MailingCountry" id="sa" >
+                                                        <option value="UK">UK</option>
+                                                        <option value="USA">USA</option>
+                                                        <option value="India">India</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="code" class="col-sm-4 control-label">{! $Label.ContactPostalCode }:</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" ng-model="contact.MailingPostalCode" class="form-control" id="code" required="true" ng-class="{red: newCaseForm.code.$invalid && formSubmitted}"/>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <button ng-click="submit( $event )" data-loading-text="Processing..." class="btn-rounded btn-centered" >{! $Label.SubmitBTN }</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                    <c:CC_MessageModal />
+                                </div>
+                </div>
+            </div>
+            <!-- End :: My Details Page -->
+        </apex:define>
+    </apex:composition>
+    
+</apex:page>

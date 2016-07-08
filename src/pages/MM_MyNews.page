@@ -1,0 +1,179 @@
+<!--
+* @author  Siddhant Indra
+* @date  January 2015
+* @description  Displays my news list page
+-->
+<apex:page controller="MM_MyNewsController" docType="html-5.0" standardStylesheets="false" showHeader="false">
+    <!-- <link rel="stylesheet" href="{!URLFOR($Resource.bxslider, 'jquery.bxslider.css')}" />
+     -->
+     <link rel="Stylesheet" href="{!$Resource.Bootstrap_3_3_5}/css/bootstrap.min.css" />
+    <apex:includeScript value="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'angular.min.js')}"/>
+
+    <head>
+        <title>My News</title>
+
+         
+        <script type="text/javascript">
+            var IPAppModule = angular.module('IPApp', ['angularUtils.directives.dirPagination']);
+            IPAppModule.controller('MyNewsCtrl', function($scope) {
+                       
+                $scope.MyInbox = {};
+                $scope.SortType = 'Latest';
+                $scope.ManageContentList = [];
+                $scope.filterConfig = 'DESC';
+                
+                $scope.RowOffset = 0;
+                $scope.RowLimit = 5;
+                $scope.TotalRecordCount = 0;
+                
+                $scope.dateFrom = '';
+                $scope.dateTo = '';
+                $scope.searchString = '';
+                
+                
+                $scope.BackToHome = function() {
+                    window.location = '{!$Site.BaseUrl}/apex/IP_CommunityHome';
+                };
+                
+                $scope.ViewNewsDetails = function(manageContentId) {
+                    window.location = '{!$Site.BaseUrl}/apex/MM_NewsAndProductDetail?newsId='+ manageContentId + '&returnURL={!$Site.BaseUrl}/apex/MM_MyNews&IsNewsViewed=false';
+                };
+                
+                $scope.GetNewsAndProductUpdate = function() {
+                    
+                    
+                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.MM_MyNewsController.getNewsAndProductUpdate}', $scope.filterConfig, $scope.RowOffset, $scope.RowLimit, $scope.dateTo, $scope.dateFrom, $scope.searchString, function(result, event){
+                        $scope.IsProcessing = false;
+                        if(event.type === 'exception'){
+                            $scope.$apply();
+                            return;
+                        }
+                        
+                        if( result.Success) {
+                            $scope.ManageContentList = result.Data.ManageContentList;
+                            $scope.TotalRecordCount = result.Data['TotalRecordCount'];
+                        }
+                        $scope.$apply();
+                    });
+                };
+                
+                $scope.GetNewsAndProductUpdate();
+                 
+                $scope.OnSortTypeClick = function(strSortType, strFilterType){
+                    $scope.SortType = strSortType;
+                    $scope.filterConfig = strFilterType;
+                    $scope.GetNewsAndProductUpdate();
+                };
+                
+                $scope.updateNewsList = function(){
+                    $scope.IsProcessing = 'true';
+                    $scope.dateFrom = $('#datepicker-dateFrom').datepicker({ dateFormat: 'dd/mm/yyyy' }).val();
+                    $scope.dateTo = $('#datepicker-dateTo').datepicker({ dateFormat: 'dd/mm/yyyy' }).val();
+                    $scope.searchString = $('#searchStringText').val();
+                    $scope.GetNewsAndProductUpdate();
+                };
+            });
+        
+        $(function(){
+            $('.ip-navbar li').removeClass('active');
+            $('.my-news').addClass('active');
+        });
+        
+        
+        </script>
+        
+    </head>
+    
+    <body>
+        <!-- <div xmlns:ng="http://angularjs.org" id="ng-app" ng-app="IPApp" ng-controller="MyNewsCtrl" ng-cloak="ngCloak"> -->
+        <div id="ng-app" ng-app="IPApp" ng-controller="MyNewsCtrl" ng-cloak="ngCloak">
+
+            <div class="container">
+               <ol class="breadcrumb">
+                    <li><a href="{!$Site.BaseUrl}/apex/CC_Home">Home</a></li>
+                    <li class="active">My News</li>
+                </ol>
+            </div>
+            <hr />
+            
+            <div class="container myNewsHeader">
+                <div class="row">
+                    <div class="col-md-12 ">
+                        <h1 class="panel-title fontstyle">
+                            <i class="fa fa-newspaper-o fa-icon fa-lg"></i>
+                            <span>My News</span>
+                            <span class="infoIcon"><label>{{TotalRecordCount}}</label></span>
+                        </h1>
+                        <c:MM_MyNewsSearchFilter ></c:MM_MyNewsSearchFilter> 
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rowSearchKnowledge container content_details myNewsSearchResult">
+                <script type="text/ng-template" id="dirPagination.tpl.html">
+<!--                     <c:IP_Pagination ></c:IP_Pagination> -->
+                </script>
+        
+                <div class="col-md-12 panel-body">  
+                <!--Search Input-->
+                    
+                    <!-- Row for Search Input Starts Here!-->
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12 padding0">
+                            <div class="containerSortBy alignLeft pull-right">
+                                <span class="servicerequest">Sort By&nbsp;</span>
+                                <div class="btn-group paddleft10">
+                                    <button type="button" class="btn btn-default dropdown-toggle lightGreyFont" data-toggle="dropdown" aria-expanded="false">{{SortType}}&nbsp;&nbsp;&nbsp;<span class="caret"></span></button>
+                                    <ul class="dropdown-menu margLeft10" role="menu">
+                                        <li><a href="#" ng-click="OnSortTypeClick('Latest','DESC')">Latest</a></li>
+                                        <li><a href="#" ng-click="OnSortTypeClick('Oldest','ASC')">Oldest</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>    
+                    </div>
+                    <!-- Row for Search Input ENDS Here!-->
+                    <div class="row">
+                        <div class="col-xs-12 margtop10">
+                            <dir-pagination-controls class="pull-right" template-url="dirPagination.tpl.html" max-size="7" boundary-links="true" on-page-change="RowOffset=(newPageNumber-1)*RowLimit; GetNewsAndProductUpdate();"></dir-pagination-controls>
+                        </div>
+                    </div>
+                    
+                    <!--Results-->
+                    <div class="row">
+                        <div class="divResults margtop25">
+                            <div class="">
+                                <div class="col-md-12 bordBttm padding0 margLeftRight" dir-paginate="objManageContentWrapper in ManageContentList | itemsPerPage: RowLimit" total-items="TotalRecordCount">
+                                    <div class="row">
+                                        <div class="resultDescripton col-md-9 col-sm-9">
+                                            <span ng-hide="{{objManageContentWrapper.isRead}}" class="glyphicon glyphicon-eye-open headingfontcolor margRight10" data-toggle="tooltip" data-placement="right" title="Mark as read"></span>
+                                            <a href="{!$Site.BaseUrl}/apex/MM_NewsAndProductDetail?newsId={{objManageContentWrapper.manageContent.Id}}&returnURL={!$Site.BaseUrl}/apex/MM_MyNews" ng-bind-html="objManageContentWrapper.manageContent.Title__c"></a>
+                                            <span class="margLeft10">Published {{objManageContentWrapper.manageContent.Publish_Start__c | date: 'dd/MM/yyyy'}}</span><br />
+                                            <span ng-bind-html="objManageContentWrapper.manageContent.Summary__c | limitTo: 170">
+                                           </span>...
+                                           <!-- {{objManageContentWrapper.manageContent.Summary__c | limitTo: 170}}... -->
+                                        </div>
+                                        <div class="col-md-3 col-sm-3">
+                                            <button class="btn btn-default pull-right downloadBtn col-xs-12 col-md-8" ng-click="ViewNewsDetails(objManageContentWrapper.manageContent.Id)">View</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                           <div class="col-xs-12">
+                                <dir-pagination-controls class="pull-right" template-url="dirPagination.tpl.html" max-size="7" boundary-links="true" on-page-change="RowOffset=(newPageNumber-1)*RowLimit; GetNewsAndProductUpdate();"></dir-pagination-controls>
+                            </div>
+                            <div class="">
+                                <div class="col-xs-12 col-md-2 col-sm-2">
+                                    <button class="btn btn-default buttonstyle" type="button" ng-click="BackToHome()">Back</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </body>
+</apex:page>

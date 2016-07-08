@@ -1,0 +1,114 @@
+<!--
+* @author  IP Dev Team
+* @date  November 2014
+* @description  Page provides provision to publish contents
+-->
+<apex:page standardController="Manage_Content__c" extensions="MM_ManageContentController" >
+    <apex:pageMessages ></apex:pageMessages>
+    
+    <script type="text/javascript">
+        function doCheckboxChange(cb,itemId){
+            if(cb.checked==true){
+                aSelectItem(itemId);
+            }
+            else{
+                aDeselectItem(itemId);
+            }
+        }
+         
+        function doselectAll(itemId){       
+            selectAllAudience(itemId);      
+        }
+        
+        $(document).ready(function() {
+            if({!Manage_Content__c.isActivePublished__c} == true)
+                $(".chkBox").attr("disabled", true);
+        });
+    </script>
+    
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Publish" action="{!Publish}" rendered="{!NOT(Manage_Content__c.Published__c)}" onclick="if(!confirm('{!$Label.IP_MM_Publish}')){return false; }else {return true;}"/>
+                <apex:commandButton value="Unpublish" action="{!unPublish}" rendered="{!Manage_Content__c.Published__c}" onclick="if(!confirm('{!$Label.IP_MM_UnPublish}')){return false; }else {return true;}"/>
+                <apex:commandButton value="Close" action="{!close}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Content" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!Manage_Content__c.Title__c}" style="font-weight:bold"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputField value="{!Manage_Content__c.Summary__c}"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem rendered="{!NOT(Manage_Content__c.Published__c)}">
+                     <apex:outputLabel style="font-style: italic;color:#FF0000;" value="{!$Label.IP_MM_Content_Not_Published}"/> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!Manage_Content__c.Published__c}">
+                    <apex:outputlabel style="font-style: italic;color:#008000;font-weight:bold;" value="{!$Label.IP_MM_Content_Published}"/> 
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Publishing Comments" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:inputField value="{!Manage_Content__c.Internal_comments__c}" style="width:400px"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Audiences" id="audienceSearch">
+                <apex:panelGrid columns="5" width="100%" rendered="{!NOT(Manage_Content__c.isActivePublished__c)}">
+                    <apex:outputLabel value="Audience Name" for="audiencename"/>
+                    <apex:inputText value="{!audiencename}" id="audiencename"/> 
+                    <apex:commandButton value="Search" action="{!searchAudience}" rerender="AudiencesPageBlock"/>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlock id="AudiencesPageBlock">
+                <apex:pageBlockTable title="Contacts" value="{!audiencesWrapper}" var="audienceWrapper">
+                    <apex:column >
+                        <apex:facet name="header"><!--  {!$Label.IP_MM_Action}-->
+                        <apex:inputCheckbox value="{!selectAllAudience}"  onchange="doselectAll('{!NOT(selectAllAudience)}')" styleClass="chkBox"/>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!audienceWrapper.IsSelected}" onchange="doCheckboxChange(this,'{!audienceWrapper.audience.Id}')"  styleClass="chkBox"/>
+                    </apex:column>
+                    <apex:column value="{!audienceWrapper.audience.Name}"/>
+                    <apex:column value="{!audienceWrapper.audience.Description__c}"/>
+                </apex:pageBlockTable>                
+                
+                <apex:commandLink action="{!doPrevious}" rendered="{!hasPrevious}" value="Previous" />
+                <apex:outputLabel rendered="{!NOT(hasPrevious)}" value="Previous" />
+                <apex:outputLabel value=" (page {!pageNumber} of {!totalPages}) " />
+                <apex:commandLink action="{!doNext}" rendered="{!hasNext}" value="Next" />
+                <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" /> 
+               
+
+            </apex:pageBlock>
+            
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="aSelectItem" action="{!doSelectItem}" rerender="AudiencesPageBlock" status="actStatusId">
+            <apex:param name="selectedAudienceId" value="" assignTo="{!selectedAudienceId}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="aDeselectItem" action="{!doDeselectItem}" rerender="AudiencesPageBlock" status="actStatusId">
+            <apex:param name="selectedAudienceId" value="" assignTo="{!selectedAudienceId}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="selectAllAudience" action="{!selectUnselectAllAudience}" rerender="AudiencesPageBlock" status="actStatusId">     
+            <apex:param name="selectedAudienceId" value="" assignTo="{!isSelectAll}"/>
+        </apex:actionFunction>
+            
+        <apex:outputpanel >
+            <apex:actionstatus id="actStatusId">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #DCD6D6; height: 100%;opacity:0.65;width:100%;">
+                        <div class="waitingHolder" style="top: 314.2px; width: 91px;">
+                            <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                            <span class="waitingDescription">{!$Label.IP_MM_Processing}</span>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionstatus>
+        </apex:outputpanel>
+    </apex:form>
+</apex:page>

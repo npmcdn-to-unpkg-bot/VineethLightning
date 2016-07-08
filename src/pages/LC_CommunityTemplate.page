@@ -1,0 +1,16 @@
+<!-- Page: composition -->
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+    <c:blackHorseStaticResources ></c:blackHorseStaticResources>
+    <div class="container">
+
+        <apex:insert name="header"/>
+        
+        
+        <apex:insert name="body"/>
+       
+        <div class="row">
+        <c:HSBCFooter />
+        </div>
+    </div>
+
+</apex:page>

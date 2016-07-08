@@ -1,0 +1,59 @@
+<apex:page standardController="Lead" extensions="BrokerOnboardingController">
+  
+ <apex:form >
+  <apex:sectionHeader title="{!Lead.Name}" subtitle="Broker On-boarding"/>
+     <apex:pageBlock id="pgBlock">
+         <apex:pageMessages />
+         <apex:pageBlockButtons >
+             <apex:commandButton value="Start Checks" action="{!performChecks}" rerender="pgBlock" status="loadStatus"/>
+             <apex:commandButton value="Onboard User" action="{!convertLead}" rerender="pgBlock" rendered="{!isAllStatusChecked}" status="loadStatus"/>
+              <apex:commandButton value="Done" action="{!Cancel}" />
+         </apex:pageBlockButtons>
+         <apex:pageBlockSection columns="1" >
+             <apex:repeat value="{!checkFields}" var="field">
+                 <apex:pageBlocksectionItem >
+                     <apex:outputlabel value="{!$ObjectType.Lead.fields[field].Label}"/>
+                     <apex:outputpanel >
+                         <!--<apex:image value="/img/loading32.gif" rendered="{!ISBlank(leadInstance[field])}"/>-->
+                         <apex:image value="/img/msg_icons/confirm16.png" rendered="{!not(ISBlank(leadInstance[field]))}"/>
+                     </apex:outputpanel>
+                 </apex:pageBlocksectionItem>
+             </apex:repeat>
+         </apex:pageBlockSection>
+       </apex:pageBlock>
+       <style>
+       .overlay {
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    opacity: 0.3;
+    -moz-opacity: 0.3;
+    width: 100%;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
+    filter: alpha(opacity=30);
+    background: #000;
+    -khtml-opacity: 0.3;
+    z-index: 1000;
+}
+.loader {
+    background: url('/img/loading32.gif') scroll no-repeat 0 0;
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    top:20%;
+    z-index:102;
+    left: 50%;
+}
+   </style>
+     <apex:actionStatus id="loadStatus">
+                <apex:facet name="start">
+                    <div id="load_scrl" class="loadingBox loader"> </div>
+                    <div class="loadingBox overlay"> </div>
+                </apex:facet>
+            </apex:actionStatus>
+     
+     
+ </apeX:form>
+ 
+</apex:page>

@@ -1,0 +1,585 @@
+<apex:page showHeader="false" sidebar="false" title="Afford Calculator" docType="html-5.0" controller="CC_AffordCalculator" >
+
+<!-- 	<link rel="Stylesheet" href="{! $Resource.bootstrapsf1 }/css/bootstrap-namespaced.css" /> -->
+	<link rel="Stylesheet" href="{! $Resource.uiSlider }/css/bootstrapSF.css" />
+	<link rel="stylesheet" href="{! URLFOR( $Resource.IntroducerStaticResources, 'styles/jquery-ui.css' ) }" />
+	<link rel="stylesheet" href="{!URLFOR($Resource.uiSlider,'css/slider.css')}"/>
+
+	<style type="text/css">
+		.page-body {
+			background: white !important;
+			width: 100% !important; 
+		}
+		li {
+                list-style-position: inside;
+            }
+            .sliderExample {
+                width: 640px;
+                padding: 2em;
+                border: 1px solid #CCC;
+                margin: 2em;
+            }
+            .sliderExample > div {
+                margin: 1em 0;
+            }
+            .vertical-container {
+                width: 15%;
+                display: inline-block;
+            }
+            #swatch {
+                width: 100px;
+                height: 100px;
+                border: 1px solid black;
+            }
+            #red .ui-slider-range { background: #ef2929; }
+            #red .ui-slider-handle { border-color: #ef2929; }
+            #green .ui-slider-range { background: #8ae234; }
+            #green .ui-slider-handle { border-color: #8ae234; }
+            #blue .ui-slider-range { background: #729fcf; }
+            #blue .ui-slider-handle { border-color: #729fcf; }
+.questionsBlock{
+	display:block;
+	padding:15px;
+	float:left;
+	padding-bottom: 0px;}
+
+.titleContainer {
+	padding-bottom:5px;
+	float:left; }
+		
+.questionTitle {
+	width:auto;
+	height:40px;
+	display:inline-block;
+	position: relative;
+	float:left;
+	line-height:40px;
+	padding-left:10px;}
+
+.redCircle {
+	width:40px;
+	height:40px;
+	background: url(../img/red-circle.png);
+	display: inline-block;
+	position:relative;
+	float:left;
+}	
+
+.h2 {
+	font-size:16px;
+	
+}
+.h4 {
+	font-size:22px;
+	color:#FFF;
+	font-weight:bold;
+	line-height: 40px;
+	text-align:center; }
+
+.h5 {
+	font-size:16px;
+}
+
+.h6 {
+	font-size:14px;
+}
+
+.questionContainer {
+	width: 532px;
+	height:auto;
+	display:block;
+	position:relative;
+	float:left;
+	padding:2px; }
+
+
+.greyBG {
+	background-color: #F1F1F1 }
+	
+.whtBG {
+	background-color:#FFF;}	
+
+.questionLabelContainer{
+	display: inline-block;
+	vertical-align: middle;
+	height:44px;
+	width:160px;
+	 }
+
+.dropDownContainer {
+	display: inline-block;
+	vertical-align:middle;
+	height:26px;
+	width:196px;
+}
+.questionLabel {
+	display:table-cell;
+	vertical-align:middle;
+	height:44px;
+	width:160px;
+	font-size:14px;}
+.ui-slider {
+	background:url({! $Resource.uiSlider }/img/slider_bar.png);
+	border: none;
+	max-width: 200px;
+    height: 10px;
+    margin-right:15px;
+}
+/*.slider {
+	background:url({! $Resource.uiSlider }/img/slider_bar.png);
+	width:200px;
+	height:10px;
+	margin-right:15px;
+	padding-left:5px; 
+	display:inline-block;
+	vertical-align:middle;}
+	*/
+.inputContainer {
+	widows:auto;
+	display:inline-block;
+	vertical-align:middle; }
+	
+.image {
+	width: 328px;
+	height: 185px;
+	background-image: url(../img/results_image.png);
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 10px; }
+	
+.banner {
+	background: url({! $Resource.uiSlider }/img/Scotia_WhatCanIAfford_spriteboard.png) 0px -70px;
+	width:352px;
+	height:46px;
+	margin-top:-20px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.bannerText {
+	font-size:16px;
+	font-weight:bold;
+	color:#FFF;
+	text-align:center;
+	line-height:33px;}
+
+.resultsContainer {
+	width: 325px;
+	height: 370px;
+	background-color: #FFF;
+	border: solid 1px #D8D8D8;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: -11px;
+	padding-top: 10px;
+	position:relative;
+}
+
+.resultsTextContainer {
+	text-align: center;
+	width: 325px;
+	height: auto;
+	display: table-cell;
+	vertical-align: middle;
+	float: right;
+	
+}
+.resultsText1, .resultsText2, .resultsText3, .resultsAmount1, .resultsAmount2, .resultsAmount3 {
+	text-align: center;
+	width: 317px;
+	height: auto;
+	display: table-cell;
+	vertical-align: middle;
+	float: right;
+	padding: 4px;
+}
+
+.resultsAmount1, .resultsAmount2, .resultsAmount3 {
+	color: #D81E05;
+	background-color: #F1F1F1 
+}
+
+.resultsLine {
+	width: 305px;
+	height: 1px;
+	background-image:url(../img/dashed_line.png);
+	background-repeat:repeat-x;
+	margin: 15px 10px 15px 10px;
+	float: right;
+}
+
+.mobileGreyBG {
+	background-color:none; }
+	
+.resultsDescription {
+	text-align:left;
+	float:left;
+	width:185px;
+	padding:5px;
+	padding-left:10px;}
+
+.resultsAmount {
+	text-align:right;
+	padding:5px;
+	padding-right:10px;}
+
+.BtnContainer {
+	float:left;
+	padding:15px;
+	position:absolute;
+	bottom:0; }
+		
+.moreInfoBtn{
+	width:116px;
+	height:21px;
+	border:1px solid #D0D0D0;
+	border-radius:10px;
+	font-size:14px;
+	color:#D81E05;
+	text-align:center;
+	padding-top:5px;
+	background:#FFF;
+	cursor:pointer;
+    display: block;
+    }
+
+.moreInfoBtn:focus {
+	border: 1px solid #00a3e5;
+}
+
+.homeIcon {
+	width:67px;
+	height:67px;
+	background:url(../img/Scotia_WhatCanIAfford_spriteboard.png) 0px -145px;
+	float: right; }
+
+.iconContainer {
+	float: right;
+	padding: 8px;
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+	
+.innerResultsWrong {
+	text-align: left;
+	float: left;
+	padding: 10px;
+}
+
+#text-interestRate {
+	margin-left:10px; }
+
+#text-amortization {
+	margin-left:10px; }
+.slider {
+	margin: 5px 0px;
+}
+
+	</style>
+
+	<br />
+
+	<div class="bootstrapSF container page-body" ng-app="ngAffordCalcApp" ng-controller="ngAffordCalcController" >
+		<div class="row" >
+			<div class="col-sm-12 col-md-6" id="input" >
+				<form class="form-horizontal" name="mortgageCalculatorForm" >
+					<div class="form-group">
+						<label for="grossIncome" class="col-sm-3 col-md-6 control-label questionLabelContainer"> {! $Label.Afford_Calculator_Gross_Income } </label>
+						<div class="col-md-3 col-sm-4 slider hidden-sm-down" >
+
+							<div class="slider" ui-slider="slider.options"	 min="0" max="50" ng-model="grossIncome"></div>
+							<!--  ng-change="mortgageRecalculate()" /> -->
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="999999" class="form-control" id="grossIncome" ng-model="grossIncome"/>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="propertyTaxes" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Property_Taxes } </label>
+						<div class="col-md-3 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="propertyTaxes"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="propertyTaxes" ng-model="propertyTaxes" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="condominiumFees" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Condominium_Fees } </label>
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="condominiumFees"></div>
+						</div>
+
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="condominiumFees" ng-model="condominiumFees" />
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="heatingCosts" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Heating_Costs } </label>
+
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="heatingCosts"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="heatingCosts" ng-model="heatingCosts" />
+						</div>
+
+					</div>
+					<div class="form-group">
+						<label for="loanPayment" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Borrowing_Payments_e_g_credit_cards_loans } </label>
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="loanPayment"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="loanPayment" ng-model="loanPayment" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="downPayment" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Down_Payment } </label>
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="downPayment"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="downPayment" ng-model="downPayment" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="product" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Product } </label>
+<!-- 						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="downPayment"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="downPayment" ng-model="downPayment" />
+						</div -->
+					</div>
+					<div class="form-group">
+						<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Mortgage_Calculator_Interest_Rate } </label>
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="interestRate"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="amortization" class="col-sm-6 control-label"> {! $Label.Mortgage_Calculator_Amortization } </label>
+						<div class="col-md-3 col-sm-4 slider" >
+							<div ui-slider="slider.options"	min="0" max="50" ng-model="amortization"></div>
+						</div>
+						<div class="col-sm-2" >
+							<input type="number" min="1" max="99" class="form-control" id="amortization" ng-model="c" />
+						</div>
+					</div> 
+				</form>
+			</div>
+
+		<div class="col-sm-12 col-md-6" id="result">	
+			<div class="banner">
+            	<div id='rt' class="bannerText">You can afford a home with...</div>
+          	</div>
+	        <div class="resultsContainer"> <span class='innerResults'>
+	          	<div class="resultsTextContainer">
+	                <div class="resultsText1 h5">A maximum purchase price of:</div>
+	                <div class="resultsAmount1 h5"><b><span class='result-number' id='maxPurchase'>{{maxMortgage + downPayment}}</span></b></div>
+	            </div>
+	            <div class="resultsTextContainer ">
+	                <div class="resultsText2 h5">A monthly payment of:</div>
+	                <div class="resultsAmount2 h5"><b><span class='result-number' id='monthlyPayment'></span></b></div>
+	            </div>
+	            <div class="resultsTextContainer">
+	                <div class="resultsText3 h5">Max affordable mortgage amount:</div>
+	                <div class="resultsAmount3 h5"><b><span class='result-number' id='maxMortgage'>$250,000</span></b></div>
+	            </div>
+	            </span> <span class='innerResultsWrong'></span>
+	            <div class="resultsLine"></div>
+	            <div class="resultsTextContainer greyBG h6">
+	              <div class="resultsDescription">Down payment amount</div>
+	              <div class="resultsAmount"><span class='result-number' id='maxDownPayment'>{{ downPayment }}</span></div>
+	            </div>
+	            <div class="resultsTextContainer h6">
+	              <div class="resultsDescription">Mortgage amount</div>
+	              <div class="resultsAmount"><span class='result-number' id='mortgageAmount'></span></div>
+	            </div>
+	            <div class="resultsTextContainer greyBG h6">
+	              <div class="resultsDescription">Mortgage default insurance premium (if applicable)</div>
+	              <div class="resultsAmount"><span class='result-number' id='defInsurance'></span></div>
+	            </div>
+	        </div>
+        </div>  
+<!-- 			<div class="col-sm-6" id="result" >
+				<h4> {! $Label.Afford_Calculator_You_can_afford_a_home_with } </h4>
+				<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_A_maximum_purchase_price_of } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_A_monthly_payment_of } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Max_affordable_mortgage_amount } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+								<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Down_payment_amount } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+								<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Mortgage_amount } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+								<div class="form-group">
+					<label for="interestRate" class="col-sm-6 control-label"> {! $Label.Afford_Calculator_Mortgage_default_insurance_premium_if_applicable } </label>
+					<div class="col-sm-4" >
+						<input type="number" min="1" max="99" class="form-control" id="interestRate" ng-model="interestRate" />
+					</div>
+				</div>
+			</div> -->
+		</div>
+	</div>
+
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-ui.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.Bootstrap_3_3_5, 'js/bootstrap.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.CB_Detail, 'angular.min.js' ) }" />
+	<apex:includeScript value="{! URLFOR( $Resource.uiSlider, 'js/slider.js' ) }" />
+
+	<script type="text/javascript">
+		var app = angular.module( 'ngAffordCalcApp', [ 'ui.slider'] );
+
+		app.controller( 'ngAffordCalcController', function( $scope ) {
+			$scope.slider = {
+			    options: {
+			        start: function (event, ui) { $log.info('Slider start'); },
+			        stop: function (event, ui) { $log.info('Slider stop'); }
+			        }
+			    };
+			$scope.grossIncome;
+			$scope.propertyTaxes;
+			$scope.condominiumFees;
+			$scope.heatingCosts;
+			$scope.loanPayment;
+			$scope.downPayment = 2000;
+			$scope.product;
+			$scope.interestRate;
+			$scope.amortization;
+
+			//affordableMortgage
+			$scope.maxMortgage = 50;
+			//app.data.Maximum_Mortgage   = CalculatePrincipal(app.data.Maximum_Payment,app.data.interestRate, app.data.amortization*12);	
+        	/*$scope.mortgageCalculate = function( ) {
+        		maxMortgage
+        	};*/
+        	$scope.maxPurchase  =  $scope.maxMortgage + $scope.downPayment;
+        });
+
+        app.factory('uiSliderConfig', function ($log) {
+		    return {
+		        start: function (event, ui) { $log.info('Slider start'); },
+		        stop: function (event, ui) { $log.info('Slider stop'); }
+		    };
+		});
+
+		function displayResults(app){
+			$('#maxPurchase').html(app.data.Results_Max_Purchase_Price);
+	        $('#monthlyPayment').html(app.data.Results_Monthly_Payment);
+			$('#maxDownPayment').html(app.data.Results_Down_Payment);
+			$('#mortgageAmount').html(app.data.Results_Max_Affordable);
+	        $('#maxMortgage').html(app.data.Results_Total_Mortgage);
+			$('#defInsurance').html(app.data.Results_Def_Insurance_Premium);
+			//$('#'+fieldID).html(app.data.Result_Text);
+	        
+/*	       $('.result-number').each(function(){
+	            if(app.$$.lang=='FR')
+	                $(this).append(' $');
+	            else if(app.$$.lang=='EN')
+	                $(this).prepend('$');
+	       });*/
+		}
+
+		function CalculatePrincipal(MonthlyPmt, InterestRate, Term) {
+	//console.log(MonthlyPmt +'<>'+ InterestRate +'<>'+ Term);
+		var i = InterestRate/100;
+		var n = Term;
+		var part1 = Math.pow((1+i/2), (1/6));
+		var part2 = Math.pow((part1), (n*-1));
+		var p = MonthlyPmt/((part1-1)/(1-part2));
+		p = Math.round(p*100)/100;	
+		//console.log('principal:'+p);
+		return(p == "NaN" ? "Error" : p);
+	}
+
+	function CalculatePayment(Principal, InterestRate, Term, Frequency) {
+		var p = Principal;
+		var i = InterestRate/100;
+		var n = Term*Frequency;
+		var part1 = Math.pow((1+i/2), (2/Frequency));
+		var part2 = Math.pow((part1), (n*-1));
+		var MonthlyPmt = (p*((part1-1))/(1-part2));
+		MonthlyPmt = Math.round(MonthlyPmt*100)/100;
+		// Rounding function
+		return (MonthlyPmt);
+		if (_level0.sel_payment == "NaN") {
+			return ("Error");
+		}
+	}
+
+	function CalculateAmortization(MonthlyPmt, InterestRate, Principal, Frequency) {
+	  var p=Principal;
+	  var i=InterestRate/100;
+	  var a=Frequency;
+	  var n = -1/a * (Math.log(1-(p/MonthlyPmt)*(i/a)))/Math.log(1+(i/a))
+	  n=Math.round(n)  // Bring up to closest year
+	  return (n);
+	}
+
+	function CalculateAmortizationTerm(MonthlyPmt, Principal, InterestRate, Frequency) {
+		var p = Principal;
+		var i = InterestRate/100;
+		var part1 = Math.pow((1+i/2), (2/Frequency)); 
+		Total_Interest=0;
+		for (var years=1; years<=config.MAX_YEARS; years++) {
+			for (var i=1; i<(Frequency+1); i++) {
+				var Interest = (p*((part1-1)));
+				Interest = Math.round(Interest*100)/100;
+				p=p-MonthlyPmt+Interest;
+				if (p<MonthlyPmt) {return (years)}; 
+				Total_Interest=Total_Interest+Interest;
+			}
+		}
+		return(99);
+	}
+
+	// Calculate interest for one year
+	function CalculateInterest(MonthlyPmt, Principal, InterestRate, Frequency) {
+		var p = Principal;
+		var i = InterestRate/100;
+		var part1 = Math.pow((1+i/2), (2/Frequency)); // 1/6 represent 2/#payments per yr
+		Total_Interest=0;
+		for (var i=1; i<(Frequency+1); i++) {
+		  var Interest = (p*((part1-1)));
+		  Interest = Math.round(Interest*100)/100;
+		  p=p-MonthlyPmt+Interest;
+		  if (Interest<0) {Interest=0}
+		  Total_Interest=Total_Interest+Interest;
+		}
+		return (Total_Interest);
+	}
+
+	</script>
+	
+</apex:page>

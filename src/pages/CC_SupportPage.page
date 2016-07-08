@@ -1,0 +1,147 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" title="Support">
+    <apex:composition template="CC_CommunityTemplate">
+        <apex:define name="header">
+            <c:CC_HSBCHeader selectedTab="support" />
+        </apex:define>
+        <apex:define name="body">
+            <apex:includeScript value="{! URLFOR( $Resource.CC_Detail, 'angular-sanitize.min.js' ) }"/>
+            <script type="text/javascript">
+                var app = angular.module('CommunityApp', [ 'ngSanitize', 'toastr', 'ngAnimate' ]);
+            </script>
+            <!-- Page :: Support -->
+            <div class="page--support" ng-app="CommunityApp">
+                <c:callmeback />
+                <div class="page-banner"></div>
+                <div class="page--container">
+                    <!--c:CC_CommunityTabs selectedTab="support"/-->
+                    <apex:outputpanel id="filterPanel" layout="none">
+                        <apex:form >
+                            <apex:outputpanel rendered="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" layout="none">
+                                <div class="tiles">
+
+                                    <a href="{! $Page.CC_SupportPage }?filter=Service Request" class="tile {! if($CurrentPage.Parameters.filter == 'Service Request','selected','') }" >
+                                        <div class="tile-icon tile-icon-request"></div>
+                                        <div class="tile-heading">{! $Label.Service_Request }</div>
+                                    </a>
+                                    <a href="{! $Page.CC_SupportPage }?filter=Contact Us" class="tile {! if($CurrentPage.Parameters.filter == 'Contact Us','selected','') }" >
+                                        <div class="tile-icon tile-icon-contact"></div>
+                                        <div class="tile-heading">{! $Label.Contact_Us }</div>
+                                    </a>
+                                    <a href="{! $Page.CC_SupportPage }?filter=Mortgage Articles" class="tile {! if($CurrentPage.Parameters.filter == 'Mortgage Articles','selected','') }" >
+                                        <div class="tile-icon tile-icon-mortgage"></div>
+                                        <div class="tile-heading">{! $Label.Mortgage_Articles }</div>
+                                    </a>
+
+                                    <a href="{! $Page.CC_SupportPage }?filter=Application FAQ" class=" tile {! if($CurrentPage.Parameters.filter == 'Application FAQ','selected','') }" >
+                                        <div class="tile-icon tile-icon-app"></div>
+                                        <div class="tile-heading">{! $Label.Application_FAQ }</div>
+                                    </a>
+                                    <a href="#" id="call" class="tile">
+                                        <div class="tile-icon tile-icon-call"></div>
+                                        <div class="tile-heading">{!$Label.BTT_callmeback}</div>
+                                    </a>
+
+                                </div>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" layout="none" >
+                                <div class="tiles tiles-1-in-a-row">
+                                    <!-- <apex:commandLink action="{! $Page.CC_SupportPage}?filter=Contact Us" styleclass="tile {!if($CurrentPage.Parameters.filter == 'Contact Us','selected','') }" value="Contact Us" status="status"></apex:commandLink> -->
+                                    <a href="{! $Page.CC_SupportPage }?filter=Contact Us" class="tile {! if($CurrentPage.Parameters.filter == 'Contact Us','selected','') }" >
+                                        <div class="tile-icon tile-icon-contact"></div>
+                                        <div class="tile-heading">{! $Label.Contact_Us }</div>
+                                    </a>
+                                </div>
+                            </apex:outputpanel>
+                        </apex:form>
+                    </apex:outputpanel>
+                    <div >
+                        <!--apex:actionstatus id="status">
+                            <apex:facet name="start">
+                                <div align="center" style="padding:20px;">
+                                    {! $Label.Loading }
+                                    <br/>
+                                    <img src="/img/loading32.gif" style="padding:20px;"/>
+                                </div>
+                            </apex:facet>
+                            <apex:facet name="stop"-->
+                                <apex:outputpanel id="tablePanel">
+                                    <apex:outputpanel rendered="{! $CurrentPage.Parameters.filter == 'Contact Us' }" >
+                                        <c:CC_LiveChatComponent />
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{! $CurrentPage.Parameters.filter == '' }" >
+                                        <div class="row">
+                                            <div class="col-xs-12" >
+                                                <div  class="supportTabContent">
+                                                    <div id="home" class="tab-pane fade in active">
+                                                        <i>
+                                                            At BTT we strive to ensure your clients have support and tools they need to perform at their best. Our Business Managers will take the time to work with your clients, providing expert advice and guidance as your clients' needs evolve.
+                                                        </i>
+                                                        <br/>
+                                                        <br/>
+                                                        <ul>
+                                                            <li>
+                                                                Ability to offer your clients a fast-track BTT Business bank account whether they are a start-up business or wanting to switch over to BTT.
+                                                            </li>
+                                                            <li>
+                                                                Confidence that your clients will be contacted within one business day* to set up a convenient time to verify and complete the application in branch with a BTT Business Manager.
+                                                            </li>
+                                                            <li>
+                                                                Follow the progress of your client's BTT Business bank account  application via account opening status alerts.
+                                                            </li>
+                                                        </ul> 
+                                                        <br/>
+                                                        Your clients will get all they need to manage their day-to-day banking plus a range of free business benefits, including:
+                                                        <br/>
+                                                        <ul>
+                                                            <li>
+                                                                Day-today telephone support through our BTT Business Team
+                                                            </li>
+                                                            <li>
+                                                                A number of other way they can manage their money with BTT including online, mobile**, text alerts** or in over 1,600 branches
+                                                            </li>
+                                                        </ul> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{! $CurrentPage.Parameters.filter == 'Service Request' }">
+                                        <div class="row">
+                                            <div class="col-xs-12" >
+                                                <br />
+                                                <div class="supportTabContent">
+                                                    <c:CC_RequestComponent />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{! $CurrentPage.Parameters.filter == 'Mortgage Articles' }">
+                                        <div class="row">
+                                            <div class="col-xs-12" >
+                                                <br />
+                                                <div class="supportTabContent">
+                                                    <c:CC_MortgageArticles />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputpanel>
+                                    <apex:outputpanel rendered="{! $CurrentPage.Parameters.filter == 'Application FAQ' }">
+                                        <!--div class="row">
+                                            <div class="col-xs-12" -->
+                                                <br />
+                                                <!--div class="supportTabContent"-->
+                                                    <c:CC_ApplicationFAQ />
+                                                <!--/div-->
+                                            <!--/div>
+                                        </div-->
+                                    </apex:outputpanel>
+                                </apex:outputpanel>
+                            <!--/apex:facet>
+                        </apex:actionstatus-->
+                    </div>
+                </div>
+            </div>
+            <!-- End :: Page :: Support -->
+        </apex:define>
+    </apex:composition>
+</apex:page>

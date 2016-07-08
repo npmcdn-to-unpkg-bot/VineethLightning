@@ -1,0 +1,143 @@
+<apex:component controller="CC_MortgageArticlesController" >
+
+	<style>
+		.faqHeader {
+			font-size: 27px;
+			margin: 20px;
+		}
+/*		.lincPointer:hover {
+			cursor: pointer;
+		}*/
+		span {
+			font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+		}
+	</style>
+
+	<div class="panel-group" id="accordion" ng-controller="ngArticlesController" >
+		<div ng-if="showArticleBody == false" id="articleList" >
+			<!--div ng-repeat="article in visibleArticles = ( detailData[ ARTICLE_OBJ_LABEL ] | startFrom : startingItem( 	ARTICLE_OBJ_LABEL ) | limitTo : pagingHandler[ ARTICLE_OBJ_LABEL ][ PAGE_SIZE_LABEL ])" -->
+			<div ng-repeat="article in visibleArticles = ( detailData[ ARTICLE_OBJ_LABEL ] )" >
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<i class="article-icon"></i> {{ article.Title }}
+					</div>
+					<div class="panel-body">
+						{{ article.Summary }}
+					</div>
+					<div class="panel-footer">
+						<a href="" ng-click="showArticle( article )" class="lincPointer" >
+							{! $Label.CC_Read }
+						</a>
+					</div>
+				</div>
+				<br />
+			</div>
+			<!--c:CB_Paging objLabel="ARTICLE_OBJ_LABEL" /-->
+		</div>
+
+		<div ng-if="showArticleBody == true" id="articleBody" >
+			<div ng-bind-html="articleBody" ></div>
+			<br />
+			<a href="" ng-click="showList()" class="btn-rounded" >
+				{! $Label.BackBTN }
+			</a>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		app.filter( 'startFrom', function() {
+			return function( input, start ) {
+				start = +start;
+				return input.slice( start );
+			}
+		} );
+
+		app.controller(
+			'ngArticlesController',
+			[ '$scope', '$filter', '$sce', 'DataService', function( scope, filter, sce, dataService ) {
+
+			scope.ARTICLE_OBJ_LABEL = 'articles';
+
+			scope.PAGE_SIZE_LABEL = 'pageSize';
+			scope.CURRENT_PAGE_OBJ_LABEL = 'currentPage';
+
+			scope.showArticleBody = false;
+			scope.articleBody = '';
+
+			scope.detailData = {
+				articles: []
+			};
+
+			scope.pagingHandler = {
+				articles: {
+					pageSize: 10,
+					currentPage: 0
+				}
+			};
+
+			dataService.mortgageArticles( function( result ) {
+				scope.detailData[ scope.ARTICLE_OBJ_LABEL ] = result;
+				scope.$apply();
+			} );
+
+			scope.showArticle = function( article ) {
+				scope.showArticleBody = true;
+				//scope.articleBody = article.Body__c;
+				scope.articleBody = sce.trustAsHtml( article.Body__c );
+			};
+
+			scope.showList = function() {
+				scope.showArticleBody = false;
+				scope.articleBody = '';
+			};
+
+			//--- paging ---
+			scope.checkPage = function( pagingObject ) {
+			    scope.setCurrent( pagingObject, 0 );
+			};
+
+			scope.setCurrent = function( pagingObject, newCurrentPage ) {
+				if ( newCurrentPage < scope.numberOfPages( pagingObject ) && newCurrentPage >= 0 ) {
+					scope.pagingHandler[ pagingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] = newCurrentPage;
+				}
+			};
+
+			scope.firstPage = function( pagingObject ) {
+				return scope.pagingHandler[ pagingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] == 0;
+			};
+
+			scope.lastPage = function( pagingObject ) {
+				var lastPageNum = Math.ceil( scope.detailData[ pagingObject ].length / scope.pagingHandler[ pagingObject ][ scope.PAGE_SIZE_LABEL ] - 1 );
+				return scope.pagingHandler[ pagingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] == lastPageNum;
+			};
+
+			scope.numberOfPages = function( pagingObject ) {
+				return Math.ceil( scope.detailData[ pagingObject ].length / scope.pagingHandler[ pagingObject ][ scope.PAGE_SIZE_LABEL ] );
+			};
+
+			scope.startingItem = function( pagingObject ) {
+				return scope.pagingHandler[ pagingObject ][ scope.CURRENT_PAGE_OBJ_LABEL ] * scope.pagingHandler[ pagingObject ][ scope.PAGE_SIZE_LABEL ];
+			};
+			//---
+		} ] );
+
+		app.service( 'DataService', [ function() {
+			function getMortgageArticles( callback ) {
+				Visualforce.remoting.Manager.invokeAction(
+					'{! $RemoteAction.CC_MortgageArticlesController.getArticles }',
+					function( result, event ) {
+						if ( event.status && result != null ) {
+							callback( result );
+						} else {
+							callback( [] );
+						}
+					}, { escape: false } );
+			};
+
+			return {
+				mortgageArticles: getMortgageArticles
+			};
+		} ] );
+	</script>
+
+</apex:component>

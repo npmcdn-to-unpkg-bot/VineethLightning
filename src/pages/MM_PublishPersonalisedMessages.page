@@ -1,0 +1,107 @@
+<!--
+* @author  IP Dev Team
+* @date  November 2014
+* @description  Page provides provision to publish contents
+-->
+<apex:page standardController="Manage_Content__c" extensions="MM_PublishPersonalisedMessagesController">
+    <script src="https://c.cs83.visual.force.com/resource/1458724068000/ManageContent"></script>
+    
+    <script type="text/javascript">
+        function doCheckboxChange(cb,itemId){
+            if(cb.checked==true){
+                aSelectItem(itemId);
+            }
+            else{
+                aDeselectItem(itemId);
+            }
+        }
+        
+        $(document).ready(function() {
+            if({!Manage_Content__c.isActivePublished__c} == true)
+                $(".chkBox").attr("disabled", true);
+        });
+    </script>
+    
+    <apex:pageMessages id="errorMsg"></apex:pageMessages>
+    <apex:form id="mainForm">
+        <apex:pageBlock >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Publish" action="{!publishBrokerContact}" rendered="{!NOT(Manage_Content__c.Published__c)}" onclick="if(!confirm('{!$Label.IP_MM_Publish}')){return false; }else {return true;}"/>
+                <apex:commandButton value="Unpublish" action="{!unPublish}" rendered="{!Manage_Content__c.Published__c}" onclick="if(!confirm('{!$Label.IP_MM_UnPublish}')){return false; }else {return true;}"/>
+                <apex:commandButton value="Close" action="{!close}"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection title="Content" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!Manage_Content__c.Title__c}" style="font-weight:bold"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputField value="{!Manage_Content__c.Summary__c}"/>
+                </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem rendered="{!NOT(Manage_Content__c.Published__c)}">
+                     <apex:outputLabel style="font-style: italic;color:#FF0000;" value="This content is NOT published"/> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!Manage_Content__c.Published__c}">
+                    <apex:outputlabel style="font-style: italic;color:#008000;font-weight:bold;" value="This content is published"/> 
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Publishing Comments" columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:inputField value="{!Manage_Content__c.Internal_comments__c}" style="width:400px"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Broker Details" id="brokerSearch">
+                <apex:panelGrid columns="5" width="100%">
+                    <apex:outputLabel value="FirstName" for="FirstName"/>
+                    <apex:inputText value="{!firstNamesearchtext}" id="fsearchBroker"/>
+                    <apex:outputLabel value="LastName" for="LastName"/>
+                    <apex:inputText value="{!lastNamesearchtext}" id="lsearchBroker"/>
+                    <apex:commandButton value="Search" action="{!searchBroker}" rerender="brokerConPb"/>
+                </apex:panelGrid>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlock id="brokerConPb">
+                <apex:pageBlockTable title="Contacts" value="{!contacts}" var="brokerContact">
+                    <apex:column >
+                        <apex:facet name="header">Action</apex:facet>
+                        <apex:inputCheckbox value="{!brokerContact.IsSelected}" onchange="doCheckboxChange(this,'{!brokerContact.contact.Id}')"     styleClass="chkBox"/>
+                    </apex:column>
+                    <apex:column value="{!brokerContact.contact.FirstName}"/>
+                    <apex:column value="{!brokerContact.contact.LastName}"/>
+                    <apex:column value="{!brokerContact.contact.Account.Name}"/>
+                </apex:pageBlockTable>
+                
+                <apex:commandLink action="{!doPrevious}" rendered="{!hasPrevious}" value="Previous" />
+                <apex:outputLabel rendered="{!NOT(hasPrevious)}" value="Previous" />
+                <apex:outputLabel value=" (page {!pageNumber} of {!totalPages}) " />
+                <apex:commandLink action="{!doNext}" rendered="{!hasNext}" value="Next" />
+                <apex:outputLabel rendered="{!NOT(hasNext)}" value="Next" />
+            </apex:pageBlock>
+            
+        </apex:pageBlock>
+        
+        <apex:actionFunction name="aSelectItem" action="{!doSelectItem}" rerender="brokerConPb" status="actStatusId">
+            <apex:param name="selectedBrokerContactId" value="" assignTo="{!selectedBrokerContactId}"/>
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="aDeselectItem" action="{!doDeselectItem}" rerender="brokerConPb" status="actStatusId">
+            <apex:param name="selectedBrokerContactId" value="" assignTo="{!selectedBrokerContactId}"/>
+        </apex:actionFunction>
+        
+        <apex:outputpanel >
+            <apex:actionstatus id="actStatusId">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="el_loading" style="background-color: #DCD6D6; height: 100%;opacity:0.65;width:100%;">
+                        <div class="waitingHolder" style="top: 314.2px; width: 91px;">
+                            <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                            <span class="waitingDescription">Processing...</span>
+                        </div>
+                    </div>
+                </apex:facet>
+            </apex:actionstatus>
+        </apex:outputpanel>    
+    
+    </apex:form>  
+</apex:page>

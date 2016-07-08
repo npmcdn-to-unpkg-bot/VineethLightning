@@ -1,0 +1,32 @@
+<apex:component >
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="Stylesheet" href="{!$Resource.Bootstrap_3_3_5}/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'fonts/font-awesome/css/font-awesome.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.bxslider, 'jquery.bxslider.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/jquery-ui.css')}" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" />
+    <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_Detail, 'css/hover-min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_Detail,'css/dateselector.css')}"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_ResourcesUI,'/assets/vendor/owl.carousel/assets/owl.theme.default.min.css')}"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_ResourcesUI,'/assets/vendor/owl.carousel/assets/owl.carousel.min.css')}"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_ResourcesUI,'/assets/vendor/jquery.selectBoxIt/src/stylesheets/jquery.selectBoxIt.css')}"/>
+    <link rel="stylesheet" href="{!URLFOR($Resource.CC_ResourcesUI, 'assets/css/app.styles.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.IntroducerStaticResources, 'scripts/jquery-ui.js')}"/>
+    <apex:includeScript value="{!$Resource.Bootstrap_3_3_5}/js/bootstrap.min.js"/>
+    <apex:includeScript value="{!$Resource.bxslider}/jquery.bxslider.js" />
+    <apex:includeScript value="{!URLFOR($Resource.CC_ResourcesUI, '/assets/vendor/owl.carousel/owl.carousel.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_ResourcesUI, '/assets/vendor/jquery.selectBoxIt/src/javascripts/jquery.selectBoxIt.min.js')}"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"/> 
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'angular.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'dirPagination.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'angular-animate.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'angular-toastr.tpls.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'js/jquery.dateselector.min.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'js/jquery.validate.min.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.CC_Detail, 'js/moment.js')}"/> 
+</apex:component>

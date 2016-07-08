@@ -1,0 +1,119 @@
+<apex:component allowDML="true" controller="BTT_Callmeback">
+ <script type="text/javascript">
+                $(document).ready(function(){
+                    $("#call").click(function(){
+                       $("#myModal").modal('show');
+                       getText();
+                    });
+                    
+                     $("#sub").click(function(){
+                       createCase();
+                    });
+                    
+                });
+       
+         function createCase(){
+             
+            var accountNameJS = $("#mobval").val();
+            var passKey = Math.floor((Math.random() * 1000000) + 1);
+            BTT_Callmeback.updateCase( accountNameJS,passKey,
+            function(result, event)
+              {
+               if (event.status) 
+               {
+                if(result.isSuccess){
+                     $("#csdiv1").css('display', 'block');
+                       $("#form1").css('display','none');
+                       $("#p1").text('Please note this unquie key for your Reference with our agents '+passKey);
+                       $("#p1").css('display', 'block');
+                }
+                   else{
+                       $("#csdiv1").css('display', 'block');
+                       $("#form1").css('display','none');
+                       $("#p1").text(result.message);
+                       $("#p1").css('display', 'block');
+                   }
+               }
+              }, {escape:true});
+           }
+           
+           
+            function getText() {
+            var text = "";
+            var originalAttributes = $('#form1').attr('style');
+            var originalAttributes1 = $('#p1').attr('style');
+
+      BTT_Callmeback.doGetText(
+        function(result, event) {
+          if(event.type === 'exception') {
+            console.log("exception");
+            console.log(event);
+          } else if (event.status) {
+            
+            console.log('*******'+result.message+'****'+result.isSuccess);
+            if(result.isSuccess)
+              {
+                        $("#div3").show();
+                        $("#csdiv1").hide();
+                        $("#p3").show();
+                        $("#p3").text('Please note this unquie key for your reference with our agents '+result.name);
+                        $("#div2").hide();
+                        
+               
+              }
+              else{
+                 
+                  $("#div2").hide();
+                  //$('#csdiv1').show();
+                  $("#csdiv1").css('display', 'block');
+                  $("#p1").hide();
+                  $("#div3").hide();
+                  $("#form1").show();
+
+              }
+          } else {
+            console.log(event.message);
+          }
+        }
+      );
+    }
+         
+    </script>
+        
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Confirm your mobile number</h4>
+            </div>
+            <div class="modal-body" id="csdiv1" style="display:none">
+                <form id="form1" style="display:none">
+                     <p>Contact number</p>
+                    <div class="form-group">
+                        <input type="text" id="mobval"  value="{!$User.MobilePhone}" class="form-control" placeholder="Mobile number"/>
+                    </div>
+                    <!--<button id="sub" class="btn btn-primary">Continue</button>-->
+                    <!--<li class="next"><a id="sub" href="javascript: void(0);">Next</a></li>-->
+                    <button type="button" id="sub" class="btn btn-primary">Continue</button>
+                </form>
+                   <p id="p1" style="display:{!IF(showpopup== true,'block','none')}">Please note this unquie key for your reference with our agents {!cs.token__c}</p>
+            </div>
+            
+          <div class="modal-body" id="div2" style="display:{!IF(showpopup== true,'block','none')}">
+               
+                   <p id="p1" style="display:{!IF(showpopup== true,'block','none')}">Please note this unquie key for your reference with our agents {!cs.token__c}</p>
+            </div>
+            
+              <div class="modal-body" id="div3" style="display:none">
+               
+                   <p id="p3" style="display:{!IF(showpopup== true,'none','block')}">Please note this unquie key for your reference with our agents {!cs.token__c}</p>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+  
+</apex:component>

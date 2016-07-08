@@ -1,0 +1,61 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false">
+   
+   <apex:composition template="CC_CommunityTemplate">
+
+        <apex:define name="header">   
+            <c:CC_HSBCHeader selectedTab="mycases" />
+        </apex:define>
+
+        <apex:define name="body">
+            <!-- Page :: My Applications -->
+            <div class="page--my-applications">
+                <div class="page-banner"></div>
+                <!-- Page Content -->
+                <div class="page--container">
+                    <div class="selectbox">
+                        <div class="selectbox-label">View Applications</div>
+                        <div class="selectbox-select">
+                            <apex:outputpanel id="filterPanel" layout="none">
+                                <apex:form >
+                                    <select onchange="rerenderTable( this.value.replace(/\s/g, '') )" >
+                                        <option value=" " >View All</option>
+                                        <option value="New" >New</option>
+                                        <option value="Offer" >Offer</option>
+                                        <option value="Gone Off" >Gone Off</option>
+                                    </select>
+                                    <apex:actionFunction name="rerenderTable" rerender="tablePanel" >
+                                        <apex:param name="filter" value="" />
+                                    </apex:actionFunction>
+                                </apex:form>
+                            </apex:outputpanel>
+                        </div>
+                    </div>
+                    <apex:actionstatus id="status">
+                        <apex:facet name="start">
+                            <div align="center" style="padding:20px;">
+                                {! $Label.CC_Loading_please_wait }<br/>
+                                <img src="/img/loading32.gif" style="padding:20px;"/>
+                            </div>
+                        </apex:facet>
+                        <apex:facet name="stop">
+                            <apex:outputpanel id="tablePanel">
+                                <c:CC_TableTest ObjectName="opportunity" linkField="Case_Number__c" detailPage="{!$Page.CC_ApplicationDetailPage}" Fields="Case_Number__c,Customer_Name__c,StageName,To_Do__c,Amount,Deposit__c,Mortgage_Term__c,CreatedDate" filterCriteria="{!If($CurrentPage.Parameters.filter != '', 'StageName =\''&$CurrentPage.Parameters.filter&'\'' + ' AND Customer__c =\''&$User.ContactId&'\'' ,'Customer__c =\''&$User.ContactId&'\'')}"></c:CC_TableTest>
+                            </apex:outputpanel>
+                        </apex:facet>
+                    </apex:actionstatus>
+                </div>
+                <script type="text/javascript">
+                    $(function(){
+                        $("select").selectBoxIt({
+                            autoWidth: false,
+                            downArrowIcon: "i-selectboxit-arrow",
+                            // defaultIcon:   "i-selectboxit-icon"
+                        });
+                    })
+                </script>
+                <!-- End :: Page Content -->
+            </div>
+            <!-- End :: Page :: My Applications -->
+        </apex:define>
+    </apex:composition>
+</apex:page>

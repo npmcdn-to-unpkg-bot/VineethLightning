@@ -1,0 +1,10 @@
+<apex:page >
+ <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"></link>    
+    <apex:includeScript value="https://code.jquery.com/jquery-1.11.1.min.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>    
+    <apex:includeScript value="https://code.jquery.com/jquery-1.10.2.min.js"/>
+    <apex:includeScript value="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.js"/>
+<!--<c:TableTest ObjectName="opportunity" Fields="Name,StageName,DeliveryInstallationStatus__c"></c:TableTest>-->
+<c:TableTest ObjectName="opportunity" Fields="Name,StageName,DeliveryInstallationStatus__c"></c:TableTest>
+
+</apex:page>

@@ -1,0 +1,100 @@
+<apex:page showHeader="false" sidebar="false">
+     <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:LC_HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+        
+            <script>
+                var app = angular.module('CommunityApp', []);
+                app.controller('newCaseController', function($scope) {
+                 
+                $scope.submit = function(ev){
+                var btn = ev.currentTarget;
+                $(btn).button('loading');
+                window.location.href = '{!$Page.LC_NewApplicationPage}';
+                };
+            });
+            </script>
+            <!-- <div style="padding-bottom:5px;background: url(http://intermediarybank.com/wp-content/uploads/2013/07/mortgage.jpg)"> -->
+            <div style="padding-bottom:5px; background: url('{!$Resource.MyApplicationCar}');min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -40px;">
+                <c:LC_CommunityTabs selectedTab="mycases"/>
+                <br/>
+            </div>
+
+            <div class="col-xs-12" ng-app="CommunityApp" ng-controller="newCaseController">
+                <br/>
+                              
+                
+                <div class="panel-group" id="accordion">                   
+                    
+                    <div class="panel panel-default" id="panel2">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <!--<a data-toggle="collapse" href="#collapseTwo">-->
+                                    Quote Details
+                                <!--/a -->
+                            </h4>
+                        </div>
+                        <div id="collapseTwo">
+                            <div class="panel-body">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Loan amount:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4" style="word-break:break-all">
+                                                <!--<apex:outputfield value="{!Opportunity.To_Do__c}"/>-->£43000
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">12 monthly payments at:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">£4013.33
+                                                <!--<apex:outputfield value="{!Opportunity.Amount}"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Total cost of credit:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">£5160
+                                                <!--<apex:outputfield value="{!Opportunity.Deposit__c}"/>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Total amount payable:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">£48160
+                                                <!--<apex:outputfield value="{!Opportunity.Type}"/>-->
+                                            </td>
+                                        </tr>                                        
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Representative APR:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">12.0%
+                                                <!--<apex:outputfield value="{!Opportunity.Mortgage_Term__c}"/> Years-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Deposit amount:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">£7000
+                                                <!--<apex:outputfield value="{!Opportunity.Mortgage_Term__c}"/> Years-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-md-4 col-sm-6 col-xs-8">Loan term:</td>
+                                            <td class="col-md-8 col-sm-6 col-xs-4">1 Year
+                                                <!--<apex:outputfield value="{!Opportunity.Mortgage_Term__c}"/> Years-->
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="col-sm-6">  
+                                    <div class="pull-right">                                   
+                                        <button ng-click="submit($event)"  data-loading-text="Processing..."  class="btn btn-default continueBtn" >Back</button>
+                                        <!--<button ng-click="Continue('CarDetails')" class="btn btn-default continueBtn" >Save and Continue</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

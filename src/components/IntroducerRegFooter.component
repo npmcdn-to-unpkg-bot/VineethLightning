@@ -1,0 +1,20 @@
+<apex:component >
+    <nav class="navbar navbar-default footer col-md-12 col-sm-12 col-xs-12 margBot20 paddleft10 regFooterNav" role="navigation">
+        <div class="col-md-12 col-xs-12 col-sm-12 paddleft0 margBot20 footerMobDiv">    
+            <p class="footerNote">
+                Barclays Business is a trading name of Barclays Bank PLC. Barclays Bank PLC is authorised by the Prudential Regulation Authority and regulated by the Financial Conduct Authority and the Prudential
+                <br/>
+                Regulation Authority (Financial Services Register number: 122702).
+                <br/>
+                Barclays Bank PLC. Registered in England. Registered No. 1026167. Registered Office: 1 Churchill Place, London E14 5HP.
+                <br/>
+                Created 04/15 Ref: 9911797
+            </p>
+        </div>  
+        <div class="col-md-12 col-sm-12 col-xs-12 paddleft0 hidden-xs">
+            <div class="cookieDiv">
+                <p class="cookieLink"><a id="editCookiePermissionsTrigger" href="#" class="">Cookies</a></p>
+            </div>
+        </div>
+    </nav>
+</apex:component>

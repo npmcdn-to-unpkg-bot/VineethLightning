@@ -1,0 +1,8 @@
+<apex:page id="MainPage"
+           showHeader="false" 
+           
+           contentType="application/x-pdf#BTT_OFFERS.pdf">
+
+    
+   <apex:include pageName="PageThatGeneratesPdf"/>
+</apex:page>

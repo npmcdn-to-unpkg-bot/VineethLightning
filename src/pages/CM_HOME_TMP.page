@@ -1,0 +1,79 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" id="CM_HOME">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" />
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    
+    <apex:form id="CM_HOME_FRM">
+        <div class="container" style="background-color: #f8f8f8;">
+            <div class="container-fluid">
+                <nav class="navbar navbar-default">
+                    <div class="navbar-header">
+                        <button aria-expanded="false" class="navbar-toggle collapsed" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">
+                            <img src="{!URLFOR($Resource.CM_Resources, 'CM_Resources/Cognizant_Logo.png')}" style="
+        width: 50%; margin-top: -21px; margin-left: -13px;" />
+                        </a>
+                    </div>
+                    
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">Admin User <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Edit My Details</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="{!$Site.Prefix}/secur/logout.jsp">Logout</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="navbar-form navbar-right" role="search">
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Search" type="text" />
+                            </div>        
+                        </div>
+                    </div>
+                </nav>
+            </div>
+            <div class="container-fluid">
+                <div style="background: url({!URLFOR($Resource.CM_Resources, 'CM_Resources/Cognizant_background_iPAD.jpg')}); background-position: -575px -275px;">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="navbar-collapse nav-pillsDiv collapse" id="bs-example-navbar-collapse-1" aria-expanded="false">
+                                <ul class="nav nav-pills nav-justified">
+                                    <li id="home" class="active"><a href="/HSBCHomePage">Home</a></li>
+                                    <li id="mycases"><a href="/HSBCMyCases">My Applications</a></li>
+                                    <li id="myhsbc"><a href="#">My HSBC</a></li>
+                                    <li id="mypayment"><a href="/HSBCPayments">My Payments</a></li>
+                                    <li id="myreports"><a href="/CommunityReportPage">My Reports</a></li>
+                                    <li id="support"><a href="/HSBCSupportPage">Support</a></li>
+                                </ul>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <div class="col-xs-6 col-sm-6 col-md-4">
+                                <div class="panel panel-info" stype="opacity: .75;">
+                                    <div class="panel-heading">
+                                        <h2 class="panel-title"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span>&nbsp;&nbsp;My Cases<a href="#" class="pull-right">View All</a></h2>
+                                    </div>
+                                    <div class="panel-body">Panel content</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

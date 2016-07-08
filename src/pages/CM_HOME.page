@@ -1,0 +1,83 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" title="Home">
+    <apex:composition template="CommunityTemplate">
+        <apex:define name="header">   
+            <c:HSBCHeader />
+        </apex:define>
+        <apex:define name="body">
+            <script>
+                $(document).ready(function(){
+                    $('#menuSlider').show();
+                    $('#detailSlider').show();
+                    $('#menuSlider').bxSlider({ 
+                        slideWidth: 110, minSlides: 2,
+                        maxSlides:2,
+                        slideMargin: 5,
+                        auto: false,
+                        
+                        infiniteLoop: false,
+                        pager : false
+                        /*minSlides: 2,
+                        maxSlides: 4,
+                        responsive: true,
+                        slideWidth: 110,
+                        slideMargin: 10*/
+                    });
+                    $('#detailSlider').bxSlider({ 
+                        slideWidth: 500, minSlides: 1,
+                        maxSlides: 2,
+                        slideMargin: 10,
+                        auto: false,
+                        responsive: true,
+                        infiniteLoop: false,
+                        pager : false
+                    });
+                });
+            </script>
+            <div class="imgBanner" style="background: url({!$Resource.CM_Resources}/CM_Resources/Cognizant_background_iPAD.jpg); background-position: -575px -275px;">
+                <c:CommunityTabs selectedtab="home" />
+                <c:CaseSummaryModel />
+                <div class="row sliderBackground" >
+                <ul class="bxslider" id="menuSlider">
+                    <li><a href="{!$Page.CM_NewApplicationPage}" class="btn">Submit Application</a></li>
+                    <li><a href="#" class="btn">Mortgage Calculator</a></li>
+                    <li><a href="#" class="btn">Affordability Calculator</a></li>
+                    <li><a href="#" class="btn">Track My Payments</a></li>
+                    <li><a href="#" class="btn">&nbsp;&nbsp;&nbsp;&nbsp;Live&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;Chat&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+                </ul>
+            </div>
+            </div>
+            
+            <div class="row">
+                    <div class="col-xs-12 tableHeading">
+                    <span  class="pull-left">
+                        <i class="fa fa-dashboard fa-2x blue" ></i><span style="margin-left:15px;">My Recent Mortgage Applications</span>
+                    </span>
+                    <span class="pull-right">
+                       <i class="fa fa-dashboard fa-2x blue" style="visibility:hidden" ></i> <a href="{!$PAge.CM_MyApplications}"  style="color:white;vertical-align:middle;">View more</a>
+                    </span>
+                </div>
+                <div class="col-xs-12">
+                    <c:TableTest Limit="10" ObjectName="opportunity" linkField="Case_Number__c" detailPage="{!$Page.CM_ApplicationDetailPage}" Fields="Case_Number__c,Customer_Name__c,StageName,To_Do__c,Amount,Deposit__c,Mortgage_Term__c"></c:TableTest>
+                </div>
+            </div>
+            <div class="row sliderBackground" id="detailBackground">
+                <br/>
+                <ul class="bxslider" id="detailSlider">
+                    <li>
+                        <c:MarketDetail title="UK Market" imageUrl="http://www.ciwm-journal.co.uk/wordpress/wp-content/uploads/2014/06/24-06-141pic1.png" description="The economy of Manchester is amongst the largest in England. Manchester is a city and metropolitan borough of Greater Manchester, Europe's 22nd largest metropolitan area." moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about UK market" />
+                    </li>
+                    <li>
+                        <c:MarketDetail title="London Market" imageUrl="http://www.timetravel-britain.com/articles/1photos/london/market3.jpg" description="Homebuyer can save as much as 185,000. If they buy a property just one hour away from London by train. <br/> BTT research shows" moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about London market." />
+                    </li>
+                    <li>
+                        <c:MarketDetail title="UK Market" imageUrl="http://www.ciwm-journal.co.uk/wordpress/wp-content/uploads/2014/06/24-06-141pic1.png" description="The economy of Manchester is amongst the largest in England. Manchester is a city and metropolitan borough of Greater Manchester, Europe's 22nd largest metropolitan area." moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about UK market" />
+                    </li>
+                     <li>
+                        <c:MarketDetail title="London Market" imageUrl="http://www.timetravel-britain.com/articles/1photos/london/market3.jpg" description="Homebuyer can save as much as 185,000. If they buy a property just one hour away from London by train. <br/> BTT research shows" moreLInk="http://www.telegraph.co.uk/finance/" moreLinkText="Read about London market." />
+                    </li>
+                </ul>
+                <br/>
+            </div>
+        </apex:define>
+    </apex:composition>
+</apex:page>

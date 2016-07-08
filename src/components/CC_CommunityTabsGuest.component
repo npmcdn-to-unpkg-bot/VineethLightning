@@ -1,0 +1,43 @@
+<apex:component >
+    
+    <apex:attribute type="string" name="selectedTab" required="false" default="home" description="Contains Id of tab to be selected"/>
+	
+	<style>
+	    .nav-pills>li>a, .nav-pills>li>a:visited {
+	        background: rgba(0,0,0,0.5);//rgba(75, 177, 205 ,0.9); /*Blue*/
+	        width:80%;
+	        margin: 0 auto;
+	        color:white;
+	        white-space: nowrap;
+	    }
+	    .nav-pills>li.open>a, .nav-pills>li.active>a,.nav-pills>li.active>a:hover, .nav-pills>li>a:hover {
+	        background: rgba(107, 180, 71, 0.9) !important; /*Green*/
+	    }
+	    .nav-pillsDiv {
+	        background: rgba(0,0,0,0.4);
+	    }
+	    .nav-pills {
+	        width:80%;
+	        margin:0 auto;
+	    }
+	    @media (min-width: 768px) and (max-width: 992px) {
+	        .nav-pills>li>a {
+	          width:95% !important;
+	        }
+	    }
+	</style>
+	
+	<script>
+	    $(document).ready(function() {
+	           $('#{!selectedTab}').addClass('active');
+	    });
+	</script>
+
+	<div class="collapse navbar-collapse nav-pillsDiv" id="bs-example-navbar-collapse-1">
+		<ul class="nav nav-pills nav-justified">
+			<li id="home"><a href="{! $Page.CC_Home }" >{! $Label.CC_HOME }</a></li>
+			<li id="myhsbc"><a href="#">{! $Label.CC_News } &amp; {! $Label.CC_Broadcasts }</a></li>
+			<li id="support"><a href="{! $Page.CC_SupportPage }">{! $Label.CC_Support }</a></li>
+		</ul>
+	</div>
+</apex:component>

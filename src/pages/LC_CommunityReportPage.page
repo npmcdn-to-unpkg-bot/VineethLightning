@@ -1,0 +1,71 @@
+<apex:page sidebar="false" showHeader="false" standardstylesheets="false" title="Report">
+    <style>
+        .width_small{
+            margin:0 auto;
+        }
+        .filter{
+            min-width:600px !important;
+        }
+    </style>
+   <apex:composition template="LC_CommunityTemplate">
+        <apex:define name="header">   
+            <c:LC_HSBCHeader />
+        </apex:define> 
+        <apex:define name="body">
+           <apex:form >
+                <div style="padding-bottom:5px;background: url('{!$Resource.AnalyticsImg}');min-height: 200px; background-repeat: no-repeat; background-size: cover; background-position-x: 0px; background-position-y: -50px;">
+                    <c:LC_CommunityTabs selectedTab="myreports"/>
+                    <apex:outputpanel id="filterPanel" layout="block" style="touch-action:pan-y;overflow-y:auto;">
+                        <!--<div style="touch-action:pan-y;overflow-y:auto;">
+                            <div class="row filter" align="center" >
+                                 <apex:variable var="dateFilter" value=""/>
+                                 <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter == 'THIS_MONTH' || $CurrentPage.Parameters.dateFilter == '','selected','')}" value="Current Month" rerender="reportPanel, filterPanel">
+                                    <apex:param value="THIS_MONTH" name="dateFilter" />
+                                </apex:commandLink>
+                                 <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter== 'LAST_MONTH','selected','')}" value="Last Month" rerender="reportPanel, filterPanel" immediate="true">
+                                    <apex:param value="LAST_MONTH" name="dateFilter" />
+                                </apex:commandLink>
+                                <apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter == 'THIS_YEAR','selected','')}" value="Year to Date" rerender="reportPanel, filterPanel">
+                                    <apex:param value="THIS_YEAR" name="dateFilter" />
+                                </apex:commandLink>
+                            </div>
+                        </div>-->
+                        <ul style="padding: 40px !important;" class="filter">
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter == 'THIS_MONTH' || $CurrentPage.Parameters.dateFilter == '','selected','')}" value="Current Month" rerender="reportPanel, filterPanel">
+                                    <apex:param value="THIS_MONTH" name="dateFilter" />
+                                </apex:commandLink></li>
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter== 'LAST_MONTH','selected','')}" value="Last Month" rerender="reportPanel, filterPanel" immediate="true">
+                                    <apex:param value="LAST_MONTH" name="dateFilter" />
+                                </apex:commandLink></li>
+                              <li><apex:commandLink styleclass="btn {!if($CurrentPage.Parameters.dateFilter == 'THIS_YEAR','selected','')}" value="Year to Date" rerender="reportPanel, filterPanel">
+                                    <apex:param value="THIS_YEAR" name="dateFilter" />
+                                </apex:commandLink></li>
+                          </ul>
+                    </apex:outputpanel>
+                </div>
+                <apex:outputpanel id="reportPanel">
+                    <div class="row"> 
+                        <br/>
+                        <div class="col-xs-12 col-sm-6">
+                            <analytics:reportChart reportId="00O28000003JUx4" size="small" filter="[{column:'CLOSE_DATE',operator:'equals',value:'{!If($CurrentPage.Parameters.dateFilter != '', $CurrentPage.Parameters.dateFilter, 'THIS_MONTH')}'}]"/> 
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <analytics:reportChart reportId="00O28000003JUx5" size="small" filter="[{column:'CLOSE_DATE',operator:'equals',value:'{!If($CurrentPage.Parameters.dateFilter != '', $CurrentPage.Parameters.dateFilter, 'THIS_MONTH')}'}]"/> 
+                        </div> 
+                   </div>
+                    <div class="row">
+                        <br/>
+                        <div class="col-xs-12 col-sm-6">
+                            <analytics:reportChart reportId="00O28000003JUx6" size="small" filter="[{column:'CLOSE_DATE',operator:'equals',value:'{!If($CurrentPage.Parameters.dateFilter != '', $CurrentPage.Parameters.dateFilter, 'THIS_MONTH')}'}]"/> 
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <analytics:reportChart reportId="00O28000003JUx7" size="small" filter="[{column:'CLOSE_DATE',operator:'equals',value:'{!If($CurrentPage.Parameters.dateFilter != '', $CurrentPage.Parameters.dateFilter, 'THIS_MONTH')}'}]"/> 
+                        </div>
+                    </div>
+                </apex:outputpanel>
+              </apex:form>
+                  
+
+        </apex:define>
+    </apex:composition>
+</apex:page>

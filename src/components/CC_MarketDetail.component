@@ -1,0 +1,17 @@
+<apex:component layout="none">
+    <apex:attribute name="title" type="string" description="Title" />
+    <apex:attribute name="description" type="string" description="Description" />
+    <apex:attribute name="imageUrl" type="string" description="Image" />
+    <apex:attribute name="moreLink" type="string" description="More Link" />
+    <apex:attribute name="moreLinkText" type="string" description="More Text" />
+    <div class="slide clearfix">
+        <div class="slide-image">
+            <img src="{! imageUrl }" class="img-responsive"/>
+        </div>
+        <div class="slide-content">
+            <h3 class="slide-content-heading">{! title }</h3>
+            <p><apex:outputtext value="{! description }" escape="false" /></p>
+            <div class="slide-footer"><a class="slide-link" href="{! moreLink }">{! moreLinkText }</a></div>
+        </div>
+    </div>
+</apex:component>

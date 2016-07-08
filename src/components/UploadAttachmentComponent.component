@@ -1,0 +1,208 @@
+<apex:component >
+    <apex:attribute name="parentId" required="false" description="Parent Id" type="string"/>
+     <apex:attribute name="readonly" required="false" description="whether to allow  upload" type="boolean" default="false"/>
+    <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+    <script src="{!$Resource.ConnectionModified}" />
+    <script>
+        var limitMsgLabel = 'Removed "{FILE_NAME}" file as it exceeds size limit of [LIMIT]';
+        var fileProcessed = 0;
+        var isFileObjSaved = false;
+        var maxFileSizeLimitInMB = 25;
+        // Create angular js model and controller
+        var fileUploadModule = angular.module('fileUploadApp', []);
+
+        fileUploadModule.controller('fileUploadController', function($scope) {
+            // Array of files browsed by users
+            $scope.filesAttachment = new Array();
+            $scope.files = new Array();
+            $scope.readonly = {!readonly};
+            $scope.getExitingFiles = function(parentId){
+                var result = sforce.connection.query("Select Name, Id, BodyLength, Description from Attachment where parentid = '{!parentId}'");
+                records = result.getArray("records");
+
+                for (var i=0; i< records.length; i++) {
+                    $scope.filesAttachment.push({name: records[i].Name, description: records[i].Description, isNew: false, calculatedSize : $scope.getFileSize(records[i].BodyLength)});
+                }
+                //$scope.$apply();
+            },
+            // This method gets called when user select files through browser
+            $scope.fileSelected = function(inputFile){
+                var currentLength = $scope.filesAttachment.length;
+                var selectedFileInfo = '';
+                var message = '';
+                // Iterate through all the selected files and send file name and size to server
+                for(var i = 0; i < inputFile.files.length; i++){
+                    // If a file size exceeds to maxFileSizeLimitInMB then remove it and add error message alert 
+                    if(inputFile.files[i].size > maxFileSizeLimitInMB * 1024*1024){
+                        var errorMsg = limitMsgLabel;
+                        errorMsg = errorMsg.replace('[FILE_NAME]',inputFile.files[i].name);
+                        errorMsg = errorMsg.replace('[LIMIT]',maxFileSizeLimitInMB)
+                        message += errorMsg+'<br\>';
+                    }
+                    else{
+                        inputFile.files[i].calculatedSize = $scope.getFileSize(inputFile.files[i].size);
+                        inputFile.files[i].isNew = true;
+                        $scope.filesAttachment.push(inputFile.files[i]);
+                    }
+                }
+                if(message != ''){
+                    $('#alertMsg').html(message);
+                    $('#fileSizeAlert').show();
+                }
+                $scope.$apply();
+            },
+            
+            // This method save attachment to salesforce via ajax
+            $scope.uploadAttachmentToSF = function(parentId, f, curItem, body){
+                
+                var attachment = new sforce.SObject('Attachment');  
+                attachment.Name = f.name;  
+                attachment.ContentType = f.type;  
+                attachment.Body = body;  
+                attachment.ParentId  = parentId;  
+                attachment.Description = f.description;
+                f.isNew = false;
+                var result = sforce.connection.create([attachment], {
+                    // This method gets called when file upload is in progress
+                    progress: function(oEvent) {
+                        if(oEvent.lengthComputable) {
+                            var percentComplete = parseInt(oEvent.loaded / oEvent.total) * 100;
+                            $('.progress'+curItem).width(percentComplete +'%');
+                            $('.progress'+curItem).html(percentComplete +'%');
+                        } 
+                        else {
+                            // Unable to compute progress information since the total size is unknown
+                        }
+                    },
+                    onSuccess: function(success){
+                        fileProcessed++;
+                        // When all the file upload process complete then redirect page to parent 
+                        // page by calling cancel click
+                        if(fileProcessed == $scope.filesAttachment.length){
+                            //$('.cancelBtn').click();
+                            $('.btn-primary').removeAttr('disabled');
+                             $scope.$apply();
+                        }
+                       
+                    },
+                    onFailure:function(failure){
+                        $('.progress'+curItem).width('0%');
+                        $('.progress'+curItem).html('Failed');
+                    }
+                }); 
+            },
+            // This method removed record from filesAttachment array and then  remove it from server by calling removeFileFromSF
+            $scope.removeClientFile = function(isRecordOnly, index){
+                if(isRecordOnly == 'false'){
+                    $scope.filesAttachment.splice(index, 1);
+                }
+                removeFileFromSF(index);
+            },
+            // This method calculate file size
+            $scope.getFileSize = function(fSize){
+                var size = '';
+                if(fSize < 1024){
+                    size = fSize + ' bytes';
+                }
+                else if(fSize > 1024 && fSize < 1024 * 1024){
+                    size = Math.ceil(fSize / 1024) + ' KB';
+                }
+                else{
+                    size = Math.ceil(fSize / (1024 * 1024)) + ' MB';
+                }
+                return size;
+            }
+            // This method saves selected files in attachment and relate it to custom file which is inserted on server
+            $scope.saveAttachment = function(parentId){
+                parentId = '{!parentId}';
+                // Perform action only if records are save successfully on server
+                if(true){
+                    
+                    // Disable button so that user wont be able to perform any action
+                    $('.btn-primary').attr('disabled',true);
+                    
+                    for(var i = 0; i < $scope.filesAttachment.length; i++){
+                        var file = $scope.filesAttachment[i];
+                        
+                        // Skip row if file is record only 
+                        if(file.isNew == false){
+                            fileProcessed++;
+                            if(fileProcessed == $scope.filesAttachment.length){
+                                $('.cancelBtn').click();
+                            }
+                            continue; 
+                        }
+                        
+                        
+                        var fileReader = new FileReader();
+                        fileReader.onload  = (function(f, curItem) {
+                            return function(e) {
+                                    var body = window.btoa(this.result);  //Base 64 encode the file before sending it
+                                    $scope.uploadAttachmentToSF(parentId, f, curItem, body);
+                            }
+                        })(file, i);
+                        fileReader.onerror = function(e) {
+                            alert("There was an error reading the file.  Please try again.");
+                        };
+                        fileReader.onabort = function(e) {
+                            alert("There was an error reading the file.  Please try again.");
+                        };
+                        fileReader.readAsBinaryString(file);      
+                    }
+                }
+            };
+            $scope.getExitingFiles();
+        });
+    </script>
+    <div ng-app="fileUploadApp" ng-controller="fileUploadController" id="fileDiv" class="ng-cloak">
+        <div class="row ">
+            <div class="col-xs-12 page-header">
+                <h4>Files</h4>
+            </div>
+        </div>
+        <div class="row" ng-show="!readonly">
+            <div class="col-xs-12">
+                <input type="file" multiple="true" onchange="angular.element(this).scope().fileSelected(this)" />
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>File Name</th>
+                        <th>Size</th>
+                        <th>Description</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>                
+                <tbody>
+                    <tr ng-repeat="file in filesAttachment">
+                        <td></td>
+                        <td>{{file.name}}</td>
+                        <td>{{file.calculatedSize}}</td>
+                        <td>
+                            <input type="text" class="form-control" ng-model="file.description" ng-show="file.isNew"/>
+                            <span  ng-show="!file.isNew">{{file.description}}</span>
+                        </td>
+                        <td>
+                            <div class="progress" ng-show="file.isNew">
+                                <div class="progress-bar progress-bar-success progress{{$index}}" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        <div class="row" ng-show="!readonly">
+            <div class="col-xs-12">
+                <div class="pull-right">
+                    <input type="button" class="btn btn-primary" ng-click="saveAttachment()" value="Upload Files"/>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:component>

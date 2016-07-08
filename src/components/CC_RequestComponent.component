@@ -1,0 +1,108 @@
+<apex:component controller="CC_CommunityController" layout="block">
+    <apex:attribute type="string" name="type" Description="Request Type" default="Service"/>    
+
+    <div class="headerTab" >
+        <ul class="nav nav-tabs" id="tabs">
+            <li class="active"><a href="#serviceRequests" data-toggle="tab"  >{!type} {! $Label.CC_Requests }</a></li>
+            <li><a href="#createNewRequest" data-toggle="tab"  >{! $Label.CC_Create_Request }</a></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="content" >
+        
+        <div id="serviceRequests" class="tab-pane fade in active tab--service-requests">
+            <c:CC_TableTest ObjectName="case"  Fields="CaseNumber,{!if(type == 'Payment','Payment_Id__c','Application_Number__c')},Priority,Status,CreatedDate" filterCriteria="{! if(type == 'Payment','Payment_Id__c != null','Application_Number__c != null') }"></c:CC_TableTest>
+        </div>
+        <div id="createNewRequest" class="tab-pane fade tab--create-new-request">
+            <form class="form-horizontal" name="newCaseForm" ng-app="CommunityApp" ng-controller="{! type }RequestController">
+
+                <script type="text/ng-template" id="title.html">
+                    <select ng-model="request.Priority" class="form-control" required="true" id="title" ng-class="{red: newCaseForm.title.$invalid}">
+                        <option disabled="true" selected="true" hidden="true" value="">Please select</option>
+                        <option value="High">High</option>                          
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </script>
+
+                <br />
+                <h3 class="text-center">{! $Label.CC_Enter_Request_Details }</h3>
+                <br />
+                <div class="form-group" ng-show="type=='Service'">
+                    <label for="appNum" class="col-sm-4 control-label">{! $Label.CC_Application_Number }:</label>
+                    <div class="col-sm-4 ">
+                        <input ng-model="appNum" id="appNum" class="form-control" required="true" />                      
+                    </div>
+                </div>
+                <!--div class="form-group" ng-show="type == 'Payment'">
+                    <label for="payId" class="col-sm-4 control-label">{! $Label.CC_Payment_Id }:*</label>
+                    <div class="col-sm-4 ">
+                        <input ng-model="paymentId" id="payId" class="form-control" required="true" />                      
+                    </div>
+                </div-->
+                <div class="form-group">
+                    <label for="title" class="col-sm-4 control-label">{! $Label.CC_Priority }:*</label>
+                    <div class="col-sm-4" ng-include="'title.html'"></div>
+                </div>  
+                <div class="form-group">
+                    <label for="descr" class="col-sm-4 control-label">{! $Label.CC_Enter_your_request_details }:*</label>
+                    <div class="col-sm-4 ">
+                        <textarea id="descr" ng-model="request.Description" class="form-control" rows="5"/>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button ng-click="submit( $event, newCaseForm.$valid )"  data-loading-text="Processing..."  class="btn-rounded btn-centered" >{! $Label.SubmitBTN }</button>
+                    </div>
+                </div>
+                <c:CC_MessageModal />
+            </form>        
+        </div>
+    </div>
+    <script type="text/javascript">
+
+        var app = angular.module( 'CommunityApp', [ 'ngSanitize', 'toastr', 'ngAnimate' ] );
+
+        app.controller( '{! type }RequestController', function( $scope, toastr ) {
+            $scope.request = { Priority : '' };
+            
+            $scope.type = '{! type }';
+            $scope.appNum = '';
+            $scope.paymentId = '';
+            if( $scope.paymentId != '' || $scope.appNum != '' ) {
+                $( '#tabs a[ href="#createNewRequest" ]' ).tab( 'show' );
+            }
+            if( $scope.type == '' ){
+                $scope.type = 'Service';
+            }
+            $scope.closeModal = function() {
+                $( '#msgModal' ).modal( "hide" );
+                if( $scope.type == 'Payment' ) {
+                   window.location.href = '{! $Page.CC_SupportPage }?filter=Payments';
+                }
+                else {
+                   window.location.href = '{! $Page.CC_SupportPage }?filter=Service Request';
+                }
+            }
+             $scope.submit = function( ev, isValid ) {
+                if ( !isValid ) {
+                    return;
+                }
+
+                var btn = ev.currentTarget;
+                $( btn ).button( 'loading' );
+                     Visualforce.remoting.Manager.invokeAction( '{! $RemoteAction.CC_CommunityController.createRequest }', $scope.request, $scope.appNum, $scope.paymentId, function( result ) {
+                         if( result.isSuccess ) {
+                             $( '#message' ).html( 'Request Submitted Successfully. <br/>Request Id: ' + result.name );
+                             $( '#msgModal' ).modal();
+                         }
+                         else {
+                             alert( response.message );
+                         }
+                         $( btn ).button( 'reset' );
+                     },
+                     { escape: true } );
+                };
+        } );
+    </script>
+</apex:component>

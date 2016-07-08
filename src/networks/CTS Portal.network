@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Network xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowMembersToFlag>false</allowMembersToFlag>
+    <branding>
+        <pageHeader>Logo/blackhorsesales.png</pageHeader>
+        <primaryColor>#00BFFF</primaryColor>
+        <primaryComplementColor>#222222</primaryComplementColor>
+        <quaternaryColor>#C9C9C9</quaternaryColor>
+        <quaternaryComplementColor>#222222</quaternaryComplementColor>
+        <secondaryColor>#000000</secondaryColor>
+        <tertiaryColor>#000000</tertiaryColor>
+        <tertiaryComplementColor>#FFFFFF</tertiaryComplementColor>
+        <zeronaryColor>#FFFFFF</zeronaryColor>
+        <zeronaryComplementColor>#222222</zeronaryComplementColor>
+    </branding>
+    <changePasswordTemplate>unfiled$public/CommunityChangePasswordEmailTemplate</changePasswordTemplate>
+    <emailSenderAddress>nikolay.zenko@codeswat.com</emailSenderAddress>
+    <emailSenderName>CTS Portal</emailSenderName>
+    <enableGuestChatter>false</enableGuestChatter>
+    <enableInvitation>false</enableInvitation>
+    <enableKnowledgeable>false</enableKnowledgeable>
+    <enableNicknameDisplay>false</enableNicknameDisplay>
+    <enablePrivateMessages>false</enablePrivateMessages>
+    <enableReputation>false</enableReputation>
+    <forgotPasswordTemplate>unfiled$public/CommunityForgotPasswordEmailTemplate</forgotPasswordTemplate>
+    <networkMemberGroups>
+        <profile>Admin</profile>
+        <profile>Mortgage Broker Community Test</profile>
+        <profile>Broker</profile>
+    </networkMemberGroups>
+    <picassoSite>CTS_Portal1</picassoSite>
+    <selfRegistration>false</selfRegistration>
+    <sendWelcomeEmail>true</sendWelcomeEmail>
+    <site>CTS_Portal</site>
+    <status>Live</status>
+    <tabs>
+        <customTab>Black_Horse_Portal</customTab>
+        <defaultTab>01r4E0000008X9G</defaultTab>
+        <standardTab>Chatter</standardTab>
+        <standardTab>OtherUserProfile</standardTab>
+        <standardTab>CollaborationGroup</standardTab>
+    </tabs>
+    <urlPathPrefix>ctsportal</urlPathPrefix>
+    <welcomeTemplate>unfiled$public/CommunityWelcomeEmailTemplate</welcomeTemplate>
+</Network>

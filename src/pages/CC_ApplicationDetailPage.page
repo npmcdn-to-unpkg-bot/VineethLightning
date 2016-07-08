@@ -1,0 +1,20 @@
+<apex:page showHeader="false" standardStylesheets="true" sidebar="false" StandardController="Opportunity" title="Application: {!Opportunity.Case_Number__c}" docType="html-5.0">
+    
+    <apex:composition template="CC_CommunityTemplate">
+        
+        <apex:define name="header">   
+            <c:CC_HSBCHeader selectedTab="mycases" />
+        </apex:define>
+
+        <apex:define name="body">
+            <div class="page--home">
+                <div class="banner">
+                </div>
+
+                <c:CC_ApplicationDetail opp="{! Opportunity }" />
+            </div>
+        </apex:define>
+
+    </apex:composition>
+
+</apex:page>

@@ -1,0 +1,44 @@
+<apex:component layout="none">
+  <apex:attribute type="string" name="selectedTab" required="false" default="home" description="Contains Id of tab to be selected"/>
+
+	<nav class="header-menu">
+		<apex:outputPanel rendered="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" layout="none">
+			<ul class="header-menu-list clearfix" id="js-header-menu-list">
+				<li class="header-menu-list-item" id="home"><a href="{! $Page.CC_Home }" >{! $Label.CC_HOME }</a></li>
+				<li class="header-menu-list-item" id="mycases"><a href="{! $Page.CC_MyApplications }" >{! $Label.CC_My_Applications }</a></li>
+				<li class="header-menu-list-item" id="myhsbc"><a href="{! $Page.CC_NewsBroadcasts }">{! $Label.CC_News } &amp; {! $Label.CC_Broadcasts }</a></li>
+				<li class="header-menu-list-item" id="support"><a href="{! $Page.CC_SupportPage }">{! $Label.CC_Support }</a></li>
+			</ul>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" layout="none">
+			<ul class="header-menu-list clearfix" id="js-header-menu-list">
+				<li class="header-menu-list-item" id="home"><a href="{! $Page.CC_Home }" >{! $Label.CC_HOME }</a></li>
+				<li class="header-menu-list-item" id="myhsbc"><a href="{! $Page.CC_NewsBroadcasts}">{! $Label.CC_News } &amp; {! $Label.CC_Broadcasts }</a></li>
+				<li class="header-menu-list-item" id="support"><a href="{! $Page.CC_SupportPage }">{! $Label.CC_Support }</a></li>
+			</ul>
+		</apex:outputPanel>
+	</nav>
+
+		<script>
+      $('#{!selectedTab}').addClass('active');
+		</script>
+
+	<!-- <div class="collapse navbar-collapse nav-pillsDiv" id="bs-example-navbar-collapse-1">
+		<apex:outputPanel rendered="{! NOT(ISPICKVAL($User.UserType, 'Guest')) }" layout="none">
+			<ul class="nav nav-pills nav-justified">
+				<li id="home"><a href="{! $Page.CC_Home }" >{! $Label.CC_HOME }</a></li>
+				<li id="mycases"><a href="{! $Page.CC_MyApplications }" >{! $Label.CC_My_Applications }</a></li>
+				<li id="myhsbc"><a href="{! $Page.CC_NewsBroadcasts }">{! $Label.CC_News } &amp; {! $Label.CC_Broadcasts }</a></li>
+				<li id="support"><a href="{! $Page.CC_SupportPage }">{! $Label.CC_Support }</a></li>
+			</ul>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{! ISPICKVAL($User.UserType, 'Guest') }" layout="none">
+			<ul class="nav nav-pills nav-justified">
+				<li id="home"><a href="{! $Page.CC_Home }" >{! $Label.CC_HOME }</a></li>
+				<li id="myhsbc"><a href="{! $Page.CC_NewsBroadcasts}">{! $Label.CC_News } &amp; {! $Label.CC_Broadcasts }</a></li>
+				<li id="support"><a href="{! $Page.CC_SupportPage }">{! $Label.CC_Support }</a></li>
+			</ul>
+		</apex:outputPanel>
+	</div> -->
+
+</apex:component>

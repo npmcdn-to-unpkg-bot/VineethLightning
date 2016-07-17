@@ -26,7 +26,7 @@ public with sharing class  BTT_Callmeback{
                }
                catch(QueryException qe)
                 {
-                    
+                    System.Exception('Error occured'+qe.getMessage());
                 }
            }
           

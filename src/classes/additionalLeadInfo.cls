@@ -22,6 +22,7 @@ public class additionalLeadInfo {
     system.debug('Insert record with id'+leadRecord.id)         ;
     PageReference leadPage = new PageReference('/apex/leadCreationSucessPage');
     leadPage.setRedirect(true);
+    system.debug('***');
     return leadPage;
     }
 }

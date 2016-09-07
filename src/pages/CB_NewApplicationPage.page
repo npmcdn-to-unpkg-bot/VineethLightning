@@ -3,7 +3,7 @@
 	<link rel="Stylesheet" href="{! $Resource.bootstrapsf1 }/css/bootstrap-namespaced.css" />
 	<link rel="stylesheet" href="{! URLFOR( $Resource.IntroducerStaticResources, 'styles/jquery-ui.css' ) }" />
 	<link rel="stylesheet" href="{!URLFOR($Resource.CB_Detail,'css/dateselector.css')}"/>
-	<link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+	<link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
 	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-2.1.1.min.js' ) }" />
 	<apex:includeScript value="{! URLFOR( $Resource.IntroducerStaticResources, 'scripts/jquery-ui.js' ) }" />
 	<apex:includeScript value="{! URLFOR( $Resource.Bootstrap_3_3_5, 'js/bootstrap.min.js' ) }" />

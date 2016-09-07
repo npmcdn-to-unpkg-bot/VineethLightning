@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{!URLFOR($Resource.bxslider, 'jquery.bxslider.css')}" />
     <link rel="stylesheet" href="{!URLFOR($Resource.IntroducerStaticResources, 'styles/jquery-ui.css')}" />
     <link rel="stylesheet" href="https://cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css" />
-    <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
+    <link rel="stylesheet" href="https://unpkg.com/angular-toastr/dist/angular-toastr.css" />
     <link rel="stylesheet" href="{!URLFOR($Resource.CC_Detail, 'css/hover-min.css')}" />
     <link rel="stylesheet" href="{!URLFOR($Resource.CC_Detail,'css/dateselector.css')}"/>
     <link rel="stylesheet" href="{!URLFOR($Resource.CC_ResourcesUI,'/assets/vendor/owl.carousel/assets/owl.theme.default.min.css')}"/>
